@@ -127,6 +127,10 @@ water_drank = True
 rifle_supp = False
 pistol_supp = False
 
+rotten_food = False
+rot_day = random.randint(7, 14)
+first_hunt = True
+
 line_break = ("-" * 144)
 
 def add_item(x):
@@ -137,7 +141,8 @@ def add_item(x):
         character[9][0] += int(x[7])
 
     elif x[0:2] == "(f":
-        character[3].append(x[7:])
+        if x != "(food) rotten food":
+            character[3].append(x[7:])
 
     elif x[0:2] == "(w":
         character[4].append(x[9:])
@@ -2016,6 +2021,18 @@ while play != "1":
     play = input("Click 1 to Play: ")
 
 while game:
+    if day == rot_day:
+        rotten_food = True
+
+        item_list.remove("(food) apple")
+        item_list.remove("(food) chicken")
+        item_list.remove("(food) bread")
+        item_list.remove("(food) sausages")
+        item_list.remove("(food) carrots")
+
+        for i in range(5):
+            item_list.append("(food) rotten food")
+
     calories_used = 0
     day += 1
     print(line_break)
@@ -5326,6 +5343,74 @@ while game:
 
                     print("\nDespite your difficulties, you still manage to scrape up something:")
                     random_item(1,2,"normal")
+                
+            elif chance == 11 and day >= rot_day:
+                if first_hunt == True:
+                    print("It's been", day, "days since the outbreak, and foods like chicken, apples and bread have rotted away")
+                    print("If you want a solid supply of food, you'll have to go find it in the wild...\n")
+                    first_hunt = False
+
+                    chance = random.randint(1, 3)
+                    if chance == 1:
+                        print("You're heading towards", area, "when you see a path heading off into a wooded area")
+
+                    elif chance == 2:
+                        print("You're on your way to", area, "but you've spotted an interesting looking nature trail")
+
+                    elif chance == 3:
+                        print("Making your way towards", area, "you find yourself beside a large forest")
+
+                    print("This could be a good opportunity to do some foraging, or even hunting!")
+                    print("Will you:\n1. Investigate the forest trail\n2. Keep heading towards", area)
+                    choice = make_choice()
+
+                    if choice == 1:
+                        print("You decide to try scavenging out in the wild today, and leaving the road you were walking on, you head off into nature")
+                        print("You hike through the trees, keeping and eye out for zombies and look around for anything interesting")
+
+                        chance = random.randint(1, 2)
+                        if chance == 1:
+                            print("Suddenly some movement between the trees catches your eye")
+                            noise = False
+
+                            animal_chance = random.randint(1, 3)
+
+                            if animal_chance == 1:
+                                print("There's a flock of chickens just a few metres away!")
+                                print("Will you:\n1. Hunt the chickens\n2. Try and catch one")
+                                choice = make_choice()
+
+                                if choice == 1:
+                                    weapon = choose_weapon()
+
+                                    print("You break from cover and charge towards the chickens")
+
+                                    if weapon == "hands":
+                                        chance = random.randint(1, 6)
+                                        print("You chase after the chickens grabbing, swinging and kicking at them wildly")
+
+                                    elif weapon == "**assault rifle**":
+                                        chance = 1
+                                        print("Switching your", weapon, "to single-fire you begin to shoot at the chickens")
+                                        character[10][1] -= random.randint(3, 6)
+                                        if character[10][1] < 0:
+                                            character[10][1] = 0
+
+                                        if not rifle_supp:
+                                            noise = True
+
+                                    elif weapon == "*pistol*":
+                                        chance = 1
+                                        print("You hold your", weapon, "in both hands and fire at the chickens")
+                                        character[10][0] -= random.randint(3, 6)
+                                        if character[10][0] < 0:
+                                            character[10][0] = 0
+
+                                    else:
+                                        chance = random.randint(1, 2)
+                                        print("You chase after the chickens, swinging your", weapon, "with deadly intent")
+
+                                    if chance == 1:
 
             else:
                 chance = random.randint(1, 6)
