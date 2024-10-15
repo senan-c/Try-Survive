@@ -1936,6 +1936,60 @@ def journal_entry(info):
     journal.append(journal_entry)
 
 
+def eat_food():
+    calories_used = random.randint(1400,2000)
+    character[2][0] = character[2][0] - calories_used
+    if character[2][0] < 0:
+        character[2][0] = 0
+    print("\nToday you used", calories_used, "calories")
+    print("You have", character[2][0], "calories left\n")
+
+    cook_food()
+
+    print("Would you like to eat something?\n1. Yes\n2. No, it's time to sleep")
+    choice = make_choice()
+
+    if choice == 1:
+        eat = True
+
+        while character[2][0] < 5000 and eat is True and len(character[3])> 0:
+            print("You have:")
+            count = 1
+            for i in character[3]:
+                print(str(count) + ". " + i + " - " + str(get_cals(i)) + " calories")
+                count += 1
+
+            if len(character[3]) > 1:
+                print(str(count) + ". " + "Consume all")
+
+            choice = make_choice()
+            if choice == count:
+                total_cals = 0
+
+                for i in character[3]:
+                    total_cals += get_cals(i)
+
+                character[3] = []
+
+                print("You consumed everything for", total_cals, "calories")
+                character[2][0] += total_cals
+                print("You now have:", character[2][0], "calories")
+                eat = False
+
+            else:
+                character[2][0] += get_cals(character[3][choice - 1])
+                print("You consumed:", character[3][choice - 1], "for", get_cals(character[3][choice - 1]),"calories\n")
+                character[3].remove(character[3][choice - 1])
+                print("You now have:", character[2][0], "calories")
+                print("Do you want to eat more?\n1. Yes\n2. No, it's time to sleep")
+                choice = make_choice()
+                if choice == 2:
+                    eat = False
+
+        if len(character[3]) == 0 and eat == True:
+            print("You have no food")
+
+
 username_list = []
 
 with open("scores.csv", "r") as prev_usernames:
@@ -2003,57 +2057,7 @@ while game:
             print("You do a quick sweep of the campground and find:")
             random_item(1, 3, "normal")
 
-        calories_used = random.randint(1400,2000)
-        character[2][0] = character[2][0] - calories_used
-        if character[2][0] < 0:
-            character[2][0] = 0
-        print("\nToday you used", calories_used, "calories")
-        print("You have", character[2][0], "calories left\n")
-
-        cook_food()
-
-        print("Would you like to eat something?\n1. Yes\n2. No, it's time to sleep")
-        choice = make_choice()
-
-        if choice == 1:
-            eat = True
-
-            while character[2][0] < 5000 and eat is True and len(character[3])> 0:
-                print("You have:")
-                count = 1
-                for i in character[3]:
-                    print(str(count) + ". " + i + " - " + str(get_cals(i)) + " calories")
-                    count += 1
-
-                if len(character[3]) > 1:
-                    print(str(count) + ". " + "Consume all")
-
-                choice = make_choice()
-                if choice == count:
-                    total_cals = 0
-
-                    for i in character[3]:
-                        total_cals += get_cals(i)
-
-                    character[3] = []
-
-                    print("You consumed everything for", total_cals, "calories")
-                    character[2][0] += total_cals
-                    print("You now have:", character[2][0], "calories")
-                    eat = False
-
-                else:
-                    character[2][0] += get_cals(character[3][choice - 1])
-                    print("You consumed:", character[3][choice - 1], "for", get_cals(character[3][choice - 1]),"calories\n")
-                    character[3].remove(character[3][choice - 1])
-                    print("You now have:", character[2][0], "calories")
-                    print("Do you want to eat more?\n1. Yes\n2. No, it's time to sleep")
-                    choice = make_choice()
-                    if choice == 2:
-                        eat = False
-
-            if len(character[3]) == 0 and eat == True:
-                print("You have no food")
+        eat_food()
 
         print("You close your eyes and go to sleep")
     
@@ -2210,8 +2214,8 @@ while game:
                 choice = make_choice()
 
                 if choice == 1:
-                    chance = random.randint(1, 2)
-                    zombies = random.randint(3, 10)
+                    chance = random.randint(1, 3)
+                    zombies = random.randint(3, 8)
                     if chance == 1:
                         print("You narrowly avoid a group of", zombies, "zombies, but you make it through without being seen")
 
@@ -2234,7 +2238,7 @@ while game:
 
                     chance = random.randint(1, 2)
                     if chance == 1:
-                        zombies = random.randint(2, 5)
+                        zombies = random.randint(2, 4)
                         print("But inside is", zombies, "zombies!")
                         print("You'll have to fight them off quick before they attract attention")
                         result = fight(zombies, "zombies")
@@ -2242,6 +2246,9 @@ while game:
                         if result:
                             zombies_killed += zombies
                             print("You manage to fight off the zombies and secure the", chosen_shelter,"for the night")
+                            print("You check around, and it looks like there's some clean water here to drink")
+
+                            eat_food()
                             day += 1
                             journal_entry("Had to fight some zombies to secure shelter while exploring")
 
@@ -2249,15 +2256,44 @@ while game:
                             game = False
 
                     elif chance == 2:
-                        print("It's deserted thankfully, and you fall into a restless sleep")
+                        print("It's deserted thankfully, and you're able to set up for the night")
+                        print("You check around, and it looks like there's some clean water here to drink")
+
+                        eat_food()
                         day += 1
                         journal_entry("Had to find shelter while exploring, will get there tomorrow")
 
-                    if result:
-                        print("When you wake up, you head to the", location)
+                    if game:
+                        if character[2][0] == 0:
+                            print("You are now starving")
+                            print("You have lost 5 HP, find some food soon...")
+                            character[0][0] -= 5
+                            print("\nYou now have", character[0][0], "HP")
 
-            if result:
-                print("You walk for a bit, keeping your head low and your eyes up, but you meet nothing along the way")
+                        water_drank = True
+                        days_no_water = 0
+
+                        print("You close your eyes and go to sleep")
+                        input("\nPress 1 to continue to Day "  + str((day)) + ": ")
+
+                        if character[0][0] < 0:
+                            character[0][0] = 0
+
+                        if character[0][0] == 0:
+                            print("Your body couldn't take it any more and in your sleep...\nYOU DIED")
+                            game= False
+
+                        if game:
+                            print(line_break)
+                            print("Day",str(day))
+                            print(line_break)
+
+                            water_drank = True
+                            print("When you wake up you drink the rest of your water, and head to the", location)
+                            print("You feel Hydrated")
+
+            if game:
+                print("\nYou walk for a bit, keeping your head low and your eyes up, but you meet nothing along the way")
                 print("\nYou've arrived at the", location)
                 print("It looks deserted, so you head inside")
                 chance = random.randint(1, 2)
@@ -4815,20 +4851,34 @@ while game:
                             survivor2_name = survivors_male_list[random.randint(0, len(survivors_male_list) - 1)]
 
                             if survivor_amount == 1:
-                                print("The survivor spins in circles, shouting the name", survivor1_name, "over and over")
-                                print("Suddenly another survivor emerges from the building, shouting the name", survivor2_name)
+                                print("The survivor spins in circles, looking for a way out over and over")
+                                print("\nHe tries desperately to fight his way towards a nearby building, but it's no use")
+                                print("There's a shift in the horde and a gap appears, and he makes a run for a sidestreet")
+                                print("But he suddenly turns around and locks eyes with you, he's seen you but it's too late")
+                                print("You lose sight of him in the mass of zombies, wondering if you could have saved him")
+                                print("But something about that look tells you you'll see him again...")
+
+                                survivor_group = [survivor1_name]
+                                zombie_survivors.append(survivor_group)
+
+                                log = "Spotted a survivor running from a horde, I didn't help but I think he spotted me"
+                                journal_entry(log)
+
+                            elif survivor_amount == 2:
+                                print("The survivors spin in circles, shouting each other's names")
+                                print("It seems like their names are", survivor1_name, "and", survivor2_name)
                                 print("\nThey try desperately to fight their way towards eachother, but it's no use")
                                 print(survivor2_name, "runs back into the building and", survivor1_name, "makes a run for a sidestreet")
                                 print("But", survivor1_name, "suddenly turns around and locks eyes with you, he's seen you but it's too late")
                                 print("You lose sight of both of them in the mass of zombies, wondering if you could have saved them")
 
-                                survivor_group = [survivor1_name, survivor2_name]
+                                survivor_group = [survivor2_name, survivor1_name]
                                 zombie_survivors.append(survivor_group)
-
-                                print("\nYou decide this has been enough action for today, and head home...")
 
                                 log = "Spotted two survivors running from a horde, I didn't help but one of them named " + survivor1_name + " spotted me"
                                 journal_entry(log)
+                            
+                            print("\nYou decide this has been enough action for today, and head home...")
 
                     else:
                         print("You're on your way to", area, "when a chorus of shouts rings out")
@@ -4873,7 +4923,7 @@ while game:
                         print("But as you make your way around, you realise not all of these bodies were undead")
                         print("One of the smouldering bodies on the edge of the pile is a survivor")
                         print("It looks like he was shot, and you make a quick exit")
-                        print("On your way home, you wonder what could have happened to him...")
+                        print("\nOn your way home, you wonder what could have happened to him...")
                         print("\nDespite your difficulties, you still manage to scrape up something:")
                         random_item(1, 2, "normal")
 
@@ -5550,57 +5600,7 @@ while game:
                         else:
                             loop = False
 
-
-            calories_used = random.randint(1400, 2000)
-            character[2][0] = character[2][0] - calories_used
-            if character[2][0] < 0:
-                character[2][0] = 0
-            print("Today you used", calories_used, "calories")
-            print("You have", character[2][0], "calories left\n")
-
-            cook_food()
-
-            print("Would you like to eat something?\n1. Yes\n2. No, it's time to sleep")
-            choice = make_choice()
-
-            if choice == 1:
-                eat = True
-
-                while character[2][0] < 5000 and eat is True and len(character[3]) > 0:
-                    print("You have:")
-                    count = 1
-                    for i in character[3]:
-                        print(str(count) + ". " + i + " - " + str(get_cals(i)) + " calories")
-                        count += 1
-
-                    if len(character[3]) > 1:
-                        print(str(count) + ". " + "Consume all")
-
-                    choice = make_choice()
-                    if choice == count:
-                        total_cals = 0
-
-                        for i in character[3]:
-                            total_cals += get_cals(i)
-
-                        character[3] = []
-
-                        print("You consumed everything for", total_cals,"calories")
-                        character[2][0] += total_cals
-                        print("You now have:", character[2][0], "calories")
-                        eat = False
-                    else:
-                        character[2][0] += get_cals(character[3][choice - 1])
-                        print("You consumed:", character[3][choice - 1], "for", get_cals(character[3][choice - 1]),"calories\n")
-                        character[3].remove(character[3][choice - 1])
-                        print("You now have:", character[2][0], "calories")
-                        print("Do you want to eat more?\n1. Yes\n2. No, it's time to sleep")
-                        choice = make_choice()
-                        if choice == 2:
-                            eat = False
-
-                if len(character[3]) == 0 and eat == True:
-                    print("You have no food")
+            eat_food()
 
             if character[2][0] == 0:
                 print("You are now starving")
