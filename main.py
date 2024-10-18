@@ -198,6 +198,10 @@ def random_item(num1, num2, rarity, vers=None):
                 while temp_item[1:5] != "fuel":
                     temp_item = item_list[random.randint(0, len(item_list) - 1)]
 
+            elif vers == "no fuel":
+                while temp_item[1:5] == "fuel":
+                    temp_item = item_list[random.randint(0, len(item_list) - 1)]
+
         elif rarity == "special":
             temp_item = special_item_list[random.randint(0, len(special_item_list) - 1)]
 
@@ -1871,7 +1875,7 @@ def cook_food():
 
             choice = make_choice()
 
-            if choice != (count + 1):
+            if choice != (count):
                 recipe = cook_list[choice - 1]
 
                 if recipe == "chicken and pasta":
@@ -2048,23 +2052,23 @@ def loot_car(car):
     if chance == 1:
         if car != "Police Cruiser":
             print("You spend a few minutes looting the", car, "and find:")
-            random_item(2, 5, "normal")
+            random_item(2, 4, "normal", "no fuel")
 
         else:
             print("You spend a few minutes looking around the interior and don't find much")
             print("Before you leave, you pop the boot and find:")
 
-            chance = random.randint(1, 2)
+            chance = random.randint(1, 3)
 
             if chance == 1:
                 print("(gun) *pistol*")
                 print("(ammo) 10 pistol bullets")
 
             else:
-                random_item(2, 4, "normal")
-                random_item(1, 2, "meds")
+                random_item(1, 4, "normal", "no fuel")
+                random_item(1, 2, "normal", "meds")
 
-        print("You take these items and check if there's anything left in the tank\n")
+        print("\nYou take these items and check if there's anything left in the tank")
         if fuel_chance == 1:
                 print("Looks like you got very lucky today, there's still some fuel left:")
 
@@ -2079,11 +2083,11 @@ def loot_car(car):
                 add_item(fuel)
 
         else:
-            print("Looks like this car was siphoned already, or just ran out")
+            print("Looks like this car was siphoned already, or just ran out of fuel")
 
     else:
         print("You check everywhere in the", car, "but there's nothing to be found")
-        print("You're disappointed, but you'll still check if there's some fuel left\n")
+        print("You're disappointed, but you'll still check if there's anything left in the tank\n")
 
         if fuel_chance == 1:
                 print("It's not all bad, there's still some fuel left:")
@@ -2100,6 +2104,9 @@ def loot_car(car):
 
         else:
             print("Unlucky, looks like this car was siphoned already, or just ran out of fuel")
+
+    input("\nPress 1 to continue:")
+    print(line_break)
 
 
 
@@ -3009,14 +3016,14 @@ while game:
         elif choice == 1 and len(afflictions) == 0:
             area = areas[random.randint(0,len(areas)-1)]
             print("You decide to go scavenge in",area,"today\n")
-            chance = random.randint(1,10)
+            chance = 11#random.randint(1,11)
 
             if len(latest_events) >= 4:
                 latest_events == []
 
             count = 20
             while chance in latest_events and count > 0:
-                chance = random.randint(1, 10)
+                chance = random.randint(1, 11)
                 count -= 1
 
             latest_events.append(chance)
@@ -3266,8 +3273,8 @@ while game:
 
                             elif chance != 1:
                                 print("You manage to get back up and somehow evade the horde, but you've sprained your ankle")
-                                print("\nYou have lost 20HP")
-                                character[0][0] -= 20
+                                print("\nYou have lost 10HP")
+                                character[0][0] -= 10
                                 afflictions.append("sprained ankle")
                                 print("You now have", character[0][0], "HP")
 
@@ -3850,6 +3857,10 @@ while game:
                                             print("But you've injured yourself and you decide to just head back to the", character[7][0])
                                             afflictions.append("deep cut")
                                             print("You now have", character[0][0], "HP")
+
+                                            if character[0][0] <= 0:
+                                                game = False
+                                                print("\nYOU DIED")
 
                                             journal_entry("I cut myself on some glass and almost alerted a horde")
 
@@ -5306,11 +5317,16 @@ while game:
                                         afflictions.append("injured knee")
                                         print("You now have", character[0][0], "HP")
 
-                                        print("\nYou manage to make it out the door and slam it behind you as the horde pours into the kitchen")
-                                        print("Somehow you get over the garden fence before you get pulled into the mass of zombies")
-                                        print("As you hobble home, you curse yourself for being so greedy")
+                                        if character[0][0] <= 0:
+                                            game = False
+                                            print("\nYOU DIED")
 
-                                        journal_entry("Escaped a horde while looting but badly hurt my knee")
+                                        else:
+                                            print("\nYou manage to make it out the door and slam it behind you as the horde pours into the kitchen")
+                                            print("Somehow you get over the garden fence before you get pulled into the mass of zombies")
+                                            print("As you hobble home, you curse yourself for being so greedy")
+
+                                            journal_entry("Escaped a horde while looting but badly hurt my knee")
 
                                     else:
                                         print("You kick the door, but it doesn't budge")
@@ -5338,24 +5354,29 @@ while game:
                                     else:
                                         print("You land badly, hurting your ankle as you hit the ground")
                                         print("You've sprained your ankle!")
-                                        print("\nYou have lost 20HP")
-                                        character[0][0] -= 20
+                                        print("\nYou have lost 10HP")
+                                        character[0][0] -= 10
                                         afflictions.append("sprained ankle")
                                         print("You now have", character[0][0], "HP")
 
-                                        chance = random.randint(1, 2)
-
-                                        if chance == 1:
-                                            print("Somehow you manage to get over the garden fence before the zombies, but it's too close")
-                                            print("You can still feel their hands grabbing at your legs as you make your way home...")
-
-                                            journal_entry("Sprained my ankle while escaping a horde and nearly died")
+                                        if character[0][0] <= 0:
+                                            game = False
+                                            print("\nYOU DIED")
 
                                         else:
-                                            print("You hobble towards the garden fence, but you're too slow!")
-                                            print("You lunge desperately forward and trip, the horde closes around you and it's over...\nYOU DIED")
+                                            chance = random.randint(1, 2)
 
-                                            game = False
+                                            if chance == 1:
+                                                print("Somehow you manage to get over the garden fence before the zombies, but it's too close")
+                                                print("You can still feel their hands grabbing at your legs as you make your way home...")
+
+                                                journal_entry("Sprained my ankle while escaping a horde and nearly died")
+
+                                            else:
+                                                print("You hobble towards the garden fence, but you're too slow!")
+                                                print("You lunge desperately forward and trip, the horde closes around you and it's over...\nYOU DIED")
+
+                                                game = False
 
                                 else:
                                     print("The window's locked!")
@@ -5370,11 +5391,16 @@ while game:
                                         afflictions.append("laceration on hand")
                                         print("You now have", character[0][0], "HP")
 
-                                        print("\nClutching your hand, you hop out the window and land in the grass")
-                                        print("Zombies crawl out the window after you, but you manage to clear the fence and get away")
-                                        print("As you head back to the", character[7][0], "you nurse your hand and curse your greediness")
+                                        if character[0][0] <= 0:
+                                            game = False
+                                            print("\nYOU DIED")
 
-                                        journal_entry("Cut my hand open while looting a house and almost died")
+                                        else:
+                                            print("\nClutching your hand, you hop out the window and land in the grass")
+                                            print("Zombies crawl out the window after you, but you manage to clear the fence and get away")
+                                            print("As you head back to the", character[7][0], "you nurse your hand and curse your greediness")
+
+                                            journal_entry("Cut my hand open while looting a house and almost died")
 
                                     else:
                                         print("You punch through the glass but it doesn't shatter fully and blood sprays from your hand")
@@ -5478,7 +5504,7 @@ while game:
 
                 else:
                     choice = 2
-                    print("The weather is good today, and you're able to head towards", area, "with no hassle from the undead")
+                    print("The weather is good today, and you decide to take a detour towards", area)
 
                 if choice == 1:
                     print("You decide to try scavenging out in the wild today, and leaving the road you were walking on, you head off into nature")
@@ -5737,56 +5763,74 @@ while game:
                         print("You decide to get back before it gets late, and head off towards the", character[7][0])
 
                 elif choice == 2:
-                    chance = random.randint(1, 3)
+                    chance = 1#random.randint(1, 3)
 
                     if chance == 1:
-                        print("You enter onto a highway leading towards the City Centre and it appears deserted")
-                        print("This could an opportunity to search some cars")
-                        print("You take a look around and though most of them are destroyed, a few cars remain untouched")
-                        print("Will you:\n1.Search the cars\n2. Head home")
+                        print("This isn't your usual path and when you enter onto the highway, it appears to be deserted")
+                        print("You realise you've gone in the completely wrong direction")
+                        print("But this could an opportunity to search some cars")
+                        print("\nYou take a look around and though most of them are destroyed, a few cars remain untouched")
+                        print("Will you:\n1. Search the cars\n2. Head home")
 
-                        choice = make_choice
+                        choice = make_choice()
 
                         if choice == 1:
                             check_cars = True
 
                             print("You decide to check out the cars and select a few that look promising")
-                            print("But you'll to be careful, you're sure at least one of them will have an alarm...")
+                            print("But you'll to be careful, you're sure at least one of them will have an alarm...\n")
 
-                            car_types = ["sedan", "hatchback", "van", "truck", "convertible"]
+                            car_types = ["Sedan", "Hatchback", "Van", "Truck", "Convertible"]
                             car_colours = ["Red", "Blue", "Yellow", "White", "Black", "Silver", "Grey", "Green", "Navy","Brown"]
 
                             cars = []
                             car_alarms = []
                             alarm_set = False
                             second_alarm_set = False
+                            alarm = 5
 
                             for i in range(5):
                                 car = car_colours[random.randint(0, len(car_colours) - 1)] + " " + car_types[random.randint(0, len(car_types) - 1)]
 
+                                police_car_chance = random.randint(1, 50)
+
+                                if police_car_chance == 1:
+                                    car = "Police Cruiser"
+
                                 if car not in cars:
                                     cars.append(car)
 
-                                alarm = 5
-                                count = 0
-
                                 if alarm_set == False:
-                                    alarm_chance = random.randint(1, alarm)
+                                    if alarm > 0:
+                                        alarm_chance = random.randint(1, alarm)
 
-                                    if chance == 1:
+                                    else:
+                                        alarm_chance = 1
+
+                                    if alarm_chance == 1:
                                         alarm_set = True
-                                        car_alarms[count] = 1
+                                        car_alarms.append(1)
 
                                     else:
                                         alarm -= 1
-                                        car_alarms[count] = 0
+                                        car_alarms.append(0)
 
-                                        if second_alarm_set == False:
-                                            second_alarm = random.randint(1, 6)
+                                elif second_alarm_set == False:
+                                    second_alarm = random.randint(1, 4)
 
-                                            if chance == 1:
-                                                second_alarm_set = True
-                                                car_alarms[count] = 1
+                                    if second_alarm == 1:
+                                        second_alarm_set = True
+                                        car_alarms.append(1)
+
+                                    else:
+                                        alarm -= 1
+                                        car_alarms.append(0)
+                                
+                                elif alarm > 0:
+                                    alarm -= 1
+                                    car_alarms.append(0)
+
+                            random.shuffle(car_alarms)
 
                             while check_cars:
                                 print("Choose a car to search:")
@@ -5794,16 +5838,16 @@ while game:
                                 for i in cars:
                                     print(str(count) + ". " + i)
                                     count += 1
-                                print(str(count) + ". " + "Head home")
+                                print(str(count) + ". " + "Head home instead")
                                 choice = make_choice()
 
                                 if choice <= len(cars):
-                                    chosen_car = cars[make_choice -1]
+                                    chosen_car = cars[choice -1]
                                     cars.remove(chosen_car)
                                     print("You've taken your pick, and decide to check out the", chosen_car)
 
-                                    if car_alarms[make_choice - 1] == 1:
-                                        print("The door is unlocked, but as you pull it open, the alarm blares!")
+                                    if car_alarms[choice - 1] == 1:
+                                        print("The door is unlocked, but as you pull it open, the alarm blares!\n")
                                         print("The noise is shockingly loud, and you see swarms of zombies emerging onto the highway around you")
                                         print("Will you:\n1. Fight your way out\n2. Make a run for it")
 
@@ -5853,7 +5897,7 @@ while game:
 
                                                         print("You run as fast as you can, but suddenly a zombie grabs your bag!")
                                                         print("\nYou're dragged back towards the horde, but you manage to pull yourself free")
-                                                        print("But it looks like in the chaos, your", your_item, "fell out and has been lost to the horde...")
+                                                        print("But the chaos your", your_item, "fell and has been lost to the horde...")
                                                         remove_item(your_item)
                                                         
                                                     elif chance == 2:
@@ -5871,16 +5915,49 @@ while game:
                                                     game = False
                                                     check_cars = False
 
+                                            elif chance == 2:
+                                                print("Dozens of zombies shamble and lurch towards you, and you look desperately for an escape")
+                                                print("You see a gap in the fencing and run for it")
+                                                zom_num = random.randint(2, 4)
+
+                                                print("But", zom_num, "zombies stumble out and block your path!")
+                                                print("It looks like you're going to be fighting after all")
+
+                                                result = fight(zom_num, "zombies")
+
+                                                if result:
+                                                    print("You kill the zombies and dive through the gap in the fencing")
+                                                    
+                                                    chance = random.randint(1, 2)
+
+                                                    if chance == 1:
+                                                        print("You tumble down the embankment but somehow get up unscathed and escape")
+
+                                                    else:
+                                                        print("You tumble down the embankment and land badly on your ankle")
+                                                        print("\nYou have lost 10HP")
+                                                        character[0][0] -= 10
+                                                        afflictions.append("sprained ankle")
+                                                        print("You now have", character[0][0], "HP")
+
+                                                        if character[0][0] <= 0:
+                                                            game = False
+                                                            print("\nYOU DIED")
+
+                                                        else:
+                                                            print("Somehow, you manage to limp away and escape")
+
                                         if game:
                                             print("\nAfter this close call, you call it quits for the day and head back home...")
                                             check_cars = False
 
                                     else:
-                                        chance = random.randint(1, 3)
+                                        chance = random.randint(1, 2)
 
                                         if chance == 1:
-                                            print("But it looks like it's locked")
+                                            print("But it's locked")
                                             print("Will you:\n1. Smash a window\n2. Check a different car")
+                                            choice = make_choice()
 
                                             if choice == 1:
                                                 chance = random.randint(1, 2)
@@ -5888,19 +5965,54 @@ while game:
                                                 print("You check around for any zombies, before smashing the driver's window")
 
                                                 if chance == 1:
-                                                    print("Luckily the sound didn't alert any zombies, and you're free to loot the car")
+                                                    print("Luckily the sound didn't alert any zombies, and you're free to loot the car\n")
 
                                                 else:
                                                     zom_num = random.randint(2, 3)
-                                                    print("You go to loot the", chosen_car, "but", zom_num, "zombies emerge from behind it!")
+                                                    print("You go to loot the", chosen_car, "but", zom_num, "zombies emerge from behind it!\n")
                                                     result = fight(zom_num, "zombies")
 
                                                     if result:
-                                                        print("With the zombies dead, you take one last look around before looting the car")
+                                                        print("With the zombies dead, you take one last look around before looting the car\n")
 
                                                     else:
                                                         game = False
                                                         check_cars = False
+
+                                                if game:
+                                                    loot_car(chosen_car)
+
+                                            else:
+                                                print("You won't risk smashing the glass and attracting attention")
+                                                print("Maybe you'll try a different car instead")
+
+                                        else:
+                                            print("Looks like it's unlocked!\n")
+                                            loot_car(chosen_car)
+
+                                else:
+                                    print("You choose not to risk an alarm, and head back to the", character[7][0], "instead")
+                                    check_cars = False
+
+                    else:
+                        print("But something isn't right")
+                        print("It feels like someone, or something is watching you...\n")
+
+                        chance = random.randint(1, 3)
+
+                        if chance == 1:
+                            print("You keep walking straight, then dash off to the side")
+                            print("Sprinting through sidestreets, you're taking a big risk, but your mind tells you it's the right decision")
+
+                        elif chance == 2:
+                            print("As you scavenge through some cars, you jump behind a van and run down a neighbouring alley")
+                            print("You don't know what was watching you, but you've lost it")
+
+                        else:
+                            print("You keep moving towards your destination, when you feel a strange presence behind you")
+                            print("Adrenaline fills your veins as you leap and jump over a fence, circling back down a different street")
+
+                        print("As you head back to the", character[7][0], "you no longer feel that uneasy sensation...")
 
             else:
                 chance = random.randint(1, 6)
@@ -5919,26 +6031,6 @@ while game:
                     print("With the hatch open, the zombies climb into the tank")
                     print("\nThe world belongs to them now")
                     print("As you head home, you wonder if that was the last remnant of the army you'll see...")
-
-                else:
-                    print("You journey out to scavenge in", area, "but something isn't right")
-                    print("It feels like someone, or something is watching you...\n")
-
-                    chance = random.randint(1, 3)
-
-                    if chance == 1:
-                        print("You keep walking straight, then dash off to the side")
-                        print("Sprinting through sidestreets, you're taking a big risk, but your mind tells you it's the right decision")
-
-                    elif chance == 2:
-                        print("As you scavenge through some cars, you jump behind a van and run down a neighbouring alley")
-                        print("You don't know what was watching you, but you've lost it")
-
-                    else:
-                        print("You keep moving towards your destination, when you feel a strange presence behind you")
-                        print("Adrenaline fills your veins as you leap and jump over a fence, circling back down a different street")
-
-                    print("As you head back to the", character[7][0], "you no longer feel that uneasy sensation...")
 
                 print("\nDespite your difficulties, you still manage to scrape up something:")
                 random_item(1,2,"normal")
