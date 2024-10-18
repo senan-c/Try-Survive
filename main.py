@@ -4,8 +4,8 @@ import Human as h
 import Boss as b
 import csv
 
-item_file= open("items/items.txt", "r")
-item_list= item_file.readlines()
+item_file = open("items/items.txt", "r")
+item_list = item_file.readlines()
 item_file.close()
 
 special_item_file = open("items/special_items.txt", "r")
@@ -17,28 +17,32 @@ ultra_special_item_list = ultra_special_item_file.readlines()
 ultra_special_item_file.close()
 
 boss_item_file= open("items/boss_items.txt", "r")
-boss_item_list= boss_item_file.readlines()
+boss_item_list = boss_item_file.readlines()
 boss_item_file.close()
 
-zom_descriptions_file= open("descriptions/zombie_descriptions.txt", "r")
+zom_descriptions_file = open("descriptions/zombie_descriptions.txt", "r")
 zom_description_list = zom_descriptions_file.readlines()
 zom_descriptions_file.close()
 
-raider_descriptions_file= open("descriptions/raider_descriptions.txt", "r")
+raider_descriptions_file = open("descriptions/raider_descriptions.txt", "r")
 raider_descriptions_list = raider_descriptions_file.readlines()
 raider_descriptions_file.close()
 
-survivor_descriptions_file= open("descriptions/survivor_descriptions.txt", "r")
+survivor_descriptions_file = open("descriptions/survivor_descriptions.txt", "r")
 survivor_descriptions_list = survivor_descriptions_file.readlines()
 survivor_descriptions_file.close()
 
-military_descriptions_file= open("descriptions/military_descriptions.txt", "r")
+military_descriptions_file = open("descriptions/military_descriptions.txt", "r")
 military_descriptions_list = military_descriptions_file.readlines()
 military_descriptions_file.close()
 
 survivors_male_file = open("descriptions/survivor_names_male.txt", "r")
 survivors_male_list = survivors_male_file.readlines()
 survivors_male_file.close()
+
+chicken_name_file = open("descriptions/chicken_names.txt")
+chicken_name_list = chicken_name_file.readlines()
+chicken_name_file.close()
 
 items = item_list[0]
 item_list = items.split(",")
@@ -90,6 +94,9 @@ military_description_list = military_descriptions.split(",")
 survivors_male = survivors_male_list[0]
 survivors_male_list = survivors_male.split(",")
 
+chicken_names = chicken_name_list[0]
+chicken_name_list = chicken_names.split(",")
+
 raider_descriptions_list += survivor_descriptions_list
 
 #0 HP, 1 Water, 2 Calories, 3 Food, 4 Weapons, 5 Meds, 6 Friends, 7 Home, 8 Bag, 9 Fuel, 10 Ammo
@@ -130,6 +137,8 @@ pistol_supp = False
 rotten_food = False
 rot_day = random.randint(7, 14)
 first_hunt = True
+
+chickens = []
 
 line_break = ("-" * 144)
 
@@ -201,12 +210,12 @@ def random_item(num1, num2, rarity, vers=None):
         print(i)
 
 
-cal_list_100 = ["apple","banana","carrots"]
+cal_list_100 = ["apple","banana","carrots","mushrooms","strawberries","spring onions"]
 cal_list_300 = ["bag of peach rings","popcorn","cereal"]
 cal_list_400 = ["protein bar","bread","flapjack","honey","tomato sauce","granola bar"]
 cal_list_600 = ["canned soup","canned peaches","can of beans","can of tuna","biscuits","sausages","oats","bag of marshmallows"]
 cal_list_800 = ["chicken","pasta","beef jerky","box of chocolates","can of whipped cream"]
-cal_list_1000 = ["pre-made meal"]
+cal_list_1000 = ["pre-made meal","venison"]
 cal_list_2000 = ["MRE"]
 
 def get_cals(x):
@@ -1173,7 +1182,11 @@ def fight(num, battle, boss=None):
         fight_prompt = "You're going to be fighting the " + boss
 
     elif battle == "military zombies":
-        fight_prompt = "You're going to be fighting " + str(num) + "military zombies"
+        if num > 1:
+            fight_prompt = "You're going to be fighting " + str(num) + "military zombies"
+
+        else:
+            fight_prompt = "You're going to be fighting a military zombie"
 
 
     print(fight_prompt)
@@ -1958,10 +1971,43 @@ def eat_food():
         eat = True
 
         while character[2][0] < 5000 and eat is True and len(character[3])> 0:
+            temp_food_list = character[3]
+            food_checked = []
+            multiple_foods = []
+            food_list = []
+            numbers = ["1","2","3","4","5","6","7","8","9","0"]
+
+            for i in temp_food_list:
+                food = i
+                count = 0
+
+                if food not in food_checked:
+                    for j in temp_food_list:
+                        if j == food:
+                            count += 1
+
+                food_checked.append(food)
+
+                if count > 1:
+                    multiple_foods.append(food)
+                    food = str(count) + "x " + food
+                    food_list.append(food)
+                
+                elif food not in multiple_foods:
+                    food_list.append(food)
+
             print("You have:")
             count = 1
-            for i in character[3]:
-                print(str(count) + ". " + i + " - " + str(get_cals(i)) + " calories")
+            for i in food_list:
+                if i[0] not in numbers and i[1] not in numbers:
+                    print(str(count) + ". " + i + " - " + str(get_cals(i)) + " calories")
+
+                elif i[0] in numbers and i[1] not in numbers:
+                    print(str(count) + ". " + i + " - " + str(get_cals(i[3:])) + " calories each")
+
+                else:
+                    print(str(count) + ". " + i + " - " + str(get_cals(i[4:])) + " calories each")
+
                 count += 1
 
             if len(character[3]) > 1:
@@ -1983,9 +2029,9 @@ def eat_food():
 
             else:
                 character[2][0] += get_cals(character[3][choice - 1])
-                print("You consumed:", character[3][choice - 1], "for", get_cals(character[3][choice - 1]),"calories\n")
+                print("You consumed:", character[3][choice - 1], "for", get_cals(character[3][choice - 1]),"calories")
                 character[3].remove(character[3][choice - 1])
-                print("You now have:", character[2][0], "calories")
+                print("You now have:", character[2][0], "calories\n")
                 print("Do you want to eat more?\n1. Yes\n2. No, it's time to sleep")
                 choice = make_choice()
                 if choice == 2:
@@ -1993,6 +2039,68 @@ def eat_food():
 
         if len(character[3]) == 0 and eat == True:
             print("You have no food")
+
+
+def loot_car(car):
+    fuel_chance = random.randint(1, 3)
+
+    chance = random.randint(1, 2)
+    if chance == 1:
+        if car != "Police Cruiser":
+            print("You spend a few minutes looting the", car, "and find:")
+            random_item(2, 5, "normal")
+
+        else:
+            print("You spend a few minutes looking around the interior and don't find much")
+            print("Before you leave, you pop the boot and find:")
+
+            chance = random.randint(1, 2)
+
+            if chance == 1:
+                print("(gun) *pistol*")
+                print("(ammo) 10 pistol bullets")
+
+            else:
+                random_item(2, 4, "normal")
+                random_item(1, 2, "meds")
+
+        print("You take these items and check if there's anything left in the tank\n")
+        if fuel_chance == 1:
+                print("Looks like you got very lucky today, there's still some fuel left:")
+
+                chance = random.randint(1, 2)
+                if chance == 1:
+                    fuel = "(fuel) 1 litre of fuel"
+
+                else:
+                    fuel = "(fuel) 2 litres of fuel"
+
+                print(fuel)
+                add_item(fuel)
+
+        else:
+            print("Looks like this car was siphoned already, or just ran out")
+
+    else:
+        print("You check everywhere in the", car, "but there's nothing to be found")
+        print("You're disappointed, but you'll still check if there's some fuel left\n")
+
+        if fuel_chance == 1:
+                print("It's not all bad, there's still some fuel left:")
+
+                chance = random.randint(1, 2)
+                if chance == 1:
+                    fuel = "(fuel) 1 litre of fuel"
+
+                else:
+                    fuel = "(fuel) 2 litres of fuel"
+
+                print(fuel)
+                add_item(fuel)
+
+        else:
+            print("Unlucky, looks like this car was siphoned already, or just ran out of fuel")
+
 
 
 username_list = []
@@ -2491,7 +2599,7 @@ while game:
 
                         else:
                             print("\nYou find yourself at the storage depot")
-                            zom_num = random.randint(5,10)
+                            zom_num = random.randint(3,8)
                             enemy = "military zombies"
                             print("But as you prepare to enter, a group of", str(zom_num) + " " + enemy, "swarms out!")
                             fight_result = fight(zom_num, "military zombies")
@@ -5344,11 +5452,12 @@ while game:
                     print("\nDespite your difficulties, you still manage to scrape up something:")
                     random_item(1,2,"normal")
                 
-            elif chance == 11 and day >= rot_day:
-                if first_hunt == True:
-                    print("It's been", day, "days since the outbreak, and foods like chicken, apples and bread have rotted away")
-                    print("If you want a solid supply of food, you'll have to go find it in the wild...\n")
-                    first_hunt = False
+            elif chance == 11:
+                if day >= rot_day:
+                    if first_hunt == True:
+                        print("It's been", day, "days since the outbreak, and foods like chicken, apples and bread have rotted away")
+                        print("If you want a solid supply of food, you'll have to go find it in the wild...\n")
+                        first_hunt = False
 
                     chance = random.randint(1, 3)
                     if chance == 1:
@@ -5364,53 +5473,434 @@ while game:
                     print("Will you:\n1. Investigate the forest trail\n2. Keep heading towards", area)
                     choice = make_choice()
 
-                    if choice == 1:
-                        print("You decide to try scavenging out in the wild today, and leaving the road you were walking on, you head off into nature")
-                        print("You hike through the trees, keeping and eye out for zombies and look around for anything interesting")
+                    if choice == 2:
+                        print("Choosing to instead keep to your path, you walk on towards", area)
 
-                        chance = random.randint(1, 2)
-                        if chance == 1:
-                            print("Suddenly some movement between the trees catches your eye")
-                            noise = False
+                else:
+                    choice = 2
+                    print("The weather is good today, and you're able to head towards", area, "with no hassle from the undead")
 
-                            animal_chance = random.randint(1, 3)
+                if choice == 1:
+                    print("You decide to try scavenging out in the wild today, and leaving the road you were walking on, you head off into nature")
+                    print("You hike through the trees, keeping and eye out for zombies and look around for anything interesting")
 
-                            if animal_chance == 1:
-                                print("There's a flock of chickens just a few metres away!")
-                                print("Will you:\n1. Hunt the chickens\n2. Try and catch one")
-                                choice = make_choice()
+                    forage_list = ["(food) apple", "(food) carrots", "(food) mushrooms", "(food) spring onions", "(food) strawberries"]
+                    noise = False
 
-                                if choice == 1:
+                    chance = random.randint(1, 2)
+                    if chance == 1:
+                        print("Suddenly some movement between the trees catches your eye")
+
+                        animal_chance = random.randint(1, 3)
+
+                        if animal_chance == 1:
+                            print("There's a flock of chickens just a few metres away!")
+                            print("Will you:\n1. Hunt the chickens\n2. Try and catch one")
+                            choice = make_choice()
+
+                            if choice == 1:
+                                weapon = choose_weapon()
+
+                                print("You break from cover and charge towards them")
+
+                                if weapon == "hands":
+                                    chance = random.randint(1, 6)
+                                    print("You chase after the chickens grabbing, swinging and kicking at them wildly")
+
+                                elif weapon == "**assault rifle**":
+                                    chance = 1
+                                    print("Switching your", weapon, "to single-fire you begin to shoot at the chickens")
+                                    character[10][1] -= random.randint(3, 6)
+                                    if character[10][1] < 0:
+                                        character[10][1] = 0
+
+                                    if not rifle_supp:
+                                        noise = True
+
+                                    chickens = random.randint(2, 5)
+
+                                elif weapon == "*pistol*":
+                                    chance = 1
+                                    print("You hold your", weapon, "in both hands and fire at the chickens")
+                                    character[10][0] -= random.randint(3, 6)
+                                    if character[10][0] < 0:
+                                        character[10][0] = 0
+
+                                    if not pistol_supp:
+                                        noise = True
+
+                                    chickens = random.randint(2, 5)
+
+                                else:
+                                    chance = random.randint(1, 2)
+                                    print("You chase after the chickens, swinging your", weapon, "with deadly intent")
+
+                                    chickens = random.randint(2, 3)
+
+                                if chance == 1:
+                                    if weapon == "hands":
+                                        print("Somehow you manage to catch a chicken, but you can't harvest it properly with just your hands")
+                                        print("You still manage to scrape up:")
+                                        print("(food) chicken")
+                                        add_item("(food) chicken")
+
+                                    elif weapon == "**assault rifle**" or weapon == "*pistol*":
+                                        print("You put your", weapon, "away and check your score")
+                                        print("Your bullets have made some of the meat unusable, but you harvest:")
+                                        for i in range(chickens):
+                                            print("(food) chicken")
+                                            add_item("(food) chicken")
+
+                                    else:
+                                        print("You stop to catch your breath, putting away your", weapon, "and checking your score")
+                                        print("After harvesting the slain chickens, you end up with:")
+                                        for i in range(chickens):
+                                            print("(food) chicken")
+                                            add_item("(food) chicken")
+
+                                else:
+                                    chance = random.randint(1, 2)
+
+                                    if chance == 1:
+                                        print("As you run after the chickens, you trip over a tree root and fall flat on your face")
+
+                                    elif chance == 2:
+                                        print("Somehow they evade manage to evade you, and they escape into the bushes")
+
+                            elif choice == 2:
+                                print("You peer through the trees and select your favourite of the flock, before dashing out after it")
+
+                                chance = random.randint(1, 5)
+
+                                if chance == 1:
+                                    print("You've taken them by surprise and your chosen chicken barely has time to run before you scoop it up")
+                                    print("Seeming to realise you don't mean any harm, the chicken relaxes")
+                                    print("It looks like she's a hen, maybe she'll lay eggs")
+                                    print("\nWhat will you name your new chicken?")
+                                    count = 1
+                                    possible_names = []
+                                    for i in range(3):
+                                        name = chicken_name_list[random.randint(0, len(chicken_name_list) - 1)]
+                                        possible_names.append(name)
+                                        print(str(count) + ". " + name)
+                                        count += 1
+
+                                    choice = make_choice()
+                                    chickens.append(possible_names[choice - 1])
+                                    print("You now have a chicken named", possible_names[choice - 1])
+
+                                else:
+                                    print("The chickens scatter and you don't even get close to them")
+                                    print("Before you know it they've gotten away")
+
+                        elif animal_chance == 2:
+                            print("There's a deer just a few metres away!")
+                            print("Will you:\n1. Hunt the deer\n2. Leave it alone")
+                            choice = make_choice
+
+                            if choice == 1:
+                                if len(character[4]) > 1:
                                     weapon = choose_weapon()
 
-                                    print("You break from cover and charge towards the chickens")
+                                    while weapon == "hands":
+                                        print("You can't use your hands to catch a deer...")
+                                        weapon = choose_weapon()
 
-                                    if weapon == "hands":
-                                        chance = random.randint(1, 6)
-                                        print("You chase after the chickens grabbing, swinging and kicking at them wildly")
-
-                                    elif weapon == "**assault rifle**":
-                                        chance = 1
-                                        print("Switching your", weapon, "to single-fire you begin to shoot at the chickens")
-                                        character[10][1] -= random.randint(3, 6)
-                                        if character[10][1] < 0:
-                                            character[10][1] = 0
+                                    if weapon == "**assault rifle**":
+                                        chance = random.randint(1, 2)
+                                        print("Switching your", weapon, "to single-fire and fire a single shot at the deer")
+                                        character[10][1] -= 1
 
                                         if not rifle_supp:
                                             noise = True
 
+                                        deer = random.randint(2,4)
+
                                     elif weapon == "*pistol*":
-                                        chance = 1
-                                        print("You hold your", weapon, "in both hands and fire at the chickens")
-                                        character[10][0] -= random.randint(3, 6)
-                                        if character[10][0] < 0:
-                                            character[10][0] = 0
+                                        if len(character[10][0]) > 1:
+                                            print("You hold your", weapon, "in both hands and fire two shots at the deer")
+                                            character[10][0] -= 2
+                                            chance = random.randint(1, 2)
+                                        
+                                        else:
+                                            print("You hold your", weapon, "in both hands and fire a single shot at the deer")
+                                            character[10][0] -= 2
+                                            chance = random.randint(1, 3)
+
+                                        if not pistol_supp:
+                                            noise = True
+
+                                        deer = random.randint(1,3)
 
                                     else:
-                                        chance = random.randint(1, 2)
-                                        print("You chase after the chickens, swinging your", weapon, "with deadly intent")
+                                        chance = random.randint(1, 4)
+                                        print("You creep up behind the deer and dive out swinging your", weapon)
+
+                                        deer = random.randint(1,3)
 
                                     if chance == 1:
+                                        if weapon == "**assault rifle**" or weapon == "*pistol*":
+                                            print("You put your", weapon, "away and check your score")
+                                            if weapon == "*pistol*":
+                                                print("The", weapon, "has made some of the meat unusable")
+                                            
+                                            else:
+                                                print("It's a clean shot and the carcass is in good shape")
+
+                                            print("You don't have much time but you still manage to harvest:")
+                                            for i in range(deer):
+                                                print("(food) venison")
+                                                add_item("(food) venison")
+
+                                        else:
+                                            print("You stop to catch your breath, putting away your", weapon, "and checking your score")
+                                            print("It wasn't a clean kill but you should be able to harvest some meat")
+                                            for i in range(deer):
+                                                print("(food) venison")
+                                                add_item("(food) venison")
+
+                                    else:
+                                        if weapon == "**assault rifle**" or weapon == "*pistol*":
+                                            print("But you've missed, and before you can fire again the deer is gone")
+
+                                        else:
+                                            print("But the deer is too quick for you and it disappears into the trees")
+
+                                else:
+                                    print("You won't be able to catch a deer with just your hands")
+                                    print("Instead you forage around and find:")
+                                    forage_amount = random.randint(3, 6)
+
+                                    for i in range(forage_amount):
+                                        item = forage_list[random.randint(0, len(forage_list) - 1)]
+                                        print(item)
+                                        add_item(item)
+
+                            else:
+                                print("You decide not to disturb the deer, and instead go foraging")
+                                forage_amount = random.randint(3, 8)
+                                print("You check around and find:")
+                                for i in range(forage_amount):
+                                        item = forage_list[random.randint(0, len(forage_list) - 1)]
+                                        print(item)
+                                        add_item(item)
+
+                        elif animal_chance == 3:
+                            zom_num = random.randint(1, 2)
+
+                            if zom_num == 1:
+                                print("But it's not an animal, it's an undead soldier!")
+                                print("It's camouflage has let it get too close, you'll have to fight!")
+
+                            else:
+                                print("But it's not an animal, it's a pair of undead soldiers!")
+                                print("Their camofluage has let them get too close, you'll have to fight!")
+
+                            result = fight(zom_num, "military zombies")
+
+                            if result:
+                                if zom_num == 1:
+                                    print("You check the body, but it doesn't look like it was carrying any guns or ammo")
+
+                                else:
+                                    print("You check the bodies, but it doesn't look like they were carrying any guns or ammo")
+
+                            else:
+                                game = False
+                        
+                        if noise:
+                            zom_chance = random.randint(1, 2)
+
+                            if zom_chance == 1:
+                                print("You turn around to head home, but firing your gun has attracted some zombies!")
+                                zom_num = random.randint(2, 5)
+                                result = fight(zom_num, "zombies")
+
+                                if result:
+                                    print("With the zombies dead you'll be able to make your way back to the", character[7][0])
+
+                            else:
+                                ("You decide to head home, and luckily firing your", weapon, "didn't attract any undead attention")
+
+                    else:
+                        print("It seems the forest is quiet for today, you haven't been able to find anything to hunt")
+                        print("Instead, you decide to take a look around for something to eat")
+                        print("You forage around and find:")
+                        forage_amount = random.randint(5, 10)
+
+                        for i in range(forage_amount):
+                            item = forage_list[random.randint(0, len(forage_list) - 1)]
+                            print(item)
+                            add_item(item)
+
+                    if not noise:
+                        print("You decide to get back before it gets late, and head off towards the", character[7][0])
+
+                elif choice == 2:
+                    chance = random.randint(1, 3)
+
+                    if chance == 1:
+                        print("You enter onto a highway leading towards the City Centre and it appears deserted")
+                        print("This could an opportunity to search some cars")
+                        print("You take a look around and though most of them are destroyed, a few cars remain untouched")
+                        print("Will you:\n1.Search the cars\n2. Head home")
+
+                        choice = make_choice
+
+                        if choice == 1:
+                            check_cars = True
+
+                            print("You decide to check out the cars and select a few that look promising")
+                            print("But you'll to be careful, you're sure at least one of them will have an alarm...")
+
+                            car_types = ["sedan", "hatchback", "van", "truck", "convertible"]
+                            car_colours = ["Red", "Blue", "Yellow", "White", "Black", "Silver", "Grey", "Green", "Navy","Brown"]
+
+                            cars = []
+                            car_alarms = []
+                            alarm_set = False
+                            second_alarm_set = False
+
+                            for i in range(5):
+                                car = car_colours[random.randint(0, len(car_colours) - 1)] + " " + car_types[random.randint(0, len(car_types) - 1)]
+
+                                if car not in cars:
+                                    cars.append(car)
+
+                                alarm = 5
+                                count = 0
+
+                                if alarm_set == False:
+                                    alarm_chance = random.randint(1, alarm)
+
+                                    if chance == 1:
+                                        alarm_set = True
+                                        car_alarms[count] = 1
+
+                                    else:
+                                        alarm -= 1
+                                        car_alarms[count] = 0
+
+                                        if second_alarm_set == False:
+                                            second_alarm = random.randint(1, 6)
+
+                                            if chance == 1:
+                                                second_alarm_set = True
+                                                car_alarms[count] = 1
+
+                            while check_cars:
+                                print("Choose a car to search:")
+                                count= 1
+                                for i in cars:
+                                    print(str(count) + ". " + i)
+                                    count += 1
+                                print(str(count) + ". " + "Head home")
+                                choice = make_choice()
+
+                                if choice <= len(cars):
+                                    chosen_car = cars[make_choice -1]
+                                    cars.remove(chosen_car)
+                                    print("You've taken your pick, and decide to check out the", chosen_car)
+
+                                    if car_alarms[make_choice - 1] == 1:
+                                        print("The door is unlocked, but as you pull it open, the alarm blares!")
+                                        print("The noise is shockingly loud, and you see swarms of zombies emerging onto the highway around you")
+                                        print("Will you:\n1. Fight your way out\n2. Make a run for it")
+
+                                        choice = make_choice()
+
+                                        if choice == 1:
+                                            zom_num = random.randint(5,8)
+                                            print("Choosing to fight your way through, you spot", zom_num, "zombies in blocking an off ramp")
+                                            print("This will be your way out")
+                                            result = fight(zom_num, "zombies")
+
+                                            if result:
+                                                print("You've killed the zombies in your way, and without a second to spare you run down the off ramp")
+                                                print("As you take a look back, you see the hundreds of zombies pouring towards the sound of the alarm")
+
+                                            else:
+                                                game = False
+                                                check_cars = False
+
+                                        elif choice == 2:
+                                            chance = random.randint(1, 2)
+
+                                            if chance == 1:
+                                                print("Fight or flight kicks in, and you make a dash for a nearby off ramp")
+                                                print("There are dozens of zombies on either side, and you see the horde begin to close around you")
+
+                                                chance = random.randint(1, 2)
+
+                                                if chance == 1:
+                                                    chance = random.randint(1, 2)
+
+                                                    if chance == 1:
+                                                        item_check = False
+                                                        if len(character[3]) > 0:
+                                                            item_check = True
+
+                                                        elif len(character[4]) > 1:
+                                                            item_check = True
+
+                                                        elif len(character[5]) > 0:
+                                                            item_check = True
+
+                                                        if item_check == True:
+                                                            your_item = select_random_item()
+                                                            while your_item is None:
+                                                                your_item = select_random_item()
+
+                                                        print("You run as fast as you can, but suddenly a zombie grabs your bag!")
+                                                        print("\nYou're dragged back towards the horde, but you manage to pull yourself free")
+                                                        print("But it looks like in the chaos, your", your_item, "fell out and has been lost to the horde...")
+                                                        remove_item(your_item)
+                                                        
+                                                    elif chance == 2:
+                                                        print("Your lungs burn as you sprint past the dozens of undead, but it looks like you're going to make it!")
+                                                        print("A zombie reaches out to grab your ankle but you kick its hand away and speed past")
+
+                                                    print("Jumping over a barrier, you take a look back and see hundreds of zombies milling around the car")
+
+                                                elif chance == 2:
+                                                    print("You run for the ramp, but as you get closer you see zombies lurching up towards you!")
+                                                    print("Spinning around desperately, you make a run for a fence to escape over")
+                                                    print("Zombies snarl and lunge at you, but you dodge and leap for the fence")
+                                                    print("But you fall short, and the horde grabs hold of your legs and pulls you in...\nYOU DIED")
+
+                                                    game = False
+                                                    check_cars = False
+
+                                        if game:
+                                            print("\nAfter this close call, you call it quits for the day and head back home...")
+                                            check_cars = False
+
+                                    else:
+                                        chance = random.randint(1, 3)
+
+                                        if chance == 1:
+                                            print("But it looks like it's locked")
+                                            print("Will you:\n1. Smash a window\n2. Check a different car")
+
+                                            if choice == 1:
+                                                chance = random.randint(1, 2)
+
+                                                print("You check around for any zombies, before smashing the driver's window")
+
+                                                if chance == 1:
+                                                    print("Luckily the sound didn't alert any zombies, and you're free to loot the car")
+
+                                                else:
+                                                    zom_num = random.randint(2, 3)
+                                                    print("You go to loot the", chosen_car, "but", zom_num, "zombies emerge from behind it!")
+                                                    result = fight(zom_num, "zombies")
+
+                                                    if result:
+                                                        print("With the zombies dead, you take one last look around before looting the car")
+
+                                                    else:
+                                                        game = False
+                                                        check_cars = False
 
             else:
                 chance = random.randint(1, 6)
