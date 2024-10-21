@@ -214,57 +214,86 @@ def random_item(num1, num2, rarity, vers=None):
         print(i)
 
 
-cal_list_100 = ["apple","banana","carrots","mushrooms","strawberries","spring onions"]
-cal_list_300 = ["bag of peach rings","popcorn","cereal"]
-cal_list_400 = ["protein bar","bread","flapjack","honey","tomato sauce","granola bar"]
-cal_list_600 = ["canned soup","canned peaches","can of beans","can of tuna","biscuits","sausages","oats","bag of marshmallows"]
-cal_list_800 = ["chicken","pasta","beef jerky","box of chocolates","can of whipped cream"]
-cal_list_1000 = ["pre-made meal","venison"]
+cal_list_100 = ["apple", "banana", "carrots", "mushrooms", "strawberries", "spring onions"]
+cal_list_200 = ["egg", "can of sardines"]
+cal_list_300 = ["bag of peach rings", "popcorn", "cereal", "instant noodles"]
+cal_list_400 = ["protein bar", "bread", "flapjack", "honey", "tomato sauce", "granola bar"]
+cal_list_600 = ["can of soup", "can of peaches", "can of beans", "can of tuna", "biscuits", "sausages", "oats", "bag of marshmallows", "bag of rice"]
+cal_list_800 = ["chicken", "pasta", "beef jerky", "box of chocolates", "can of whipped cream"]
+cal_list_1000 = ["pre-made meal", "venison"]
+cal_list_1500 = ["condensed milk"]
 cal_list_2000 = ["MRE"]
 
 def get_cals(x):
-    if x in cal_list_400:
-        return 400
-
-    elif x in cal_list_100:
+    if x in cal_list_100:
         return 100
 
-    elif x in cal_list_1000:
-        return 1000
-
-    elif x in cal_list_2000:
-        return 2000
-
-    elif x in cal_list_800:
-        return 800
-
-    elif x in cal_list_600:
-        return 600
+    elif x in cal_list_200:
+        return 200
 
     elif x in cal_list_300:
         return 300
 
+    elif x in cal_list_400:
+        return 400
+
+    elif x in cal_list_600:
+        return 600
+
+    elif x in cal_list_800:
+        return 800
+
+    elif x in cal_list_1000:
+        return 1000
+
+    elif x in cal_list_1500:
+        return 1500
+
+    elif x in cal_list_2000:
+        return 2000
+
     else:
         if x == "chicken and pasta" or x == "chicken and beef sandwiches":
-            cals = 2350
+            cals = 2000 // 2
 
         elif x == "sausages and pasta":
-            cals = 2150
+            cals = 1800 // 2
 
-        elif x == "fruit and cream" or "tuna sandwiches":
-            cals = 1150
+        elif x == "fruits and cream" or x == "tuna sandwiches":
+            cals = 1000 // 2
 
-        elif x == "Mega-MRE":
-            cals = 3750
+        elif x == "mega MRE":
+            cals = 3000
 
         elif x == "peaches and cream":
-            cals = 1650
+            cals = 1400 // 2
 
         elif x == "cereal treats":
-            cals = 1000
+            cals = 900 // 2
+
+        elif x == "chicken stir-fry":
+            cals = 1600 // 2
+
+        elif x == "chicken casserole" or x == "venison stew":
+            cals = 2500 // 2
+
+        elif x == "venison casserole":
+            cals = 2700 // 2
+
+        elif x == "overnight oats":
+            cals = 2600 // 4
+
+        elif x == "rice pudding":
+            cals = 2100 // 4
+        
+        elif x == "deluxe MRE":
+            cals = 2800
 
         if character[7][0] == "restaurant":
-            cals += round(cals * 0.1)
+            cals += round(cals * 0.25)
+
+        else:
+            cals += round(cals * 0.15)
 
         return cals
 
@@ -304,6 +333,16 @@ def make_choice():
 
     print(line_break)
     return int(choice)
+
+
+def add_affliction(injury, health):
+    character[0][0] -= health
+    afflictions.append(injury)
+    print("You now have", character[0][0], "HP")
+
+    if character[0][0] <= 0:
+        game = False
+        print("\nYOU DIED")
 
 
 def choose_weapon():
@@ -1187,7 +1226,7 @@ def fight(num, battle, boss=None):
 
     elif battle == "military zombies":
         if num > 1:
-            fight_prompt = "You're going to be fighting " + str(num) + "military zombies"
+            fight_prompt = "You're going to be fighting " + str(num) + " military zombies"
 
         else:
             fight_prompt = "You're going to be fighting a military zombie"
@@ -1828,38 +1867,68 @@ def remove_item(item):
 
 def cook_food():
     cook_check =  False
+    ingredients = character[3]
     cook_list = []
-    if "chicken" in character[3] and "pasta" in character[3] and "tomato sauce" in character[3]:
+
+    if "chicken" in ingredients and "pasta" in ingredients and "tomato sauce" in ingredients:
         cook_check = True
         cook_list.append("chicken and pasta")
 
-    if "sausages" in character[3] and "pasta" in character[3] and "tomato sauce" in character[3]:
+    if "sausages" in ingredients and "pasta" in ingredients and "tomato sauce" in ingredients:
         cook_check = True
         cook_list.append("sausages and pasta")
 
-    if "apple" in character[3] and "banana" in character[3] and "can of whipped cream" in character[3]:
+    if "apple" in ingredients and ("banana" in ingredients or "strawberries" in ingredients) and "can of whipped cream" in ingredients:
         cook_check = True
-        cook_list.append("fruit and cream")
+        cook_list.append("fruits and cream")
 
-    if "can of tuna" in character[3] and "bread" in character[3]:
+    if "can of tuna" in ingredients and "bread" in ingredients:
         cook_check = True
         cook_list.append("tuna sandwiches")
 
-    if "chicken" in character[3] and "beef jerky" in character[3] and "bread" in character[3]:
+    if "chicken" in ingredients and "beef jerky" in ingredients and "bread" in ingredients:
         cook_check = True
         cook_list.append("chicken and beef sandwiches")
 
-    if "chicken" in character[3] and "beef jerky" in character[3] and "MRE" in character[3]:
+    if "chicken" in ingredients and "MRE" in ingredients:
         cook_check = True
         cook_list.append("deluxe MRE")
 
-    if "canned peaches" in character[3] and "can of whipped cream" in character[3]:
+    if "can of peaches" in ingredients and "can of whipped cream" in ingredients:
         cook_check = True
         cook_list.append("peaches and cream")
 
-    if "cereal" in character[3] and "bag of marshmallows" in character[3]:
+    if "cereal" in ingredients and "bag of marshmallows" in ingredients:
         cook_check = True
         cook_list.append("cereal treats")
+
+    if "bag of rice" in ingredients and "chicken" in ingredients and "carrots" in ingredients and "spring onions" in ingredients:
+        cook_check = True
+        cook_list.append("chicken stir-fry")
+
+    if "bag of rice" in ingredients and ("chicken" in ingredients or "venison" in ingredients) and "condensed milk" in ingredients and "spring onions" in ingredients and "mushrooms" in ingredients:
+        cook_check = True
+        if "chicken" in ingredients:
+            cook_list.append("chicken casserole")
+
+        if "venison" in ingredients:
+            cook_list.append("venison casserole")
+
+    if "venison" in ingredients and "mushrooms" in ingredients and "carrots" in ingredients and "can of soup" in ingredients and "spring onions" in ingredients:
+        cook_check = True
+        cook_list.append("venison stew")
+
+    if "oats" in ingredients and "condensed milk" in ingredients and "strawberries" in ingredients and "honey" in ingredients:
+        cook_check = True
+        cook_list.append("overnight oats")
+
+    if "bag of rice" in ingredients and "condensed milk" in ingredients:
+        cook_check = True
+        cook_list.append("rice pudding")
+
+    if "pre-made meal" in ingredients and "MRE" in ingredients:
+        cook_check = True
+        cook_list.append("mega MRE")
 
     if cook_check == True:
         print("It looks like you have enough ingredients to do some cooking:\n1. Cook\n2. Don't cook")
@@ -1880,37 +1949,88 @@ def cook_food():
 
                 if recipe == "chicken and pasta":
                     remove_list = ["chicken", "pasta", "tomato sauce"]
+                    portion = 2
 
                 elif recipe == "sausages and pasta":
                     remove_list = ["sausages", "pasta", "tomato sauce"]
+                    portion = 2
 
-                elif recipe == "fruit and cream":
-                    remove_list = ["apple", "banana", "can of whipped cream"]
+                elif recipe == "fruits and cream":
+                    remove_list = ["apple", "can of whipped cream"]
+
+                    if "strawberries" in ingredients:
+                        remove_list.append("strawberries")
+
+                    else:
+                        remove_list.append("banana")
+
+                    portion = 2
 
                 elif recipe == "tuna sandwiches":
                     remove_list = ["can of tuna", "bread"]
+                    portion = 2
 
                 elif recipe == "chicken and beef sandwiches":
                     remove_list = ["chicken", "beef jerky", "bread"]
+                    portion = 2
 
                 elif recipe == "deluxe MRE":
-                    remove_list = ["chicken", "beef jerky", "MRE"]
+                    remove_list = ["chicken", "MRE"]
+                    portion = 1
 
                 elif recipe == "peaches and cream":
-                    remove_list = ["canned peaches", "can of whipped cream"]
+                    remove_list = ["can of peaches", "can of whipped cream"]
+                    portion = 2
 
                 elif recipe == "cereal treats":
                     remove_list = ["cereal", "bag of marshmallows"]
+                    portion = 2
+
+                elif recipe == "chicken stir-fry":
+                    remove_list = ["bag of rice", "chicken", "spring onions", "carrots"]
+                    portion = 2
+
+                elif recipe == "chicken casserole":
+                    remove_list = ["condensed milk", "chicken", "spring onions", "mushrooms"]
+                    portion = 2
+
+                elif recipe == "venison casserole":
+                    remove_list = ["condensed milk", "venison", "spring onions", "mushrooms"]
+                    portion = 2
+
+                elif recipe == "venison stew":
+                    remove_list = ["venison", "mushrooms", "carrots", "can of soup"]
+                    portion = 2
+
+                elif recipe == "overnight oats":
+                    remove_list = ["oats", "honey", "condensed milk", "strawberries"]
+                    portion = 4
+
+                elif recipe == "mega MRE":
+                    remove_list = ["MRE", "pre-made meal"]
+                    portion = 1
+
+                elif recipe == "rice pudding":
+                    remove_list = ["bag of rice", "condensed milk"]
+                    portion = 4
 
                 for i in remove_list:
                     character[3].remove(i)
 
-                character[3].append(recipe)
-                print("Nice,",recipe,"has been added to your items\n")
+                for i in range(portion):
+                    character[3].append(recipe)
 
+                if portion == 1:
+                    print("Nice, you cooked up", recipe)
+
+                else:
+                    print("Nice, you cooked", portion, "portions of", recipe)
 
                 if character[7][0] == "restaurant":
                     print("Since you're cooking at the restaurant, your food is a little better than expected\n")
+
+                else:
+                    print()
 
 
 def take_rest():
@@ -2032,9 +2152,19 @@ def eat_food():
                 eat = False
 
             else:
-                character[2][0] += get_cals(character[3][choice - 1])
-                print("You consumed:", character[3][choice - 1], "for", get_cals(character[3][choice - 1]),"calories")
-                character[3].remove(character[3][choice - 1])
+                if food_list[choice - 1][0] in numbers and food_list[choice - 1][1] not in numbers:
+                    food_eaten = food_list[choice - 1][3:]
+
+                elif food_list[choice - 1][0] and food_list[choice - 1][1] in numbers:
+                    food_eaten = food_list[choice - 1][4:]
+
+                else:
+                    food_eaten = food_list[choice - 1]
+ 
+                character[2][0] += get_cals(food_eaten)
+                print("You consumed:", food_eaten, "for", get_cals(food_eaten),"calories")
+                character[3].remove(food_eaten)
+
                 print("You now have:", character[2][0], "calories\n")
                 print("Do you want to eat more?\n1. Yes\n2. No, it's time to sleep")
                 choice = make_choice()
@@ -2109,7 +2239,6 @@ def loot_car(car):
     print(line_break)
 
 
-
 username_list = []
 
 with open("scores.csv", "r") as prev_usernames:
@@ -2144,8 +2273,10 @@ while game:
         item_list.remove("(food) bread")
         item_list.remove("(food) sausages")
         item_list.remove("(food) carrots")
+        item_list.remove("(food) banana")
+        item_list.remove("(food) strawberries")
 
-        for i in range(5):
+        for i in range(7):
             item_list.append("(food) rotten food")
 
     calories_used = 0
@@ -2274,6 +2405,20 @@ while game:
                     print("\nBut it looks like someone else was here too")
                     print("They've left you a warning message...")
                     print("They weren't able to get you today with your", friend_grammar, "around, but they'll find you again soon...")
+
+            if len(chickens) > 0:
+                egg_chance = random.randint(1, 3)
+
+                if egg_chance == 1:
+                    if len(chickens) > 1:
+                        hen = chickens[random.randint(0, len(chickens) - 1)]
+
+                    else:
+                        hen = chickens[0]
+
+                    print("\nLooks like", hen, "laid an egg!")
+                    add_item("(food) egg")
+                    print("(food) egg has been added to your inventory")
 
         if character[9][0] == 1:
             print("\nYour car has 1 litre of fuel")
@@ -3016,7 +3161,7 @@ while game:
         elif choice == 1 and len(afflictions) == 0:
             area = areas[random.randint(0,len(areas)-1)]
             print("You decide to go scavenge in",area,"today\n")
-            chance = 11#random.randint(1,11)
+            chance = random.randint(1,11)
 
             if len(latest_events) >= 4:
                 latest_events == []
@@ -3274,13 +3419,7 @@ while game:
                             elif chance != 1:
                                 print("You manage to get back up and somehow evade the horde, but you've sprained your ankle")
                                 print("\nYou have lost 10HP")
-                                character[0][0] -= 10
-                                afflictions.append("sprained ankle")
-                                print("You now have", character[0][0], "HP")
-
-                                if character[0][0] <= 0:
-                                    game = False
-                                    print("\nYOU DIED")
+                                add_affliction("sprained ankle", 10)
 
                                 if game:
                                     print("Defeated, you hobble back to the", character[7][0])
@@ -3292,13 +3431,7 @@ while game:
                         if chance == 1:
                             print("On your way back down you lose your grip and fall, landing on your shoulder")
                             print("\nYou have lost 20HP")
-                            character[0][0] -= 20
-                            afflictions.append("bruised shoulder")
-                            print("You now have", character[0][0], "HP")
-
-                            if character[0][0] <= 0:
-                                game = False
-                                print("\nYOU DIED")
+                            add_affliction("bruised shoulder", 20)
 
                             journal_entry("Nearly got caught by a horde then proceeded to fall down a fire escape")
 
@@ -3449,13 +3582,7 @@ while game:
                                 print("You jump back, hitting your head on the door frame and cutting it open")
                                 print("Clutching your head, you make a run for it, but you'll need to do something about your injury later")
                                 print("\nYou have lost 50HP")
-                                character[0][0] -= 50
-                                afflictions.append("laceration on your head")
-                                print("You now have",character[0][0],"HP")
-
-                                if character[0][0] <= 0:
-                                    game = False
-                                    print("\nYOU DIED")
+                                add_affliction("laceration on your head", 50)
 
                                 if game:
                                     print("\nYour head is pounding when you reach the",character[7][0],"but it's a reminder you're alive")
@@ -3513,13 +3640,7 @@ while game:
                                     print("You climb up the mountain of rubble, bag in your sights")
                                     print("But your foot slips and you fall, slicing your arm on some exposed rebar")
                                     print("\nYou have lost 30HP")
-                                    character[0][0] -= 30
-                                    afflictions.append("gash on your arm")
-                                    print("You now have", character[0][0], "HP")
-
-                                    if character[0][0] <= 0:
-                                        game = False
-                                        print("\nYOU DIED")
+                                    add_affliction("gash on your arm", 30)
 
                                     if game:
                                         print("\nYou clutch your arm, unable to climb anymore, and head back to the",character[7][0])
@@ -3572,13 +3693,7 @@ while game:
                         elif chance == 3:
                             print("You bring your weapon down hard on the glass, but it shatters and cuts your hand")
                             print("\nYou have lost 20HP")
-                            character[0][0] -= 20
-                            afflictions.append("cut on your palm")
-                            print("You now have", character[0][0], "HP\n")
-
-                            if character[0][0] <= 0:
-                                game = False
-                                print("\nYOU DIED")
+                            add_affliction("cut on your palm", 20)
 
                             if game:
                                 print("A horde starts to form, and you know you have to get out of here")
@@ -3729,14 +3844,7 @@ while game:
 
                                     print("You make your way back, but you've hurt your neck " + item_lost)
                                     print("\nYou have lost 15HP")
-                                    character[0][0] -= 15
-                                    print("You now have", character[0][0], "HP")
-
-                                    if character[0][0] <= 0:
-                                        game = False
-                                        print("\nYOU DIED")
-
-                                    afflictions.append("sprained neck")
+                                    add_affliction("sprained neck", 15)
 
                                 journal_entry("Nearly died while scavenging, sprained my neck instead")
 
@@ -3844,23 +3952,13 @@ while game:
                                 elif chance == 2:
                                     print("But you jump too short and catch yourself on the glass, cutting deep!")
                                     print("\nYou have lost 30HP")
-                                    character[0][0] -= 30
-
-                                    if character[0][0] <= 0:
-                                        game = False
-                                        print("\nYOU DIED")
+                                    add_affliction("deep cut", 30)
 
                                     if game:
                                         chance = random.randint(1,2)
                                         if chance == 1:
                                             print("Practising extreme control, you don't make a sound and the horde goes by")
                                             print("But you've injured yourself and you decide to just head back to the", character[7][0])
-                                            afflictions.append("deep cut")
-                                            print("You now have", character[0][0], "HP")
-
-                                            if character[0][0] <= 0:
-                                                game = False
-                                                print("\nYOU DIED")
 
                                             journal_entry("I cut myself on some glass and almost alerted a horde")
 
@@ -5313,15 +5411,9 @@ while game:
                                         print("You kick the door desperately and it gives in, but a shock goes through your knee")
                                         print("You've injured your knee!")
                                         print("\nYou have lost 20HP")
-                                        character[0][0] -= 20
-                                        afflictions.append("injured knee")
-                                        print("You now have", character[0][0], "HP")
+                                        add_affliction("injured knee", 20)
 
-                                        if character[0][0] <= 0:
-                                            game = False
-                                            print("\nYOU DIED")
-
-                                        else:
+                                        if game:
                                             print("\nYou manage to make it out the door and slam it behind you as the horde pours into the kitchen")
                                             print("Somehow you get over the garden fence before you get pulled into the mass of zombies")
                                             print("As you hobble home, you curse yourself for being so greedy")
@@ -5355,15 +5447,9 @@ while game:
                                         print("You land badly, hurting your ankle as you hit the ground")
                                         print("You've sprained your ankle!")
                                         print("\nYou have lost 10HP")
-                                        character[0][0] -= 10
-                                        afflictions.append("sprained ankle")
-                                        print("You now have", character[0][0], "HP")
+                                        add_affliction("sprained ankle", 10)
 
-                                        if character[0][0] <= 0:
-                                            game = False
-                                            print("\nYOU DIED")
-
-                                        else:
+                                        if game:
                                             chance = random.randint(1, 2)
 
                                             if chance == 1:
@@ -5387,15 +5473,9 @@ while game:
                                     if chance == 1:
                                         print("You punch your hand through the window shattering it, but cutting open your hand")
                                         print("\nYou have lost 20HP")
-                                        character[0][0] -= 20
-                                        afflictions.append("laceration on hand")
-                                        print("You now have", character[0][0], "HP")
+                                        add_affliction("laceration on hand", 20)
 
-                                        if character[0][0] <= 0:
-                                            game = False
-                                            print("\nYOU DIED")
-
-                                        else:
+                                        if game:
                                             print("\nClutching your hand, you hop out the window and land in the grass")
                                             print("Zombies crawl out the window after you, but you manage to clear the fence and get away")
                                             print("As you head back to the", character[7][0], "you nurse your hand and curse your greediness")
@@ -5493,7 +5573,7 @@ while game:
                         print("You're on your way to", area, "but you've spotted an interesting looking nature trail")
 
                     elif chance == 3:
-                        print("Making your way towards", area, "you find yourself beside a large forest")
+                        print("While making your way towards", area, "you find yourself beside a large forest")
 
                     print("This could be a good opportunity to do some foraging, or even hunting!")
                     print("Will you:\n1. Investigate the forest trail\n2. Keep heading towards", area)
@@ -5515,7 +5595,7 @@ while game:
 
                     chance = random.randint(1, 2)
                     if chance == 1:
-                        print("Suddenly some movement between the trees catches your eye")
+                        print("\nSuddenly some movement between the trees catches your eye")
 
                         animal_chance = random.randint(1, 3)
 
@@ -5525,6 +5605,9 @@ while game:
                             choice = make_choice()
 
                             if choice == 1:
+                                print("\nYou reach in your bag for a weapon:")
+                                if len(character[4]) == 1:
+                                    print("But there's nothing there, you'll have to use your fists")
                                 weapon = choose_weapon()
 
                                 print("You break from cover and charge towards them")
@@ -5626,9 +5709,11 @@ while game:
 
                             if choice == 1:
                                 if len(character[4]) > 1:
+                                    print("\nYou reach in your bag for a weapon:")
                                     weapon = choose_weapon()
 
                                     while weapon == "hands":
+                                        print("\nYou reach in your bag for a weapon:")
                                         print("You can't use your hands to catch a deer...")
                                         weapon = choose_weapon()
 
@@ -5751,7 +5836,7 @@ while game:
                     else:
                         print("It seems the forest is quiet for today, you haven't been able to find anything to hunt")
                         print("Instead, you decide to take a look around for something to eat")
-                        print("You forage around and find:")
+                        print("\nYou forage around and find:")
                         forage_amount = random.randint(5, 10)
 
                         for i in range(forage_amount):
@@ -5760,10 +5845,10 @@ while game:
                             add_item(item)
 
                     if not noise:
-                        print("You decide to get back before it gets late, and head off towards the", character[7][0])
+                        print("\nYou decide to get back before it gets late, and head off towards the", character[7][0])
 
                 elif choice == 2:
-                    chance = 1#random.randint(1, 3)
+                    chance = random.randint(1, 3)
 
                     if chance == 1:
                         print("This isn't your usual path and when you enter onto the highway, it appears to be deserted")
@@ -5920,8 +6005,7 @@ while game:
                                                 print("You see a gap in the fencing and run for it")
                                                 zom_num = random.randint(2, 4)
 
-                                                print("But", zom_num, "zombies stumble out and block your path!")
-                                                print("It looks like you're going to be fighting after all")
+                                                print("But", zom_num, "zombies stumble out and block your path!\n")
 
                                                 result = fight(zom_num, "zombies")
 
@@ -5936,15 +6020,9 @@ while game:
                                                     else:
                                                         print("You tumble down the embankment and land badly on your ankle")
                                                         print("\nYou have lost 10HP")
-                                                        character[0][0] -= 10
-                                                        afflictions.append("sprained ankle")
-                                                        print("You now have", character[0][0], "HP")
+                                                        add_affliction("sprained ankle", 10)
 
-                                                        if character[0][0] <= 0:
-                                                            game = False
-                                                            print("\nYOU DIED")
-
-                                                        else:
+                                                        if game:
                                                             print("Somehow, you manage to limp away and escape")
 
                                         if game:
