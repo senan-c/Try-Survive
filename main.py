@@ -5595,6 +5595,7 @@ while game:
 
                     chance = random.randint(1, 2)
                     if chance == 1:
+                        hunt_success = False
                         print("\nSuddenly some movement between the trees catches your eye")
 
                         animal_chance = random.randint(1, 3)
@@ -5647,6 +5648,8 @@ while game:
                                     chickens = random.randint(2, 3)
 
                                 if chance == 1:
+                                    hunt_success = True
+                                    hunt_items = []
                                     if weapon == "hands":
                                         print("Somehow you manage to catch a chicken, but you can't harvest it properly with just your hands")
                                         print("You still manage to scrape up:")
@@ -5659,6 +5662,7 @@ while game:
                                         for i in range(chickens):
                                             print("(food) chicken")
                                             add_item("(food) chicken")
+                                            hunt_items.append("(food) chicken")
 
                                     else:
                                         print("You stop to catch your breath, putting away your", weapon, "and checking your score")
@@ -5666,6 +5670,7 @@ while game:
                                         for i in range(chickens):
                                             print("(food) chicken")
                                             add_item("(food) chicken")
+                                            hunt_items.append("(food) chicken")
 
                                 else:
                                     chance = random.randint(1, 2)
@@ -5744,12 +5749,15 @@ while game:
                                         deer = random.randint(1,3)
 
                                     else:
-                                        chance = random.randint(1, 4)
+                                        chance = random.randint(1, 3)
                                         print("You creep up behind the deer and dive out swinging your", weapon)
 
-                                        deer = random.randint(1,3)
+                                        deer = random.randint(1, 3)
 
                                     if chance == 1:
+                                        hunt_success = True
+                                        hunt_items = []
+
                                         if weapon == "**assault rifle**" or weapon == "*pistol*":
                                             print("You put your", weapon, "away and check your score")
                                             if weapon == "*pistol*":
@@ -5762,6 +5770,7 @@ while game:
                                             for i in range(deer):
                                                 print("(food) venison")
                                                 add_item("(food) venison")
+                                                hunt_items.append("(food) venison")
 
                                         else:
                                             print("You stop to catch your breath, putting away your", weapon, "and checking your score")
@@ -5769,6 +5778,7 @@ while game:
                                             for i in range(deer):
                                                 print("(food) venison")
                                                 add_item("(food) venison")
+                                                hunt_items.append("(food) venison")
 
                                     else:
                                         if weapon == "**assault rifle**" or weapon == "*pistol*":
@@ -5805,7 +5815,7 @@ while game:
 
                             else:
                                 print("But it's not an animal, it's a pair of undead soldiers!")
-                                print("Their camofluage has let them get too close, you'll have to fight!")
+                                print("Their camouflage has let them get too close, you'll have to fight!")
 
                             result = fight(zom_num, "military zombies")
 
@@ -5846,6 +5856,37 @@ while game:
 
                     if not noise:
                         print("\nYou decide to get back before it gets late, and head off towards the", character[7][0])
+
+                        if hunt_success:
+                            chance = random.randint(1, 7)
+
+                            if chance == 1:
+                                print("But as you step out of the forest, two raiders step in front of you!")
+                                print("They draw their weapons and tell you to hand over your spoils")
+                                print("It seems they know about your hunting expedition...")
+                                print("Will you:\n1. Fight the raiders\n2. Give them the food")
+
+                                choice = make_choice
+
+                                if choice == 1:
+                                    print("You briefly consider their offer, then drop your bag and draw your own weapon")
+                                    print("They snarl and the fight begins")
+
+                                    result = fight(2, "humans")
+
+                                    if not result:
+                                        game = False
+                                    
+                                    else:
+                                        print("The raiders lie dead and the food is still yours, looks like you've earned it...")
+
+                                elif choice == 2:
+                                    print("You're not going to risk a fight with some raiders, and you hand over the meat you worked so hard for")
+                                    print("Their eyes widen as they snatch it from your hands, and you hear them laughing as they walk off")
+                                    print("Your face burns with embarassment as you turn and head home...")
+
+                                    for i in hunt_items:
+                                        remove_item(i)
 
                 elif choice == 2:
                     chance = random.randint(1, 3)
