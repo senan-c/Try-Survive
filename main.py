@@ -3250,7 +3250,7 @@ while game:
                                 print("You turn to head home, and see a desperate survivor standing behind you")
                                 survivor_name = survivors_male_list[random.randint(0, len(survivors_male_list) - 1)]
 
-                                print("He introduces himself as", survivor_name, "and begs you for some food\n")
+                                print("He says his name is", survivor_name, "and begs you for some food\n")
 
                                 if len(character[3]) > 0:
                                     print("Will you:\n1.Give", survivor_name, "some food\n2.Refuse")
@@ -3292,8 +3292,11 @@ while game:
                                     else:
                                         print("You refuse his request, but instead of attacking, he sobs and runs off")
                                         print("He won't last long out there, and on your way home you wonder if it was worth keeping the food...")
-                                        zombie_survivor = [survivor_name]
-                                        zombie_survivors.append(zombie_survivor)
+                                        chance = random.randint(1, 2)
+
+                                        if chance == 1:
+                                            zombie_survivor = [survivor_name]
+                                            zombie_survivors.append(zombie_survivor)
 
                                         log = "I Killed " + zombie_grammar + " and didn't give a guy named " + survivor_name + "some food"
                                         journal_entry(log)
@@ -3340,7 +3343,7 @@ while game:
                     if choice == 1:
                         chance = random.randint(1, 2)
                         if chance == 1:
-                            print("You sneak past the horde, silent as a ninja")
+                            print("Hiding behind cars and bins, you manage to sneak past the horde")
                             for i in range(1):
                                 temp_item = item_list[random.randint(0, len(item_list) - 1)]
                                 add_item(temp_item)
@@ -3349,7 +3352,7 @@ while game:
                                 chance = random.randint(1, 3)
 
                                 if chance == 1:
-                                    print("But as you look back at the horde, you get a glance of a eerily familiar face")
+                                    print("But as you look back, you get a glance of a eerily familiar face")
                                     named_zombie = zombie_survivors[random.randint(0, len(zombie_survivors) - 1)][0]
                                     print("It almost looked like", named_zombie, "was in that horde...")
 
@@ -3380,7 +3383,7 @@ while game:
                                     chance = random.randint(1, 2)
 
                                     if chance == 1:
-                                        print("But as you look back at the horde, you get a glance of a eerily familiar face")
+                                        print("But as you look back, you get a glance of a eerily familiar face")
                                         named_zombie = zombie_survivors[random.randint(0, len(zombie_survivors) - 1)][0]
                                         print("It almost looked like", named_zombie, "was in that horde...")
 
@@ -3410,7 +3413,7 @@ while game:
                                 chance = random.randint(1, 2)
 
                                 if chance == 1:
-                                    print("But as you look back at the horde, you get a glance of a eerily familiar face")
+                                    print("But as you look back, you get a glance of a eerily familiar face")
                                     named_zombie = zombie_survivors[random.randint(0, len(zombie_survivors) - 1)][0]
                                     print("It almost looked like", named_zombie, "was in that horde...")
 
@@ -3428,7 +3431,7 @@ while game:
 
                         elif chance == 2:
                             print("Unfortunately, as you didn't take time to warm up, you trip and fall right in front of the horde!")
-                            chance = random.randint(1,5)
+                            chance = random.randint(1,4)
                             if chance == 1:
                                 print("You get up again only to realise you've broken your ankle")
                                 print("Before you can escape, the horde catches you and you're torn apart...\nYOU ARE DEAD")
@@ -3462,18 +3465,11 @@ while game:
                 else:
                     chance = random.randint(1, 3)
 
-                    if chance != 1:
-                        chance = random.randint(1, 2)
-
-                        if chance == 1:
-                            print("As you cross through a park on your way, you hear a horde nearby")
-                            print("The sounds of moaning and shuffling remind you that your survival depends on more than just calories")
-                            print("With that, your fear of being eaten beats out your hunger")
-                            print("For now at least...")
-
-                        elif chance == 2:
-                            print("You don't scavenge for too long today, there looks to be a lot of undead activity")
-                            print("Seems to be getting worse...")
+                    if chance == 1:
+                        print("As you cross through a park on your way, you hear a horde nearby")
+                        print("The sounds of moaning and shuffling remind you that your survival depends on more than just calories")
+                        print("With that, your fear of being eaten beats out your hunger")
+                        print("For now at least...")
 
                         filler_loot()
 
@@ -3510,18 +3506,18 @@ while game:
                 chance = random.randint(1, 3)
 
                 if chance != 1:
-                    print("As you walk through", area, "you notice a seemingly un-looted store")
+                    print("As you walk through", area, "you notice a seemingly unlooted store")
                     print("You walk up and try the door, but it's locked")
                     print("Will you:\n1. Try force the door open with your",character[4][-1],"\n2. Try find another way in\n3. Smash the window\n4. Don't risk it")
                     choice = make_choice()
 
                     if choice == 1:
-                        chance = random.randint(1,3)
-                        if chance == 1:
+                        chance = random.randint(1,4)
+                        if chance == 1 or chance == 4:
                             print("\nYou force the door, and suddenly it cracks and gives way")
                             print("The store definitely isn't as untouched as you thought, but you'll make do\n")
                             print("You check the aisles and find:")
-                            random_item(3, 10, "normal")
+                            random_item(4, 10, "normal")
 
                             print("\nHappy with your score, you return home to the",character[7][0],"with a smile on your face")
                             journal_entry("Forced the door open and looted a store with no hassle")
@@ -3613,10 +3609,61 @@ while game:
                         if chance == 1:
                             print("You were correct and there is a back entrance, but it's been destroyed by a crashed van")
                             print("There's no way through")
-                            print("\nYou turn to try the front door but a horde is coming down the street, it's too late now")
-                            print("You make your way back to the",character[7][0],"wondering what might have been")
 
-                            journal_entry("Tried looting a store but some idiot crashed his van and ruined it")
+                            chance = random.randint(1, 2)
+
+                            if chance == 1 or len(zombie_survivors) == 0:
+                                print("\nYou turn to try the front door but a horde is coming down the street, it's too late now")
+                                print("You make your way back to the",character[7][0],"wondering what might have been")
+                                journal_entry("Tried looting a store but some idiot crashed his van and ruined it")
+
+                            elif chance == 2 and len(zombie_survivors) > 0:
+                                print("You turn to leave, but there's a zombie standing in your path")
+                                if len(zombie_survivors) > 1:
+                                    named_zombie_group = zombie_survivors[random.randint(0, len(zombie_survivors) - 1)]
+                                    named_zombie = named_zombie_group[0]
+
+                                else:
+                                    named_zombie_group = zombie_survivors[0]
+                                    named_zombie = named_zombie_group[0]
+
+                                if len(named_zombie_group) > 1:
+                                    missing_friend = True
+                                    named_zombie2 = named_zombie_group[1]
+
+                                print("\nIt's " + named_zombie + "!")
+                                if missing_friend:
+                                    print("Looks like", named_zombie2, "isn't here, though he probably met a similar fate...")
+
+                                    enemy_group = [named_zombie2, named_zombie]
+                                    enemy_list.append(enemy_group)
+
+                                if named_zombie == "the Thief":
+                                    print("And it looks like he still has your bag on his back")
+                                    print("This might just be your oppurtunity to finally get it back...")
+
+                                else:
+                                    print("Reminding yourself that this zombie isn't a person anymore, you prepare for a fight")
+                                fight_result = fight(1, "zombies", named_zombie)
+
+                                if fight_result:
+                                    zombie_survivors.remove(named_zombie_group)
+
+                                    if named_zombie == "the Thief":
+                                        print("You grab your bag of its back and check the contents, everything's there")
+                                        for i in bag_items:
+                                            add_item(i)
+                                            bag_items.remove(i)
+
+                                    else:
+                                        print("You look down at", named_zombie, "but it's time to leave")
+
+                                    print("Circling around to the front of the building you see the street filled with zombies")
+                                    print(named_zombie, "must have brought a horde with him here, and now there's no way of getting in")
+                                    print("With nothing left to do, you decide to just head back to the", character[7][0], "instead")
+
+                                    journal_entry("Tried to loot a store but was ambushed by a familiar face instead")
+
 
                         elif chance == 2:
                             print("You check the back, and there is indeed an unlocked door through to the store")
@@ -3822,15 +3869,15 @@ while game:
                             choice = make_choice()
 
                             if choice == 1:
-                                chance = random.randint(1,2)
+                                chance = random.randint(1,3)
                                 print("You run straight for the weakest zombies in the horde behind you")
-                                if chance == 1:
+                                if chance != 1:
                                     print("As they reach out to grab you, you use your",character[4][-1],"to fight them off")
                                     print("Somehow you fight your way through without a scratch and head back to the",character[7][0])
 
                                     journal_entry("Ended up fighting my way through a horde, wouldn't recommend")
 
-                                elif chance == 2:
+                                else:
                                     print("But as you prepare to burst through, a zombie jumps out from behind a car")
                                     print("It throws you off balance and you tumble right into the horde...\nYOU ARE DEAD")
                                     game = False
@@ -3901,8 +3948,37 @@ while game:
 
                                             log = "Lured a horde away and looted a " + van
                                             journal_entry(log)
+                                        
+                                        chance = random.randint(1, 2)
 
-                                        print("\nProud of your horde evading abilities, you head home with the loot")
+                                        if chance == 1:
+                                            print("\nProud of your horde evading abilities, you head home with the loot")
+
+                                        elif len(enemy_list) > 0 and chance == 2:
+                                            enemy_name = enemy_list[random.randint(0, len(enemy_list) - 1)]
+                                            enemy_list.remove(enemy_name)
+
+                                            print("\nProud of your horde evading abilities, you turn to head home with the loot")
+                                            print("But there's someone standing behind you")
+                                            print("It's", enemy_name, "back for revenge!")
+
+                                            if len(enemy_name) == 1:
+                                                print("He glowers at you, and promises to punish you for what you did")
+
+                                            else:
+                                                print("He snarls, promising revenge for the death of his friend", enemy_name[1])
+
+                                            fight_result = fight(1, "humans", enemy_name[0])
+
+                                            if fight_result:
+                                                print("With", enemy_name[0], "dead, you make your way back to the", character[7][0])
+                                                print("You'll be thinking twice before you mess with survivors again...")
+
+                                                log = enemy_name[0] + " returned and I had to kill him or be killed"
+                                                journal_entry
+
+                                            else:
+                                                game = False
 
                                     else:
                                         print("Looks like the horde got to the van first, but it was worth a try")
@@ -5020,27 +5096,41 @@ while game:
                                     missing_friend = True
                                     named_zombie2 = named_zombie_group[1]
 
-                                print("\nIt's", named_zombie + "!")
+                                print("\nIt's " + named_zombie + "!")
                                 if missing_friend:
                                     print("Looks like", named_zombie2, "isn't here, though he probably met a similar fate...")
 
                                     enemy_group = [named_zombie2, named_zombie]
                                     enemy_list.append(enemy_group)
 
-                                print("You look at him sadly, remembering when you last saw him")
-                                print("But he doesn't share the same sentiment and shuffles towards you...")
+                                if named_zombie == "the Thief":
+                                    print("And it looks like he still has your bag on his back")
+                                    print("This might just be your oppurtunity to finally get it back...")
+
+                                else:
+                                    print("You look at him sadly, remembering when you last saw him")
+                                    print("But he doesn't share the same sentiment and shuffles towards you...")
                                 fight_result = fight(1, "zombies", named_zombie)
 
                                 if fight_result:
                                     zombie_survivors.remove(named_zombie_group)
-                                    print("You look at", named_zombie, "for the last time, but it's time to go")
-                                    print("You've still got a job to do")
+
+                                    if named_zombie == "the Thief":
+                                        print("You grab your bag of its back and check the contents, everything's there")
+                                        print("But you've still got a job to do")
+
+                                        for i in bag_items:
+                                            add_item(i)
+                                            bag_items.remove(i)
+
+                                    else:
+                                        print("You look at", named_zombie, "for the last time, but it's time to go")
+                                        print("You've still got a job to do")
 
                             else:
                                 fight_result = fight(1, "zombies")
 
                             if fight_result:
-
                                 if survivor_amount == 1:
                                     print("You run onto the street with the horde right in front of you")
                                     print("But the survivor is still alive!")
@@ -6446,8 +6536,11 @@ while game:
                                                 print("You look back and see", survivor1, "surrounded by zombies before he disappears in the undead mass")
                                                 print(survivor2, "shouts out, but you drag him away before the rest of the zombies can catch up")
 
-                                                survivor_group = [survivor1]
-                                                zombie_survivors.append(survivor_group)
+                                                chance = random.randint(1, 2)
+
+                                                if chance == 1:
+                                                    survivor_group = [survivor1]
+                                                    zombie_survivors.append(survivor_group)
 
                                                 food_split = 2
 
@@ -6774,6 +6867,8 @@ while game:
                                                         print("You check inside to make sure everything is there before leaving")
                                                         print("Heading back home to the", character[7][0], "you making sure you're not followed")
 
+                                                        journal_entry("A Thief tried to steal my bag, but I caught him and got it back")
+
                                                         for i in bag_items:
                                                             add_item(i)
                                                             bag_items.remove(i)
@@ -6799,6 +6894,7 @@ while game:
                                                                         bag_items.remove(i)
 
                                                                     print("You pick the bag up off the floor and check everything is there, before heading back to the", character[7][0])
+                                                                    journal_entry("A Thief tried to steal my bag and I killed him to get it back")
 
                                                                 else:
                                                                     game = False
@@ -6811,11 +6907,14 @@ while game:
                                                                     bag_items.remove(i)
                                                                 
                                                                 print("You glare at him before you leave, then head back home to the", character[7][0], "while making sure you're not followed")
+                                                                journal_entry("A Thief tried to steal my bag but I scared him so bad he gave it back")
+                                                                
 
                                                         elif choice == 2:
                                                             print("You choose to let him have the bag, and he tries not to look shocked as you leave")
                                                             print("He'll be fine for today, but you wonder how long it'll be before this lifestyle catches up with him")
                                                             print("You head home, wondering if karma exists in the apocalypse...")
+                                                            journal_entry("A Thief tried to steal my bag, but I let him keep it")
 
                                                             chance = random.randint(1, 2)
                                                             
@@ -6837,6 +6936,7 @@ while game:
                                                                 add_item(i)
                                                                 bag_items.remove(i)
                                                             print("You pick the bag up off the floor and check everything is there, before heading back to the", character[7][0])
+                                                            journal_entry("A Thief tried to steal my bag and I showed him no mercy")
 
                                                         else:
                                                             game = False
@@ -6855,8 +6955,11 @@ while game:
                                                         print("As you leave, you hear him scream out before falling silent...")
                                                         print("\nYou check the bag on the way back to the", character[7][0], "looks like everything's there")
 
-                                                        zombie_survivor = ["the Thief"]
-                                                        zombie_survivors.append(zombie_survivor)
+                                                        journal_entry("A Thief tried to steal my bag, so I shoved him into a horde of zombies")                 
+                                                        chance = random.randint(1, 2)
+                                                        if chance == 1:
+                                                            zombie_survivor = ["the Thief"]
+                                                            zombie_survivors.append(zombie_survivor)
 
                                                         for i in bag_items:
                                                             add_item(i)
@@ -6870,6 +6973,7 @@ while game:
                                         print("Taking a look back, you see him try desperately to escape before he's pulled into the horde")
                                         print("\nIt looks like that's the last you'll see of that bag")
                                         print("You head home, wondering if karma exists in the apocalypse...")
+                                        journal_entry("A Thief tried to steal my bag and I lost him in a horde of zombies")
 
                                         chance = random.randint(1, 3)
 
@@ -6883,6 +6987,7 @@ while game:
                                     print("As you escape, he screams out before suddenly falling silent")
                                     print("\nIt looks like that's the last you'll see of that bag")
                                     print("You head home, wondering if karma exists in the apocalypse...")
+                                    journal_entry("Some Thief grabbbed my bag and got dragged into a horde of zombies")
 
                                     zombie_survivor = ["the Thief"]
                                     zombie_survivors.append(zombie_survivor)
@@ -6920,6 +7025,7 @@ while game:
                                             random_item(2, 5, "normal")
                                             print("\nWeary after the fighting, you decide to just head home...")
                                             print("On your way back to the", character[7][0], "you wonder who those men were before all this...")
+                                            journal_entry("A Thief tried to steal my bag and I had to kill some Raiders to get it back")
 
                                             for i in bag_items:
                                                 add_item(i)
@@ -6931,11 +7037,13 @@ while game:
                                     else:
                                         if raider_num == 1:
                                             print("You're not going to risk fighting a Raider for that bag, and decide to just head home instead")
+                                            journal_entry("A Thief grabbed my bag but a Raider got to him first")
 
                                         else:
                                             print("You're not going to fight a pair of Raiders for that bag, and instead you head back to the", character[7][0])
+                                            journal_entry("A Thief grabbed my bag but some Raiders got to him first")
 
-                                        print("On your way home, you try not to think about the stuff you left behind")
+                                        print("On your way home, you try not to think about all the stuff you left behind")
 
                                 elif chance == 2:
                                     print("The bag is weighing the Thief down, and you've almost caught up with him")
@@ -6950,6 +7058,7 @@ while game:
                                         print("Realising what you mean to do, he begs you to reconsider")
                                         print("But you're not sticking around, and as the zombies emerge from nearby buildings you make your escape")
                                         print("\nOn your way back to the", character[7][0], "you find yourself hoping his end was swift...")
+                                        journal_entry("A Thief stole my bag and injured his leg, I left him for dead")
 
                                         chance = random.randint(1, 2)
 
@@ -7012,17 +7121,19 @@ while game:
                                                         print("You give him", character[5][choice - 1])
                                                         character[5].remove(character[5][choice - 1])
 
-                                                        print("He thanks you as you have saved his life, even though he tried to steal your bag")
+                                                        print("He thanks you for saving his life, even though he tried to steal your bag")
                                                         print("He promises to try help you in the future")
                                                         survivor_group = [thief_name]
                                                         character[6].append(survivor_group)
                                                         print(thief_name, "is now your Friend")
 
                                                         print("\nWith this good deed, you say goodbye and head on your way")
+                                                        journal_entry("Decided to save a Thief, and made a new friend")
 
                                                     elif choice == 2:
                                                         print(thief_name, "looks at you sadly, but he understands")
                                                         print("He tried to steal your bag and you chose to save him, he shouldn't have asked for medicine as well")
+                                                        journal_entry("Saved a Thief from a horde, but didn't give him any medicine")
 
                                                         chance = random.randint(1, 2)
 
@@ -7033,6 +7144,7 @@ while game:
                                                 else:
                                                     print("But you don't have any medicine and you cannot help")
                                                     print("Before you leave he thanks you for saving him from the zombies, even if you couldn't give him any medicine")
+                                                    journal_entry("Saved a Thief from a horde, but couldn't give him any medicine")
 
                                                     chance = random.randint(1, 3)
 
@@ -7041,6 +7153,11 @@ while game:
                                                         zombie_survivors.append(zombie_survivor)
 
                                                 print("On your way back to the", character[7][0], "you think about the decisions you made today, and wonder if anyone else would have done the same...")
+
+                        else:
+                            print("It isn't worth chasing a Thief through", area, "and you decide to just let him go")
+                            print("As you make your way home, you find yourself hoping someone else sorts him out")
+                            journal_entry("A Thief stole my bag and I didn't risk chasing him")
 
                     else:
                         print("You're out scavenging near", area, "but things are looking pretty dismal")
@@ -7058,10 +7175,12 @@ while game:
                             print("Inside the bag you find:")
                             random_item(3, 7, "normal", "no fuel")
                             print("\nYou take these items, and thank the unknown survivor before heading home")
+                            journal_entry("Wasn't doing so great, but an unknown survivor left me some supplies")
 
                         else:
                             print("Even in this state, you won't risk a trap")
                             print("You decide to head home instead, regardless of what's in the bag")
+                            journal_entry("Saw some supplies in the middle of the road, but it looked like a trap")
 
                 elif chance == 2:
                     print("You sneak through the zombie infested streets of", area, "before something catches your eye")
@@ -7155,6 +7274,8 @@ while game:
                                     else:
                                         print("You won't take the risk of fighting these zombies, and decide to head home instead")
 
+                                    journal_entry("Tried finding the key to a pharmacy but it was too dangerous")
+
                                     no_key = False
                                     give_up = True
 
@@ -7239,6 +7360,7 @@ while game:
                                                     add_item(i)
 
                                                 print("\nSatisfied with this, you check to make sure nothing has seen you before heading home")
+                                                journal_entry("Looted a pharmacy and found some useful medical supplies")
 
                                     else:
                                         print("But there's a reason this pharmacy was left alone")
@@ -7256,6 +7378,7 @@ while game:
                                                 print("You've killed the zombies in your way, and barely manage to escape as hands grab at you from the murky shadows")
                                                 print("Slamming the door behind you, you run down the street and manage to avoid any other zombies on your way home")
                                                 print("That was a close call...")
+                                                journal_entry("Tried to loot a morgue by mistake and nearly died")
 
                                             else:
                                                 game = False
@@ -7266,6 +7389,7 @@ while game:
 
                                             if chance == 1:
                                                 print("Thankfully it's all clear outside, and you're able to get back to the", character[7][0], "without anymore hassle")
+                                                journal_entry("Tried to loot a morgue by mistake but I got away in one piece")
 
                                             else:
                                                 print("But you've shut the door too hard and the alarm blares!")
@@ -7277,12 +7401,14 @@ while game:
                                                 if result:
                                                     print("The zombies lie dead, and you make a run for it before the others can catch up")
                                                     print("You have to take a detour, but you arrive at the", character[7][0], "before dark")
+                                                    journal_entry("Tried to loot a morgue by mistake and nearly died")
                                             
                                             print("That was a close call...")
 
                     else:
                         print("In the apocalypse, if something seems too good to be true then it probably is")
                         print("You're not risking checking out the pharmacy, and decide to head home instead")
+                        journal_entry("Saw an unlooted pharmacy but it looked too good to be true")
 
                 else:
                     print("You're close to", area, "when a sound stops you in your tracks")
