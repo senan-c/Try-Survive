@@ -100,7 +100,7 @@ chicken_name_list = chicken_names.split(",")
 raider_descriptions_list += survivor_descriptions_list
 
 #0 HP, 1 Water, 2 Calories, 3 Food, 4 Weapons, 5 Meds, 6 Friends, 7 Home, 8 Bag, 9 Fuel, 10 Ammo
-character = [[100], ["Hydrated"], [2000], [], ["hands", "*katana*"], [], [], [], ["Journal"], [0], [0, 0]]
+character = [[100], ["Hydrated"], [2000], [], ["hands", "*sledgehammer*"], [], [], [], ["Journal"], [0], [0, 0]]
 #0 Head, 1 Torso, 2 Hands, 3 Legs, 4 Feet
 current_clothing = [[],[],[],[],[]]
 total_armour = 0
@@ -2377,12 +2377,465 @@ def fight_killer(enemy, ally):
             return True
 
 
-def food_search(group_num):
-    print()
+def food_search(group_num, group=None):
+    if group_num == 1:
+        print("Opening the door, you find yourself in what looks to be supply for the canteen")
+        canteen_loot = ["(food) can of soup", "(food) condensed milk", "(food) can of peaches", "(food) can of beans", "(food) can of tuna", "(food) instant noodles"]
+        loot_amount = random.randint(3, 6)
+        print("The place isn't in great shape, but you still manage to find:")
+        for i in range(loot_amount):
+            food = canteen_loot[random.randint(0, len(supermarket_loot) - 1)]
+            print(food)
+            add_item(food)
+
+    else:
+        print()
+        
+
+def weapon_search(killer):
+    print("It's just you left in the building, and you decide to take a look around")
+    print("You're checking the area", killer, "was supposed to search, when you spot a door chained shut")
+    print("It seems", killer, "didn't care enough to report back about it, he had other plans\n")
+    print("Searching around, you find a key in one of the offices")
+
+    chance = random.randint(1, 3)
 
 
-def weapon_search(group_num):
+def fire_escape_exit(survivor, survivor2):
+    zombies_killed_in_func = 0
+
+    print("Deciding against the main door, you look for an alternative and spot signs pointing towards a fire exit")
+    print("Hopeful of a way out, you hurry along until you reach a room with a large window on the wall")
+    print("It's slightly ajar, and light shines through the dusty air\n")
+    input("Press 1 to continue: ")
+    print(line_break)
+    print("You push the window open and peer out, it's a fire escape!")
+    print("Stepping out and looking down into the alleyway, you see it's full of zombies!")
+    print("Taking care not to make any noise, you make your way down the narrow stairway\n")
+
     chance = random.randint(1, 2)
+
+    if chance == 1:
+        print("But someone jumps out the window above you and races down the stairs!")
+        
+        chance = random.randint(1, 2)
+
+        if chance == 1:
+            last_survivor = survivor
+
+        else:
+            last_survivor = survivor2
+
+        print("It's " + last_survivor + "!")
+
+        print("He sees you and goes to shout something but slips and tumbles off the side")
+        print("Just about managing to hold on, he swings high above the ground")
+        print(last_survivor, "shouts in fear as he sees the zombies gathered below him and begs for your help")
+        print("Will you:\n1. Save him\n2. Leave him for the zombies")
+
+        choice = make_choice()
+
+        if choice == 1:
+            print("You can't just let him die like this, grabbing his arm and pulling him up")
+
+            if last_survivor != killer:
+                print("He thanks you profusely, but you still need to get yourselves out of this mess")
+                print(last_survivor, "grabs you and points toward a gap near the end of the alleyway\n")
+                print("It looks like his fall brought most of the zombies underneath you")
+                print("Thinking quick, the pair of you slide down the fire escape ladder and make a run for it\n")
+                input("Press 1 to continue: ")
+                print(line_break)
+
+                chance = random.randint(1, 2)
+
+                if chance == 1:
+                    print("Somehow the two of you make it through and get away from the dozens of undead unharmed")
+                    print("You've saved", survivor, "and he owes you his life\n")
+                    print("He opens up his bag and gives you:")
+                    random_item(3, 6, "normal", "no rot")
+                    survivor_group = [last_survivor]
+                    character[6].append(survivor_group)
+                    print()
+                    print(last_survivor, "is now your Friend")
+                    print("\nAfter this you say goodbye and head home, glad to have escaped this place in one piece")
+
+                else:
+                    print("But you're not fast enough, and the zombies begin to close around you!")
+                    chance = random.randint(1, 2)
+
+                    if chance == 1:
+                        print("An undead hand grabs you and pulls you back, but", last_survivor, "hacks it off and helps you up")
+                        print("The two of you are surrounded now and as you prepare for a last stand,", last_survivor, "nods at you and wishes you good luck\n")
+                        print("Before you can say anything he charges into the group of zombies and they pool around him")
+                        print("A gap opens up in the wall of zombies and you punch through, thanking him for his sacrifice\n")
+                        print("You get away unscathed, and on your way back home your mourn today's victims...")
+
+                    else:
+                        print("Looks like you'll have to fight your way through!")
+                        zom_num = random.randint(3, 6)
+
+                        result = fight(zom_num, "zombies")
+
+                        if result:
+                            zombies_killed_in_func += zom_num
+
+                            print("You've made it out the other side, and as you turn back you see", last_survivor, "has too")
+                            print("The pair of you exit the alleyway and lose the zombies, before stopping to catch your breath\n")
+                            print("You've saved", survivor, "and he owes you his life")
+                            print("He opens up his bag and gives you:")
+                            random_item(3, 6, "normal", "no rot")
+                            survivor_group = [last_survivor]
+                            character[6].append(survivor_group)
+                            print()
+                            print(last_survivor, "is now your Friend")
+                            print("\nAfter this you say goodbye and head home, glad to have escaped this place in one piece")
+
+                        else:
+                            return False
+
+            else:
+                print("But he doesn't thank you, and instead flashes an evil grin")
+                print(last_survivor, "was the killer all along!\n")
+                result = fight(1, "humans", last_survivor)
+
+                if result:
+                    print("The killer lies dead and the zombies swarm below you")
+                    print("Picking up his body, you heave it over the rails and drop it into their outstretched hands")
+                    print("Using it as a distraction you manage to escape, you can't risk heading back into the building now the zombies know you're here...")
+
+                    print("Heading back to the", character[7][0], "you think about what happened today...")
+
+                else:
+                    game = False
+        
+        else:
+            print("You never trusted him, and you watch as his grip weakens and he falls to his death")
+            print("As soon as his body hits the ground he's swarmed by zombies and you turn to make your escape")
+            print("You slide down the ladder and run for the street\n")
+
+            chance = random.randint(1, 2)
+
+            if chance == 1:
+                zom_num = random.randint(2, 3)
+                print("But there are", zom_num, "zombies in your way!")
+
+                result = fight(zom_num, "zombies")
+
+                if result:
+                    zombies_killed_in_func += zom_num
+                    print("You fight your way through, taking one last look back at the old building before heading home...")
+
+                else:
+                    return False
+            
+            else:
+                print("It looks like all the zombies are distracted with " + last_survivor + "'s body")
+                print("Your path is clear and you head home unscathed, wondering if you made the right choice...")
+
+    else:
+        print("They haven't noticed you yet, and you manage to climb down and hide behind some bins without making any noise")
+        print("The zombies are mostly gathered around the far end of the alleyway, looks like you might be able to sneak through\n")
+        print("You stick to the shadows and begin to sneak up the alleyway")
+        
+        if len(zombie_survivors) > 0:
+            print("Hearing movement to your right, you stare directly into the eyes of a familiar zombie")
+            if len(zombie_survivors) > 1:
+                named_zombie_group = zombie_survivors[random.randint(0, len(zombie_survivors) - 1)]
+                named_zombie = named_zombie_group[0]
+
+            else:
+                named_zombie_group = zombie_survivors[0]
+                named_zombie = named_zombie_group[0]
+
+            if len(named_zombie_group) > 1:
+                missing_friend = True
+                named_zombie2 = named_zombie_group[1]
+
+            print("\nIt's " + named_zombie + "!\n")
+            if missing_friend:
+                enemy_group = [named_zombie2, named_zombie]
+                enemy_list.append(enemy_group)
+
+            print("He snarls and shambles towards you, alerting the rest")
+            zom_num = random.randint(2, 4)
+            print("Turning to run, you find yourself facing", str(zom_num + 1), "zombies\n")
+            print("Looks like you'll be fighting your way through anyway...\n")
+
+            result = fight(zom_num, "zombies")
+
+            if result:
+                zombies_killed_in_func += zom_num
+                print("With nearly all the zombies in your path dead, only", named_zombie, "remains")
+                zom_num = 1
+
+                result = fight(zom_num, "zombies", named_zombie)
+
+                if result:
+                    zombies_killed_in_func += zom_num
+                    if named_zombie == "the Thief":
+                        print("You grab your bag off its back and run off")
+                        print("When you're sure you're not being followed you check it, and everything's there")
+                        for i in bag_items:
+                            add_item(i)
+                            bag_items.remove(i)
+
+                    else:
+                        print("You look down at", named_zombie, "then break into a sprint, leaving the zombies in the dust")
+
+                    print("Heading home, you count yourself lucky for escaping unharmed")
+
+                else:
+                    return False
+            
+            else:
+                return False
+
+        else:
+            print("You creep around a burnt out car, only to find a zombie slouched behind it!")
+            print("It growls, but you haven't alerted the rest just yet\n")
+
+            zom_num = 1
+
+            result = fight(zom_num, "zombies")
+
+            if result:
+                zombies_killed_in_func += zom_num
+
+                print("The zombie is dead, and thankfully none of the others noticed")
+                print("Somehow you manage to slip by the rest, and head home to the", character[7][0])
+                print("But the killer is still out there somewhere...")
+
+            else:
+                return False
+    
+    return zombies_killed_in_func
+
+
+def window_exit(survivor, survivor2, killer):
+    run_for_it = False
+    escape = False
+
+    print("You ask him why and he explains that someone locked the main door, he believes it was", survivor)
+    print("He would have to smash a window to escape, and was afraid someone would hear")
+    print("That seems to check out and the pair of you make your way towards a window in a nearby room")
+
+    chance = random.randint(1, 3)
+
+    if chance == 1 or survivor2 == killer:
+        print("\nBut as you walk behind him you notice his shoes are flecked with blood")
+        print("Will you:\n1. Ask him about the blood\n2. Make a run for it")
+        choice = make_choice()
+
+        if choice == 2:
+            killer = survivor2
+            run_for_it = True
+
+        else:
+            print("You ask him about the blood and he stops and grins")
+            print("He shows you a cut on his palm and explains he tried to crack the glass earlier and cut himself")
+            print("Will you:\n1. Follow him to the window\n2. Make a run for it")
+            choice = make_choice()
+
+            if choice == 1:
+                escape = True
+
+            else:
+                run_for_it = True
+                killer = survivor2
+
+    else:
+        print("You don't see any sign of", survivor, "on your way and you get there with no hassle")
+        escape = True
+
+    if run_for_it:
+        print("Thinking quick you dash the opposite way down the hall")
+        print("Turning the corner you nearly trip on the body of", survivor)
+        print("His throat has been slit and he's dead in a pool of blood!")
+        print("You spin around and", killer, "rounds the corner, leaping over the body\n")
+
+        result = fight(1, "humans", killer)
+
+        if result:
+            print(killer, "lies dead, on his body you find the key for the front door and in his bag you find:")
+            random_item(2, 5, "normal", "no rot")
+            random_item(0, 1, "special")
+
+            print("\nTaking the key, you unlock the door and head home to the", character[7][0])
+            print("You definitely won't forget what happened today...")
+
+        else:
+            return False
+
+    else:
+        print("Entering the room, you see it's well lit by the large window in the centre")
+        print("There's a slight crack in it, and you should be able to smash it open")
+        print("It looks like", survivor2, "was telling the truth")
+        input("Press 1 to continue: ")
+        print(line_break)
+
+        if survivor2 == killer:
+            print("But as you climb up on a desk and look through the window, you notice it's barred")
+            print(survivor2, "never meant to escape and before you can react, he pulls you down and stabs you in the neck...\nYOU DIED")
+            
+            return False
+
+        else:
+            print("You climb up on a desk and look through the window, looks like you can jump down from here")
+            print("Smashing the glass with a paperweight, you climb through")
+            chance = random.randint(1, 2)
+
+            if chance == 1:
+                print("Next up is", survivor2, "and he pushes himself through headfirst before toppling into the bushes outside")
+                print("He gets up and smiles at you, thanking you for trusting him")
+                print("Before he leaves he opens his bag and gives you:")
+                random_item(3, 6, "normal", "no rot")
+
+                print("You thank him and head home, but", survivor, "is still out there somewhere...")
+
+            else:
+                print("Next up is", survivor2, "and he pushes himself through headfirst before stopping halfway")
+                print("You ask him what's wrong, right as he's dragged back inside")
+                print("Hearing his screams cut short, you have no choice but to run")
+                print("You take a detour home, but", survivor, "is still out there somewhere...")
+
+    return True
+
+
+def tunnel_exit(survivor, survivor2, killer, not_zombie_liar):
+    print("You tell him you're looking for a way out now, and he agrees")
+    print("He already tried the front door, but someone locked it")
+    print("\nBut he knows a different way out")
+    print("You tell him to lead the way, and you head down to the ground floor, keeping an eye out for", survivor)
+    print("The two of you walk into the conference room, and he pushes aside a couch to reveal a hidden escape route")
+    print("It was a tunnel used by the politicians during the outbreak, but", survivor2, "was afraid", survivor, "knew about it")
+    print("He says he last saw him upstairs, and now the way should be clear\n")
+
+    chance = random.randint(1, 3)
+    run_for_it = False
+
+    if chance == 1 or survivor2 != killer:
+        input("Press 1 to continue: ")
+        print(line_break)
+
+    else:
+        print("But as you walk over to escape tunnel you notice a bloody handprint on the wall behind the couch")
+        print("Will you:\n1. Mention it to " + survivor2 + "\n2. Make a run for it")
+        choice = make_choice()
+
+        if choice == 1:
+            print(survivor2, "asks you what you're waiting for and you point towards the handprint")
+            print("His face drops as he notices it, and he turns to you to explain")
+
+            if survivor2 == not_zombie_liar:
+                print("He tells you this is where he saw the zombies earlier, and he saw one of them by this couch")
+                print("That must have been what left the handprint")
+
+            else:
+                print("He tells you to be careful, as the killer may have been looking around here for the escape tunnel")
+                print(survivor2, "thinks that", survivor, "must have left the handprint here")
+
+            print("Will you:\n1. Trust " + survivor2 + "\n2. Make a run for it")
+            choice = make_choice()
+
+            if choice == 1:
+                print("Deciding to trust him, you both head over to the escape tunnel")
+
+            else:
+                run_for_it = True
+
+        else:
+            run_for_it = True
+    
+    if survivor2 == killer and not run_for_it:
+        print("You lean over to take a look inside and see the body of " + survivor + "," + " before", survivor2, "slices his knife across your throat and pushes you in...\nYOU DIED")
+
+        return False
+    
+    elif not run_for_it:
+        chance = random.randint(1, 2)
+        print("You both hop down and begin walking along the dark tunnel, as", survivor2, "takes out his flashlight")
+
+        if chance == 1:
+            print("He holds it up and lights up the path, before letting out a low gasp and dropping it to the ground")
+            print("You turn around to see a blade jutting from his neck, and", survivor, "standing behind him")
+            print("\nYou shout in fear and sprint up the tunnel in the dark, somehow pushing aside the manhole on the other side and escaping")
+            print("Horrified at what happened, you run all the way home to the", character[7][0])
+
+        else:
+            print("The murky tunnel is covered in dust and cobwebs, but it's safer than the old building")
+            print("Once you reach the end, you push up a manhole and emerge onto the street")
+            print("It seems deserted, and he shakes your hand before the two of you go your separate ways")
+            print("\nBut before you leave, he thanks you trusting him and promises to repay you in the future\n")
+            survivor_group = [survivor2]
+            character[6].append(survivor_group)
+            print(survivor2, "is now your Friend")
+            print("\nYou turn to towards the old government building knowing", survivor, "is somewhere inside, before you head home")
+    
+    else:
+        print("You pretend to agree with him, before sprinting towards the door")
+        print("Turning sharply to the left and you look over your shoulder, and crash right into", survivor)
+
+        if survivor != killer:
+            print("\nHe grabs you and pushes you ahead, with the keys for the front door in his other hand")
+            print("Checking behind your shoulder again, you see", killer, "run out of the room and give chase")
+            print(killer, "was the killer all along!\n")
+
+            print("The pair of you make for the main door, but", killer, "is hot on your heels")
+
+            chance = random.randint(1, 2)
+
+            if chance == 1:
+                print("He's almost caught up to you when he trips and tumbles forwards, hitting his head on the tiles")
+                print(survivor, "wastes no time, and has the door open before", killer, "can get back up")
+                print("The pair of you jump out into the street as he slams the door and locks it\n")
+
+                print("You're not going to stick around, and you thank", survivor, "before hurrying home...")
+            
+            else:
+                print(survivor, "goes to unlock the door, but he's not going to be quick enough")
+                print("You're going to have to fight " + killer + "!")
+
+                result = fight(1, "humans", killer)
+
+                if result:
+                    print(survivor, "turns around and gasps when he sees the body")
+                    print("You check the killer's bag and find:")
+                    random_item(2, 5, "normal", "no rot")
+                    random_item(0, 1, "special")
+                    print("\nHe thanks you for fighting off the killer and the pair of you step out into the street")
+                    print("Before", survivor, "leaves, he promises to repay you\n")
+                    survivor_group = [survivor]
+                    character[6].append(survivor_group)
+                    print(survivor2, "is now your Friend\n")
+                    print("You head home, shaken but glad you survived...")
+
+                else:
+                    return False
+        
+        else:
+            print("He pushes you away, but his eyes widen when he sees", survivor2, "behind you")
+            print(survivor2, "shouts at you to get away from him, but", survivor, "insists he's on your side!")
+            print("Will you:\n1. Side with " + survivor + "\n2. Side with " + survivor2)
+            choice = make_choice()
+
+            if choice == 1:
+                ally = survivor
+                enemy = survivor2
+
+            elif choice == 2:
+                ally = survivor2
+                enemy = survivor
+
+            result = fight_killer(enemy, ally)
+
+            if result:
+                print("\nYou arrive home before nightfall and sit down to think about what happened...")
+
+            else:
+                return False
+    
+    return True
+
 
 username_list = []
 
@@ -5445,7 +5898,7 @@ while game:
                             print("Dozens of zombies pour out onto the street behind you, and you dive for cover\n")
                             chance = random.randint(1, 4)
 
-                            if day < 10:
+                            if day < 5:
                                 chance = 2
 
                             if chance != 1:
@@ -5528,6 +5981,7 @@ while game:
                             event_survivor_list.append(survivor2)
 
                             zombie_liar = None
+                            not_zombie_liar = None
 
                             if choice == 1:
                                 print("You agree to lend a hand and the group introduce themselves")
@@ -6219,125 +6673,207 @@ while game:
                                                                     killer = survivor2
 
                                                         print("He looks away and recovers himself before asking if you want to team up")
-                                                        print("Will you:\n1. Team up with " + survivor2 + "\n2. Go and look for " + survivor + " on your own")
+                                                        print("Will you:\n1. Team up with " + survivor2 + "\n2. Try and find " + survivor + " instead")
                                                         choice = make_choice()
 
                                                         if choice == 1:
                                                             print("You trust", survivor2, "more than you trust", survivor, "and the two of you decide to work together")
                                                             print("Now that you're a team, you'll have to figure out what to do")
 
-                                                            print("You tell him you're looking for a way out now, and he agrees")
-                                                            print("He already tried the front door, but someone locked it")
-                                                            print("\nBut he knows a different way out")
-                                                            print("You tell him to lead the way, and you head down to the ground floor, keeping an eye out for", survivor)
-                                                            print("The two of you walk into the conference room, and he pushes aside a couch to reveal a hidden escape route")
-                                                            print("It was a tunnel used by the politicians during the outbreak, but", survivor2, "was afraid", survivor, "knew about it")
-                                                            print("He says he last saw him upstairs, and now the way should be clear\n")
+                                                            result = tunnel_exit(survivor, survivor2, killer, not_zombie_liar)
 
-                                                            chance = random.randint(1, 3)
-                                                            run_for_it = False
+                                                            if not result:
+                                                                game = False
+                                                        
+                                                        else:
+                                                            print("You don't trust him, and decide to look for", survivor, "instead")
+                                                            print("He protests but seeing you've made your mind up, he tells you you're making a mistake and leaves")
+                                                            print("Taking care not to make too much noise, you begin your search of the old building\n")
 
-                                                            if chance == 1 or survivor2 != killer:
-                                                                input("Press 1 to continue: ")
-                                                                print(line_break)
+                                                            if zombie_liar != None:
+                                                                print("Suddenly, you hear something moving in a nearby room and as you sneak closer it gets louder")
+                                                                zom_num = 2
+                                                                print("\nWithout warning", zom_num, "zombies crash through the thin office wall to your left!")
+                                                                result = fight(zom_num, "zombies")
+
+                                                                if result:
+                                                                    zombies_killed += zom_num
+                                                                    print("Looks like", zombie_liar, "was right about the zombies after all...")
+
+                                                                else:
+                                                                    game = False
 
                                                             else:
-                                                                print("But as you walk over to escape tunnel you notice a bloody handprint on the wall behind the couch")
-                                                                print("Will you:\n1. Mention it to " + survivor2 + "\n2. Make a run for it")
-                                                                choice = make_choice()
+                                                                print("The building is completely quiet and you check through office after office, finding nothing")
 
-                                                                if choice == 1:
-                                                                    print(survivor2, "asks you what you're waiting for and you point towards the handprint")
-                                                                    print("His face drops as he notices it, and he turns to you to explain")
+                                                            print("\nYour gut tells you to look down the hallway, and you see a man's shadow on the wall")
+                                                            print("It looks like someone is creeping towards you!")
+                                                            print("You duck into cover behind a dusty vending machine and wait\n")
 
-                                                                    if survivor2 == not_zombie_liar:
-                                                                        print("He tells you this is where he saw the zombies earlier, and he saw one of them by this couch")
-                                                                        print("That must have been what left the handprint")
+                                                            chance = random.randint(1, 2)
+                                                            survivor1 = survivor
+
+                                                            if chance == 1:
+                                                                survivor = survivor
+                                                                survivor2 = survivor2
+
+                                                            else:
+                                                                survivor = survivor2
+                                                                survivor2 = survivor
+
+                                                            print("It's " + survivor + "!")
+                                                            print("He must have come looking for you")
+                                                            print("Will you:\n1. Confront him\n2. Hide")
+                                                            choice = make_choice()
+
+                                                            if choice == 1:
+                                                                print("Choosing to confront him, you step out in front of him")
+                                                                chance = random.randint(1, 2)
+
+                                                                if survivor == killer and chance == 1:
+                                                                    print("But he doesn't panic, instead he flashes an evil grin")
+                                                                    print("He was the killer all along!")
+                                                                    print("You shout out " + survivor2 + "'s name, but " + killer + " tells you he's already dead\n")
+                                                                    print("Looks like you'll be on your own in this fight...")
+
+                                                                    result = fight(1, "humans", killer)
+
+                                                                    if result:
+                                                                        print(killer, "is dead, and in his bag you find:")
+                                                                        random_item(2, 5, "normal", "no rot")
+                                                                        random_item(0, 1, "special")
 
                                                                     else:
-                                                                        print("He tells you to be careful, as the killer may have been looking around here for the escape tunnel")
-                                                                        print(survivor2, "thinks that", survivor, "must have left the handprint here")
+                                                                        game = False
 
-                                                                    print("Will you:\n1. Trust " + survivor2 + "\n2. Make a run for it")
+                                                                else:   
+                                                                    if survivor == survivor1:
+                                                                        print(survivor, "jumps back, then looks at you with suspicion")
+                                                                        print("He asks you where you disappeared to earlier, and you tell him about your encounter with", survivor2)
+                                                                        print("His eyes narrow and he tells you he saw him along the way")
+                                                                        print(survivor, "thinks", survivor2, "must be the killer")
+
+                                                                    else:
+                                                                        print(survivor, "jumps back but relaxes when he sees it's you")
+                                                                        print(survivor, "insists he isn't following you, instead he thinks he's being followed by", survivor2)
+                                                                        print("He's glad to see you and you seem to have earned his trust")
+
+                                                                    print("\nBut now he wants to escape and you're not sure why he didn't just leave earlier")
+                                                                    print("Will you:\n1. Agree but ask him why he didn't leave already\n2. Find your own way out")
                                                                     choice = make_choice()
 
                                                                     if choice == 1:
-                                                                        print("Deciding to trust him, you both head over to the escape tunnel")
+                                                                        run_for_it = False
+                                                                        escape = False
 
-                                                                    else:
-                                                                        run_for_it = True
+                                                                        print("You ask him why and he explains that someone locked the main door, he believes it was", survivor2)
+                                                                        print("He would have to smash a window to escape, and was afraid someone would hear")
+                                                                        print("That seems to check out and the pair of you make your way towards a window in a nearby room")
 
-                                                                else:
-                                                                    run_for_it = True
-                                                            
-                                                            if survivor2 == killer and not run_for_it:
-                                                                print("You lean over to take a look inside and see the body of " + survivor + "," + " before", survivor2, "slices his knife across your throat and pushes you in...\nYOU DIED")
-                                                                game = False
-                                                            
-                                                            elif not run_for_it:
-                                                                chance = random.randint(1, 2)
-                                                                print("You both hop down and begin walking along the dark tunnel, as", survivor2, "takes out his flashlight")
+                                                                        chance = random.randint(1, 3)
 
-                                                                if chance == 1:
-                                                                    print("He holds it up and lights up the path, before letting out a low gasp and dropping it to the ground")
-                                                                    print("You turn around to see a blade jutting from his neck, and", survivor, "standing behind him")
-                                                                    print("\nYou shout in fear and sprint up the tunnel in the dark, somehow pushing aside the manhole on the other side and escaping")
-                                                                    print("Horrified at what happened, you run all the way home to the", character[7][0])
+                                                                        if chance == 1 or survivor == killer:
+                                                                            print("\nBut as you walk behind him you notice his shoes are flecked with blood")
+                                                                            print("Will you:\n1. Make a run for it\n2. Ask him about the blood")
+                                                                            choice = make_choice()
 
-                                                                else:
-                                                                    print("The murky tunnel is covered in dust and cobwebs, but it's safer than the old building")
-                                                                    print("Once you reach the end, you push up a manhole and emerge onto the street")
-                                                                    print("It seems deserted, and he shakes your hand before the two of you go your separate ways")
-                                                                    print("\nBut before you leave, he thanks you trusting him and promises to repay you in the future\n")
-                                                                    survivor_group = [survivor2]
-                                                                    character[6].append(survivor_group)
-                                                                    print(survivor2, "is now your Friend")
-                                                                    print("\nYou turn to towards the old government building knowing", survivor, "is somewhere inside, before you head home")
-                                                            
-                                                            else:
-                                                                print("You pretend to agree with him, before sprinting towards the door")
-                                                                print("Turning sharply to the left and you look over your shoulder, and crash right into", survivor)
+                                                                            if choice == 1:
+                                                                                killer = survivor
+                                                                                run_for_it = True
 
-                                                                if survivor != killer:
-                                                                    print("\nHe grabs you and pushes you ahead, with the keys for the front door in his other hand")
-                                                                    print("Checking behind your shoulder again, you see", killer, "run out of the room and give chase")
-                                                                    print(killer, "was the killer all along!\n")
+                                                                            else:
+                                                                                print("You ask him about the blood and he stops and smiles")
+                                                                                print("He shows you a cut on his palm and explains he tried to crack the glass earlier and cut himself")
+                                                                                print("Will you:\n1. Follow him to the window\n2. Make a run for it")
+                                                                                choice = make_choice()
 
-                                                                    print("The pair of you make for the main door, but", killer, "is hot on your heels")
+                                                                                if choice == 1:
+                                                                                    escape = True
 
-                                                                    chance = random.randint(1, 2)
-
-                                                                    if chance == 1:
-                                                                        print("He's almost caught up to you when he trips and tumbles forwards, hitting his head on the tiles")
-                                                                        print(survivor, "wastes no time, and has the door open before", killer, "can get back up")
-                                                                        print("The pair of you jump out into the street as he slams the door and locks it\n")
-
-                                                                        print("You're not going to stick around, and you thank", survivor, "before hurrying home...")
-                                                                    
-                                                                    else:
-                                                                        print(survivor, "goes to unlock the door, but he's not going to be quick enough")
-                                                                        print("You're going to have to fight " + killer + "!")
-
-                                                                        result = fight(1, "humans", killer)
-
-                                                                        if result:
-                                                                            print(survivor, "turns around and gasps when he sees the body")
-                                                                            print("You check the killer's bag and find:")
-                                                                            random_item(2, 5, "normal", "no rot")
-                                                                            random_item(0, 1, "special")
-                                                                            print("\nHe thanks you for fighting off the killer and the pair of you step out into the street")
-                                                                            print("Before", survivor, "leaves, he promises to repay you\n")
-                                                                            survivor_group = [survivor]
-                                                                            character[6].append(survivor_group)
-                                                                            print(survivor2, "is now your Friend\n")
-                                                                            print("You head home, shaken but glad you survived...")
+                                                                                else:
+                                                                                    run_for_it = True
+                                                                                    killer = survivor2
 
                                                                         else:
+                                                                            print("\nYou don't see any sign of", survivor2, "on your way and you get there with no hassle")
+                                                                            escape = True
+
+                                                                        if run_for_it:
+                                                                            print("Thinking quick you dash the opposite way down the hall")
+                                                                            print("Turning the corner you nearly trip on the body of", survivor2)
+                                                                            print("His throat has been slit and he's dead in a pool of blood!")
+                                                                            print("\nYou spin around and", killer, "rounds the corner, leaping over the body\n")
+
+                                                                            result = fight(1, "humans", killer)
+
+                                                                            if result:
+                                                                                print(killer, "lies dead, on his body you find the key for the front door and in his bag you find:")
+                                                                                random_item(2, 5, "normal", "no rot")
+                                                                                random_item(0, 1, "special")
+
+                                                                                print("\nTaking the key, you unlock the door and head home to the", character[7][0])
+                                                                                print("You definitely won't forget what happened today...")
+
+                                                                            else:
+                                                                                game = False
+
+                                                                        else:
+                                                                            print("Entering the room, you see it's well lit by the large window in the centre")
+                                                                            print("There's a slight crack in it, and you should be able to smash it open")
+                                                                            print("\nIt looks like", survivor, "was telling the truth")
+                                                                            input("Press 1 to continue: ")
+                                                                            print(line_break)
+
+                                                                            if survivor == killer:
+                                                                                print("But as you climb up on a desk and look through the window, you notice it's barred")
+                                                                                print(survivor, "never meant to escape and before you can react, he pulls you down and stabs you in the neck...\nYOU DIED")
+                                                                                game = False
+
+                                                                            else:
+                                                                                print("You climb up on a desk and look through the window, looks like you can jump down from here")
+                                                                                print("Smashing the glass with a paperweight, you climb through")
+                                                                                chance = random.randint(1, 2)
+
+                                                                                if chance == 1:
+                                                                                    print("Next up is", survivor, "and he pushes himself through headfirst before toppling into the bushes outside")
+                                                                                    print("He gets up and smiles at you, thanking you for trusting him")
+                                                                                    print("Before he leaves he opens his bag and gives you:")
+                                                                                    random_item(3, 6, "normal", "no rot")
+
+                                                                                    print("You thank him and head home, but", killer, "is still out there somewhere...")
+
+                                                                                else:
+                                                                                    print("Next up is", survivor, "and he pushes himself through head first before stopping halfway\n")
+                                                                                    print("You ask him what's wrong, right as he's dragged back inside")
+                                                                                    print("Hearing his screams cut short, you have no choice but to run")
+                                                                                    print("You take a detour home, but", killer, "is still out there somewhere...")
+
+                                                                    else:
+                                                                        print("Something about this doesn't add up, and you decide to escape by yourself instead")
+                                                                        print("Without warning you sprint off down a hallway and up a flight of stairs, losing him...\n")
+
+                                                                        result = fire_escape_exit(survivor, survivor2)
+
+                                                                        if result == 0:
+                                                                            result = -1
+
+                                                                        if not result:
                                                                             game = False
-                                                                
-                                                                else:
-                                                                    print("He pushes you away, but his eyes widen when he sees", survivor2, "behind you")
-                                                                    print(survivor2, "shouts at you to get away from him, but", survivor, "insists he's on your side!")
+
+                                                                        else:
+                                                                            if result > 0:
+                                                                                zombies_killed += result
+
+                                                            else:
+                                                                print("You choose to remain hidden in the shadows and watch")
+
+                                                                chance = random.randint(1, 2)
+
+                                                                if chance == 1:
+                                                                    print("You're focused on", survivor, "and turn around just in time to see", survivor2, "coming up the other end of the hallway!")
+                                                                    print("With no other choice you jump out of hiding and stand between the two of them")
+                                                                    print("One of them has to be the killer")
+
                                                                     print("Will you:\n1. Side with " + survivor + "\n2. Side with " + survivor2)
                                                                     choice = make_choice()
 
@@ -6351,8 +6887,34 @@ while game:
 
                                                                     result = fight_killer(enemy, ally)
 
+                                                                    if not result:
+                                                                        game = False
+
+                                                                elif chance == 2:
+                                                                    print("He hasn't seen you yet, but keeps searching")
+                                                                    print("Maybe he's searching for you to team up, or perhaps to kill you...\n")
+
+                                                                    if survivor == killer:
+                                                                        print("Suddenly he ducks down out of sight, and", survivor2, "emerges from an adjacent room")
+                                                                        print("You don't make a sound as", survivor2, "creeps through, only for", survivor, "to grab him and slit his throat!")
+                                                                        print("He drops the body too the floor and looks up, and directly at you!")
+
+                                                                    else:
+                                                                        print("He ducks into a dark room, then shouts and falls silent")
+                                                                        print("A moment passes then", survivor2, "walks out, covered in blood")
+                                                                        print("Horrified, you can only watch as he begins to walk towards your hiding spot...")
+                                                                    
+                                                                    print("\nYou have no choice you'll have to fight him!")
+
+                                                                    result = fight(1, "humans", killer)
+
                                                                     if result:
-                                                                        print("\nYou arrive home before nightfall and sit down to think about what happened...")
+                                                                        print(killer, "lies dead, on his body you find the key for the front door and in his bag you find:")
+                                                                        random_item(2, 5, "normal", "no rot")
+                                                                        random_item(0, 1, "special")
+
+                                                                        print("\nTaking the key, you unlock the door and head home to the", character[7][0])
+                                                                        print("You definitely won't forget what happened today...")
 
                                                                     else:
                                                                         game = False
@@ -6412,90 +6974,10 @@ while game:
                                                                 choice = make_choice()
 
                                                                 if choice == 1:
-                                                                    run_for_it = False
-                                                                    escape = False
+                                                                    result = window_exit(survivor, survivor2, killer)
 
-                                                                    print("You ask him why and he explains that someone locked the main door, he believes it was", survivor)
-                                                                    print("He would have to smash a window to escape, and was afraid someone would hear")
-                                                                    print("That seems to check out and the pair of you make your way towards a window in a nearby room")
-
-                                                                    chance = random.randint(1, 3)
-
-                                                                    if chance == 1 or survivor2 == killer:
-                                                                        print("\nBut as you walk behind him you notice his shoes are flecked with blood")
-                                                                        print("Will you:\n1. Make a run for it\n2. Ask him about the blood")
-                                                                        choice = make_choice()
-
-                                                                        if choice == 1:
-                                                                            killer = survivor2
-                                                                            run_for_it = True
-
-                                                                        else:
-                                                                            print("You ask him about the blood and he stops and grins")
-                                                                            print("He shows you a cut on his palm and explains he tried to crack the glass earlier and cut himself")
-                                                                            print("Will you:\n1. Follow him to the window\n2. Make a run for it")
-                                                                            choice = make_choice()
-
-                                                                            if choice == 1:
-                                                                                escape = True
-
-                                                                            else:
-                                                                                run_for_it = True
-                                                                                killer = survivor2
-
-                                                                    else:
-                                                                        print("You don't see any sign of", survivor, "on your way and you get there with no hassle")
-                                                                        escape = True
-
-                                                                    if run_for_it:
-                                                                        print("Thinking quick you dash the opposite way down the hall")
-                                                                        print("Turning the corner you nearly trip on the body of", survivor)
-                                                                        print("His throat has been slit and he's dead in a pool of blood!")
-                                                                        print("\nYou spin around and", killer, "rounds the corner, leaping over the body")
-
-                                                                        result = fight(1, "humans", killer)
-
-                                                                        if result:
-                                                                            print(killer, "lies dead, on his body you find the key for the front door and in his bag you find:")
-                                                                            random_item(2, 5, "normal", "no rot")
-                                                                            random_item(0, 1, "special")
-
-                                                                            print("\nTaking the key, you unlock the door and head home to the", character[7][0])
-                                                                            print("You definitely won't forget what happened today...")
-
-                                                                        else:
-                                                                            game = False
-
-                                                                    else:
-                                                                        print("Entering the room, you see it's well lit by the large window in the centre")
-                                                                        print("There's a slight crack in it, and you should be able to smash it open")
-                                                                        print("It looks like", survivor2, "was telling the truth")
-                                                                        input("Press 1 to continue: ")
-                                                                        print(line_break)
-
-                                                                        if survivor2 == killer:
-                                                                            print("But as you climb up on a desk and look through the window, you notice it's barred")
-                                                                            print(survivor2, "never meant to escape and before you can react, he pulls you down and stabs you in the neck...\nYOU DIED")
-                                                                            game = False
-
-                                                                        else:
-                                                                            print("You climb up on a desk and look through the window, looks like you can jump down from here")
-                                                                            print("Smashing the glass with a paperweight, you climb through")
-                                                                            chance = random.randint(1, 2)
-
-                                                                            if chance == 1:
-                                                                                print("Next up is", survivor2, "and he pushes himself through headfirst before toppling into the bushes outside")
-                                                                                print("He gets up and smiles at you, thanking you for trusting him\n")
-                                                                                print("Before he leaves he opens his bag and gives you:")
-                                                                                random_item(3, 6, "normal", "no rot")
-
-                                                                                print("You thank him and head home, but", survivor, "is still out there somewhere...")
-
-                                                                            else:
-                                                                                print("Next up is", survivor2, "and he pushes himself through head first before stopping halfway")
-                                                                                print("You ask him what's wrong, right as he's dragged back inside")
-                                                                                print("Hearing his screams cut short, you have no choice but to run")
-                                                                                print("You take a detour home, but", survivor, "is still out there somewhere...")
+                                                                    if not result:
+                                                                        game = False
 
                                                                 else:
                                                                     print("He hesitates, then nods and agrees")
@@ -6662,7 +7144,7 @@ while game:
 
                                                                     else:
                                                                         print("Blood covers your fingers and you slip, falling backwards")
-                                                                        print("When you blink your eyes open his bloody face is staring down at you, and the last thing you see is the blade of his machete...\nYOU DIED")
+                                                                        print("When you blink your eyes open he's staring down at you, and the last thing you see is the blade of his machete...\nYOU DIED")
                                                                         game = False
                                                                 
                                                                 else:
@@ -6715,7 +7197,9 @@ while game:
                                             if choice == 1:
                                                 print("Choosing to confront him, you step out in front of him")
 
-                                                if survivor == killer:
+                                                chance = random.randint(1, 2)
+
+                                                if survivor == killer and chance == 1:
                                                     print("But he doesn't panic, instead he flashes an evil grin")
                                                     print("He was the killer all along!")
                                                     print("You shout out " + survivor2 + "'s name, but " + killer + " tells you he's already dead\n")
@@ -6830,206 +7314,17 @@ while game:
                                                         print("Something about this doesn't add up, and you decide to escape by yourself instead")
                                                         print("Without warning you sprint off down a hallway and up a flight of stairs, losing him...\n")
 
-                                                        print("Deciding against the main door, you look for an alternative and spot signs pointing towards a fire exit")
-                                                        print("Hopeful of a way out, you hurry along until you reach a room with a large window on the wall")
-                                                        print("It's slightly ajar, and light shines through the dusty air\n")
-                                                        input("Press 1 to continue: ")
-                                                        print(line_break)
-                                                        print("You push the window open and peer out, it's a fire escape!")
-                                                        print("Stepping out and looking down into the alleyway, you see it's full of zombies!")
-                                                        print("Taking care not to make any noise, you make your way down the narrow stairway\n")
+                                                        result = fire_escape_exit(survivor, survivor2)
 
-                                                        chance = random.randint(1, 2)
+                                                        if result == 0:
+                                                            result = -1
 
-                                                        if chance == 1:
-                                                            print("But someone jumps out the window above you and races down the stairs!")
-                                                            
-                                                            chance = random.randint(1, 2)
+                                                        if not result:
+                                                            game = False
 
-                                                            if chance == 1:
-                                                                last_survivor = survivor
-
-                                                            else:
-                                                                last_survivor = survivor2
-
-                                                            print("It's " + last_survivor + "!")
-
-                                                            print("He sees you and goes to shout something but slips and tumbles off the side")
-                                                            print("Just about managing to hold on, he swings high above the ground")
-                                                            print(last_survivor, "shouts in fear as he sees the zombies gathered below him and begs for your help")
-                                                            print("Will you:\n1. Save him\n2. Leave him for the zombies")
-
-                                                            choice = make_choice()
-
-                                                            if choice == 1:
-                                                                print("You can't just let him die like this, grabbing his arm and pulling him up")
-
-                                                                if last_survivor != killer:
-                                                                    print("He thanks you profusely, but you still need to get yourselves out of this mess")
-                                                                    print(last_survivor, "grabs you and points toward a gap near the end of the alleyway\n")
-                                                                    print("It looks like his fall brought most of the zombies underneath you")
-                                                                    print("Thinking quick, the pair of you slide down the fire escape ladder and make a run for it\n")
-                                                                    input("Press 1 to continue: ")
-                                                                    print(line_break)
-
-                                                                    chance = random.randint(1, 2)
-
-                                                                    if chance == 1:
-                                                                        print("Somehow the two of you make it through and get away from the dozens of undead unharmed")
-                                                                        print("You've saved", survivor, "and he owes you his life\n")
-                                                                        print("He opens up his bag and gives you:")
-                                                                        random_item(3, 6, "normal", "no rot")
-                                                                        survivor_group = [last_survivor]
-                                                                        character[6].append(survivor_group)
-                                                                        print()
-                                                                        print(last_survivor, "is now your Friend")
-                                                                        print("\nAfter this you say goodbye and head home, glad to have escaped this place in one piece")
-
-                                                                    else:
-                                                                        print("But you're not fast enough, and the zombies begin to close around you!")
-                                                                        chance = random.randint(1, 2)
-
-                                                                        if chance == 1:
-                                                                            print("An undead hand grabs you and pulls you back, but", last_survivor, "hacks it off and helps you up")
-                                                                            print("The two of you are surrounded now and as you prepare for a last stand,", last_survivor, "nods at you and wishes you good luck\n")
-                                                                            print("Before you can say anything he charges into the group of zombies and they pool around him")
-                                                                            print("A gap opens up in the wall of zombies and you punch through, thanking him for his sacrifice\n")
-                                                                            print("You get away unscathed, and on your way back home your mourn today's victims...")
-
-                                                                        else:
-                                                                            print("Looks like you'll have to fight your way through!")
-                                                                            zom_num = random.randint(3, 6)
-
-                                                                            result = fight(zom_num, "zombies")
-
-                                                                            if result:
-                                                                                zombies_killed += zom_num
-
-                                                                                print("You've made it out the other side, and as you turn back you see", last_survivor, "has too")
-                                                                                print("The pair of you exit the alleyway and lose the zombies, before stopping to catch your breath\n")
-                                                                                print("You've saved", survivor, "and he owes you his life")
-                                                                                print("He opens up his bag and gives you:")
-                                                                                random_item(3, 6, "normal", "no rot")
-                                                                                survivor_group = [last_survivor]
-                                                                                character[6].append(survivor_group)
-                                                                                print()
-                                                                                print(last_survivor, "is now your Friend")
-                                                                                print("\nAfter this you say goodbye and head home, glad to have escaped this place in one piece")
-
-                                                                            else:
-                                                                                game = False
-
-                                                                else:
-                                                                    print("But he doesn't thank you, and instead flashes an evil grin")
-                                                                    print(last_survivor, "was the killer all along!\n")
-                                                                    result = fight(1, "humans", last_survivor)
-
-                                                                    if result:
-                                                                        print("The killer lies dead and the zombies swarm below you")
-                                                                        print("Picking up his body, you heave it over the rails and drop it into their outstretched hands")
-                                                                        print("Using it as a distraction you manage to escape, you can't risk heading back into the building now the zombies know you're here...")
-
-                                                                        print("Heading back to the", character[7][0], "you think about what happened today...")
-
-                                                                    else:
-                                                                        game = False
-                                                            
-                                                            else:
-                                                                print("You never trusted him, and you watch as his grip weakens and he falls to his death")
-                                                                print("As soon as his body hits the ground he's swarmed by zombies and you turn to make your escape")
-                                                                print("You slide down the ladder and run for the street\n")
-
-                                                                chance = random.randint(1, 2)
-
-                                                                if chance == 1:
-                                                                    zom_num = random.randint(2, 3)
-                                                                    print("But there are", zom_num, "zombies in your way!")
-
-                                                                    result = fight(zom_num, "zombies")
-
-                                                                    if result:
-                                                                        zombies_killed += zom_num
-                                                                        print("You fight your way through, taking one last look back at the old building before heading home...")
-
-                                                                    else:
-                                                                        game = False
-                                                                
-                                                                else:
-                                                                    print("It looks like all the zombies are distracted with " + last_survivor + "'s body")
-                                                                    print("Your path is clear and you head home unscathed, wondering if you made the right choice...")
-                                                        
                                                         else:
-                                                            print("They haven't noticed you yet, and you manage to climb down and hide behind some bins without making any noise")
-                                                            print("The zombies are mostly gathered around the far end of the alleyway, looks like you might be able to sneak through\n")
-                                                            print("You stick to the shadows and begin to sneak up the alleyway")
-
-                                                            chance = random.randint(1, 2)
-
-                                                            if chance == 1 or len(zombie_survivors) > 0:
-                                                                if len(zombie_survivors) > 0:
-                                                                    print("Hearing movement to your right, you stare directly into the eyes of a familiar zombie")
-                                                                    if len(zombie_survivors) > 1:
-                                                                        named_zombie_group = zombie_survivors[random.randint(0, len(zombie_survivors) - 1)]
-                                                                        named_zombie = named_zombie_group[0]
-
-                                                                    else:
-                                                                        named_zombie_group = zombie_survivors[0]
-                                                                        named_zombie = named_zombie_group[0]
-
-                                                                    if len(named_zombie_group) > 1:
-                                                                        missing_friend = True
-                                                                        named_zombie2 = named_zombie_group[1]
-
-                                                                    print("\nIt's " + named_zombie + "!\n")
-                                                                    if missing_friend:
-                                                                        enemy_group = [named_zombie2, named_zombie]
-                                                                        enemy_list.append(enemy_group)
-
-                                                                    print("He snarls and shambles towards you, alerting the rest")
-                                                                    zom_num = random.randint(2, 4)
-                                                                    print("Turning to run, you find yourself facing", str(zom_num + 1), "zombies\n")
-                                                                    print("Looks like you'll be fighting your way through anyway...\n")
-
-                                                                    result = fight(zom_num, "zombies")
-
-                                                                    if result:
-                                                                        print("With nearly all the zombies in your path dead, only", named_zombie, "remains")
-
-                                                                        result = fight(1, "zombies", named_zombie)
-
-                                                                        if result:
-                                                                            if named_zombie == "the Thief":
-                                                                                print("You grab your bag off its back and run off")
-                                                                                print("When you're sure you're not being followed you check it, and everything's there")
-                                                                                for i in bag_items:
-                                                                                    add_item(i)
-                                                                                    bag_items.remove(i)
-
-                                                                            else:
-                                                                                print("You look down at", named_zombie, "then break into a sprint, leaving the zombies in the dust")
-
-                                                                            print("Heading home, you count yourself lucky for escaping unharmed")
-
-                                                                        else:
-                                                                            game = False
-                                                                    
-                                                                    else:
-                                                                        game = False
-
-                                                                else:
-                                                                    print("You creep around a burnt out car, only to find a zombie slouched behind it!")
-                                                                    print("It growls, but you haven't alerted the rest just yet\n")
-
-                                                                    result = fight(1, "zombies")
-
-                                                                    if result:
-                                                                        print("The zombie is dead, and thankfully none of the others noticed")
-                                                                        print("Somehow you manage to slip by the rest, and head home to the", character[7][0])
-                                                                        print("But the killer is still out there somewhere...")
-
-                                                                    else:
-                                                                        game = False
-
+                                                            if result > 0:
+                                                                zombies_killed += result
                                             else:
                                                 print("You choose to remain hidden in the shadows and watch")
 
@@ -7102,7 +7397,7 @@ while game:
                                         taken_names.remove(survivor)
                                         survivor2 = taken_names[0]
 
-                                        chance = random.randint(1, 3)
+                                        chance = random.randint(1, 2)
 
                                         if chance == 1 or survivor == killer:
                                             print("\nYou turn around, and", survivor, "is standing behind you!")
@@ -7120,7 +7415,7 @@ while game:
 
                                                 chance = random.randint(1, 3)
 
-                                                if survivor == killer or chance != 1:
+                                                if survivor == killer or chance == 1:
                                                     print("Suddenly", survivor, "ducks down beside a door and gestures for you to do the same")
                                                     print("His eyes are wide and he whispers to you that he thinks", survivor2, "is inside")
                                                     print("He gestures for you to go inside, but it's dark and you can't see anything from here")
@@ -7149,7 +7444,7 @@ while game:
                                                             result = fight(1, "humans", survivor)
 
                                                             if result:
-                                                                print(survivor + " lies dead, and when you check the room you find" + survivor2 + "'s body")
+                                                                print(survivor + " lies dead, and when you check the room you find " + survivor2 + "'s body")
                                                                 print("You're sorry you couldn't save him, but what's done is done")
 
                                                             else:
@@ -7223,7 +7518,7 @@ while game:
                                                 if choice == 1:
                                                     print("You dive into a cramped office, but you keep the door open to try and see who it is")
                                                     print("You hear the footsteps get louder, then", killer, "peers into the room")
-                                                    print("His machete glints as it catches the light, and he stares into the darkness before moving on")
+                                                    print("His weapon glints as it catches the light, and he stares into the darkness before moving on")
 
                                                     if killer == survivor:
                                                         print("He's probably looking for", survivor2, "but you keep quiet just in case")
@@ -7291,339 +7586,26 @@ while game:
                                                             print("You trust", survivor2, "more than you trust", survivor, "and the two of you decide to work together")
                                                             print("Now that you're a team, you'll have to figure out what to do")
 
-                                                            print("You tell him you're looking for a way out now, and he agrees")
-                                                            print("He already tried the front door, but someone locked it")
-                                                            print("\nBut he knows a different way out")
-                                                            print("You tell him to lead the way, and you head down to the ground floor, keeping an eye out for", survivor)
-                                                            print("The two of you walk into the conference room, and he pushes aside a couch to reveal a hidden escape route")
-                                                            print("It was a tunnel used by the politicians during the outbreak, but", survivor2, "was afraid", survivor, "knew about it")
-                                                            print("He says he last saw him upstairs, and now the way should be clear\n")
+                                                            result = tunnel_exit(survivor, survivor2, killer, not_zombie_liar)
 
-                                                            chance = random.randint(1, 3)
-                                                            run_for_it = False
-
-                                                            if chance == 1 or survivor2 != killer:
-                                                                input("Press 1 to continue: ")
-                                                                print(line_break)
-
-                                                            else:
-                                                                print("But as you walk over to escape tunnel you notice a bloody handprint on the wall behind the couch")
-                                                                print("Will you:\n1. Mention it to " + survivor2 + "\n2. Make a run for it")
-                                                                choice = make_choice()
-
-                                                                if choice == 1:
-                                                                    print(survivor2, "asks you what you're waiting for and you point towards the handprint")
-                                                                    print("His face drops as he notices it, and he turns to you to explain")
-
-                                                                    if survivor2 == not_zombie_liar:
-                                                                        print("He tells you this is where he saw the zombies earlier, and he saw one of them by this couch")
-                                                                        print("That must have been what left the handprint")
-
-                                                                    else:
-                                                                        print("He tells you to be careful, as the killer may have been looking around here for the escape tunnel")
-                                                                        print(survivor2, "thinks that", survivor, "must have left the handprint here")
-
-                                                                    print("Will you:\n1. Trust " + survivor2 + "\n2. Make a run for it")
-                                                                    choice = make_choice()
-
-                                                                    if choice == 1:
-                                                                        print("Deciding to trust him, you both head over to the escape tunnel")
-
-                                                                    else:
-                                                                        run_for_it = True
-
-                                                                else:
-                                                                    run_for_it = True
-                                                            
-                                                            if survivor2 == killer and not run_for_it:
-                                                                print("You lean over to take a look inside and see the body of " + survivor + "," + " before", survivor2, "slices his knife across your throat and pushes you in...\nYOU DIED")
+                                                            if not result:
                                                                 game = False
-                                                            
-                                                            elif not run_for_it:
-                                                                chance = random.randint(1, 2)
-                                                                print("You both hop down and begin walking along the dark tunnel, as", survivor2, "takes out his flashlight")
-
-                                                                if chance == 1:
-                                                                    print("He holds it up and lights up the path, before letting out a low gasp and dropping it to the ground")
-                                                                    print("You turn around to see a blade jutting from his neck, and", survivor, "standing behind him")
-                                                                    print("\nYou shout in fear and sprint up the tunnel in the dark, somehow pushing aside the manhole on the other side and escaping")
-                                                                    print("Horrified at what happened, you run all the way home to the", character[7][0])
-
-                                                                else:
-                                                                    print("The murky tunnel is covered in dust and cobwebs, but it's safer than the old building")
-                                                                    print("Once you reach the end, you push up a manhole and emerge onto the street")
-                                                                    print("It seems deserted, and he shakes your hand before the two of you go your separate ways")
-                                                                    print("\nBut before you leave, he thanks you trusting him and promises to repay you in the future\n")
-                                                                    survivor_group = [survivor2]
-                                                                    character[6].append(survivor_group)
-                                                                    print(survivor2, "is now your Friend")
-                                                                    print("\nYou turn to towards the old government building knowing", survivor, "is somewhere inside, before you head home")
-                                                            
-                                                            else:
-                                                                print("You pretend to agree with him, before sprinting towards the door")
-                                                                print("Turning sharply to the left and you look over your shoulder, and crash right into", survivor)
-
-                                                                if survivor != killer:
-                                                                    print("\nHe grabs you and pushes you ahead, with the keys for the front door in his other hand")
-                                                                    print("Checking behind your shoulder again, you see", killer, "run out of the room and give chase")
-                                                                    print(killer, "was the killer all along!\n")
-
-                                                                    print("The pair of you make for the main door, but", killer, "is hot on your heels")
-
-                                                                    chance = random.randint(1, 2)
-
-                                                                    if chance == 1:
-                                                                        print("He's almost caught up to you when he trips and tumbles forwards, hitting his head on the tiles")
-                                                                        print(survivor, "wastes no time, and has the door open before", killer, "can get back up")
-                                                                        print("The pair of you jump out into the street as he slams the door and locks it\n")
-
-                                                                        print("You're not going to stick around, and you thank", survivor, "before hurrying home...")
-                                                                    
-                                                                    else:
-                                                                        print(survivor, "goes to unlock the door, but he's not going to be quick enough")
-                                                                        print("You're going to have to fight " + killer + "!")
-
-                                                                        result = fight(1, "humans", killer)
-
-                                                                        if result:
-                                                                            print(survivor, "turns around and gasps when he sees the body")
-                                                                            print("You check the killer's bag and find:")
-                                                                            random_item(2, 5, "normal", "no rot")
-                                                                            random_item(0, 1, "special")
-                                                                            print("\nHe thanks you for fighting off the killer and the pair of you step out into the street")
-                                                                            print("Before", survivor, "leaves, he promises to repay you\n")
-                                                                            survivor_group = [survivor]
-                                                                            character[6].append(survivor_group)
-                                                                            print(survivor2, "is now your Friend\n")
-                                                                            print("You head home, shaken but glad you survived...")
-
-                                                                        else:
-                                                                            game = False
-                                                                
-                                                                else:
-                                                                    print("He pushes you away, but his eyes widen when he sees", survivor2, "behind you")
-                                                                    print(survivor2, "shouts at you to get away from him, but", survivor, "insists he's on your side!")
-                                                                    print("Will you:\n1. Side with " + survivor + "\n2. Side with " + survivor2)
-                                                                    choice = make_choice()
-
-                                                                    if choice == 1:
-                                                                        ally = survivor
-                                                                        enemy = survivor2
-
-                                                                    elif choice == 2:
-                                                                        ally = survivor2
-                                                                        enemy = survivor
-
-                                                                    result = fight_killer(enemy, ally)
-
-                                                                    if result:
-                                                                        print("\nYou arrive home before nightfall and sit down to think about what happened...")
-
-                                                                    else:
-                                                                        game = False
 
                                                         elif choice == 2:
                                                             print("You don't quite buy " + survivor2 + "'s" + " story and decide to find a way out of here on your own")
                                                             print("He protests against this decision, but all he can do is watch as you run off..\n")
-                                                            print("Deciding against the main door, you look for an alternative and spot signs pointing towards a fire exit")
-                                                            print("Hopeful of a way out, you hurry along until you reach a room with a large window on the wall")
-                                                            print("It's slightly ajar, and light shines through the dusty air\n")
-                                                            input("Press 1 to continue: ")
-                                                            print(line_break)
-                                                            print("You push the window open and peer out, it's a fire escape!")
-                                                            print("Stepping out and looking down into the alleyway, you see it's full of zombies!")
-                                                            print("Taking care not to make any noise, you make your way down the narrow stairway\n")
 
-                                                            chance = random.randint(1, 2)
+                                                            result = fire_escape_exit(survivor, survivor2)
 
-                                                            if chance == 1:
-                                                                print("But someone jumps out the window above you and races down the stairs!")
-                                                                
-                                                                chance = random.randint(1, 2)
+                                                            if result == 0:
+                                                                result = -1
 
-                                                                if chance == 1:
-                                                                    last_survivor = survivor
-
-                                                                else:
-                                                                    last_survivor = survivor2
-
-                                                                print("It's " + last_survivor + "!")
-
-                                                                print("He sees you and goes to shout something but slips and tumbles off the side")
-                                                                print("Just about managing to hold on, he swings high above the ground")
-                                                                print(last_survivor, "shouts in fear as he sees the zombies gathered below him and begs for your help")
-                                                                print("Will you:\n1. Save him\n2. Leave him for the zombies")
-
-                                                                choice = make_choice()
-
-                                                                if choice == 1:
-                                                                    print("You can't just let him die like this, grabbing his arm and pulling him up")
-
-                                                                    if last_survivor != killer:
-                                                                        print("He thanks you profusely, but you still need to get yourselves out of this mess")
-                                                                        print(last_survivor, "grabs you and points toward a gap near the end of the alleyway\n")
-                                                                        print("It looks like his fall brought most of the zombies underneath you")
-                                                                        print("Thinking quick, the pair of you slide down the fire escape ladder and make a run for it\n")
-                                                                        input("Press 1 to continue: ")
-                                                                        print(line_break)
-
-                                                                        chance = random.randint(1, 2)
-
-                                                                        if chance == 1:
-                                                                            print("Somehow the two of you make it through and get away from the dozens of undead unharmed")
-                                                                            print("You've saved", survivor, "and he owes you his life\n")
-                                                                            print("He opens up his bag and gives you:")
-                                                                            random_item(3, 6, "normal", "no rot")
-                                                                            survivor_group = [last_survivor]
-                                                                            character[6].append(survivor_group)
-                                                                            print()
-                                                                            print(last_survivor, "is now your Friend")
-                                                                            print("\nAfter this you say goodbye and head home, glad to have escaped this place in one piece")
-
-                                                                        else:
-                                                                            print("But you're not fast enough, and the zombies begin to close around you!")
-                                                                            chance = random.randint(1, 2)
-
-                                                                            if chance == 1:
-                                                                                print("An undead hand grabs you and pulls you back, but", last_survivor, "hacks it off and helps you up")
-                                                                                print("The two of you are surrounded now and as you prepare for a last stand,", last_survivor, "nods at you and wishes you good luck\n")
-                                                                                print("Before you can say anything he charges into the group of zombies and they pool around him")
-                                                                                print("A gap opens up in the wall of zombies and you punch through, thanking him for his sacrifice\n")
-                                                                                print("You get away unscathed, and on your way back home your mourn today's victims...")
-
-                                                                            else:
-                                                                                print("Looks like you'll have to fight your way through!")
-                                                                                zom_num = random.randint(3, 6)
-
-                                                                                result = fight(zom_num, "zombies")
-
-                                                                                if result:
-                                                                                    zombies_killed += zom_num
-
-                                                                                    print("You've made it out the other side, and as you turn back you see", last_survivor, "has too")
-                                                                                    print("The pair of you exit the alleyway and lose the zombies, before stopping to catch your breath\n")
-                                                                                    print("You've saved", survivor, "and he owes you his life")
-                                                                                    print("He opens up his bag and gives you:")
-                                                                                    random_item(3, 6, "normal", "no rot")
-                                                                                    survivor_group = [last_survivor]
-                                                                                    character[6].append(survivor_group)
-                                                                                    print()
-                                                                                    print(last_survivor, "is now your Friend")
-                                                                                    print("\nAfter this you say goodbye and head home, glad to have escaped this place in one piece")
-
-                                                                                else:
-                                                                                    game = False
-
-                                                                    else:
-                                                                        print("But he doesn't thank you, and instead flashes an evil grin")
-                                                                        print(last_survivor, "was the killer all along!\n")
-                                                                        result = fight(1, "humans", last_survivor)
-
-                                                                        if result:
-                                                                            print("The killer lies dead and the zombies swarm below you")
-                                                                            print("Picking up his body, you heave it over the rails and drop it into their outstretched hands")
-                                                                            print("Using it as a distraction you manage to escape, you can't risk heading back into the building now the zombies know you're here...")
-
-                                                                            print("Heading back to the", character[7][0], "you think about what happened today...")
-
-                                                                        else:
-                                                                            game = False
-                                                                
-                                                                else:
-                                                                    print("You never trusted him, and you watch as his grip weakens and he falls to his death")
-                                                                    print("As soon as his body hits the ground he's swarmed by zombies and you turn to make your escape")
-                                                                    print("You slide down the ladder and run for the street\n")
-
-                                                                    chance = random.randint(1, 2)
-
-                                                                    if chance == 1:
-                                                                        zom_num = random.randint(2, 3)
-                                                                        print("But there are", zom_num, "zombies in your way!")
-
-                                                                        result = fight(zom_num, "zombies")
-
-                                                                        if result:
-                                                                            zombies_killed += zom_num
-                                                                            print("You fight your way through, taking one last look back at the old building before heading home...")
-
-                                                                        else:
-                                                                            game = False
-                                                                    
-                                                                    else:
-                                                                        print("It looks like all the zombies are distracted with " + last_survivor + "'s body")
-                                                                        print("Your path is clear and you head home unscathed, wondering if you made the right choice...")
+                                                            if not result:
+                                                                game = False
 
                                                             else:
-                                                                print("They haven't noticed you yet, and you manage to climb down and hide behind some bins without making any noise")
-                                                                print("The zombies are mostly gathered around the far end of the alleyway, looks like you might be able to sneak through\n")
-                                                                print("You stick to the shadows and begin to sneak up the alleyway")
-
-                                                                chance = random.randint(1, 2)
-
-                                                                if chance == 1 or len(zombie_survivors) > 0:
-                                                                    if len(zombie_survivors) > 0:
-                                                                        print("Hearing movement to your right, you stare directly into the eyes of a familiar zombie")
-                                                                        if len(zombie_survivors) > 1:
-                                                                            named_zombie_group = zombie_survivors[random.randint(0, len(zombie_survivors) - 1)]
-                                                                            named_zombie = named_zombie_group[0]
-
-                                                                        else:
-                                                                            named_zombie_group = zombie_survivors[0]
-                                                                            named_zombie = named_zombie_group[0]
-
-                                                                        if len(named_zombie_group) > 1:
-                                                                            missing_friend = True
-                                                                            named_zombie2 = named_zombie_group[1]
-
-                                                                        print("\nIt's " + named_zombie + "!\n")
-                                                                        if missing_friend:
-                                                                            enemy_group = [named_zombie2, named_zombie]
-                                                                            enemy_list.append(enemy_group)
-
-                                                                        print("He snarls and shambles towards you, alerting the rest")
-                                                                        zom_num = random.randint(2, 4)
-                                                                        print("Turning to run, you find yourself facing", str(zom_num + 1), "zombies\n")
-                                                                        print("Looks like you'll be fighting your way through anyway...\n")
-
-                                                                        result = fight(zom_num, "zombies")
-
-                                                                        if result:
-                                                                            print("With nearly all the zombies in your path dead, only", named_zombie, "remains")
-
-                                                                            result = fight(1, "zombies", named_zombie)
-
-                                                                            if result:
-                                                                                if named_zombie == "the Thief":
-                                                                                    print("You grab your bag off its back and run off")
-                                                                                    print("When you're sure you're not being followed you check it, and everything's there")
-                                                                                    for i in bag_items:
-                                                                                        add_item(i)
-                                                                                        bag_items.remove(i)
-
-                                                                                else:
-                                                                                    print("You look down at", named_zombie, "then break into a sprint, leaving the zombies in the dust")
-
-                                                                                print("Heading home, you count yourself lucky for escaping unharmed")
-
-                                                                            else:
-                                                                                game = False
-                                                                        
-                                                                        else:
-                                                                            game = False
-
-                                                                    else:
-                                                                        print("You creep around a burnt out car, only to find a zombie slouched behind it!")
-                                                                        print("It growls, but you haven't alerted the rest just yet\n")
-
-                                                                        result = fight(1, "zombies")
-
-                                                                        if result:
-                                                                            print("The zombie is dead, and thankfully none of the others noticed")
-                                                                            print("Somehow you manage to slip by the rest, and head home to the", character[7][0])
-                                                                            print("But the killer is still out there somewhere...")
-
-                                                                        else:
-                                                                            game = False
+                                                                if result > 0:
+                                                                    zombies_killed += result
 
                                                     else:
                                                         print("His eyes go wide when he sees you and he runs off")
@@ -7677,294 +7659,26 @@ while game:
                                                             choice = make_choice()
 
                                                             if choice == 1:
-                                                                run_for_it = False
-                                                                escape = False
+                                                                result = window_exit(survivor, survivor2, killer)
 
-                                                                print("You ask him why and he explains that someone locked the main door, he believes it was", survivor)
-                                                                print("He would have to smash a window to escape, and was afraid someone would hear")
-                                                                print("That seems to check out and the pair of you make your way towards a window in a nearby room")
-
-                                                                chance = random.randint(1, 3)
-
-                                                                if chance == 1 or survivor2 == killer:
-                                                                    print("\nBut as you walk behind him you notice his shoes are flecked with blood")
-                                                                    print("Will you:\n1. Make a run for it\n2. Ask him about the blood")
-                                                                    choice = make_choice()
-
-                                                                    if choice == 1:
-                                                                        killer = survivor2
-                                                                        run_for_it = True
-
-                                                                    else:
-                                                                        print("You ask him about the blood and he stops and smiles")
-                                                                        print("He shows you a cut on his palm and explains he tried to crack the glass earlier and cut himself")
-                                                                        print("Will you:\n1. Follow him to the window\n2. Make a run for it")
-                                                                        choice = make_choice()
-
-                                                                        if choice == 1:
-                                                                            escape = True
-
-                                                                        else:
-                                                                            run_for_it = True
-                                                                            killer = survivor2
-
-                                                                else:
-                                                                    print("You don't see any sign of", survivor, "on your way and you get there with no hassle")
-                                                                    escape = True
-
-                                                                if run_for_it:
-                                                                    print("Thinking quick you dash the opposite way down the hall")
-                                                                    print("Turning the corner you nearly trip on the body of", survivor)
-                                                                    print("His throat has been slit and he's dead in a pool of blood!")
-                                                                    print("\nYou spin around and", killer, "rounds the corner, leaping over the body\n")
-
-                                                                    result = fight(1, "humans", killer)
-
-                                                                    if result:
-                                                                        print(killer, "lies dead, on his body you find the key for the front door and in his bag you find:")
-                                                                        random_item(2, 5, "normal", "no rot")
-                                                                        random_item(0, 1, "special")
-
-                                                                        print("\nTaking the key, you unlock the door and head home to the", character[7][0])
-                                                                        print("You definitely won't forget what happened today...")
-
-                                                                    else:
-                                                                        game = False
-
-                                                                else:
-                                                                    print("Entering the room, you see it's well lit by the large window in the centre")
-                                                                    print("There's a slight crack in it, and you should be able to smash it open")
-                                                                    print("It looks like", survivor2, "was telling the truth")
-                                                                    input("Press 1 to continue: ")
-                                                                    print(line_break)
-
-                                                                    if survivor2 == killer:
-                                                                        print("But as you climb up on a desk and look through the window, you notice it's barred")
-                                                                        print(survivor2, "never meant to escape and before you can react, he pulls you down and stabs you in the neck...\nYOU DIED")
-                                                                        game = False
-
-                                                                    else:
-                                                                        print("You climb up on a desk and look through the window, looks like you can jump down from here")
-                                                                        print("Smashing the glass with a paperweight, you climb through")
-                                                                        chance = random.randint(1, 2)
-
-                                                                        if chance == 1:
-                                                                            print("Next up is", survivor2, "and he pushes himself through headfirst before toppling into the bushes outside")
-                                                                            print("He gets up and smiles at you, thanking you for trusting him")
-                                                                            print("Before he leaves he opens his bag and gives you:")
-                                                                            random_item(3, 6, "normal", "no rot")
-
-                                                                            print("You thank him and head home, but", survivor, "is still out there somewhere...")
-
-                                                                        else:
-                                                                            print("Next up is", survivor2, "and he pushes himself through head first before stopping halfway")
-                                                                            print("You ask him what's wrong, right as he's dragged back inside")
-                                                                            print("Hearing his screams cut short, you have no choice but to run")
-                                                                            print("You take a detour home, but", survivor, "is still out there somewhere...")
+                                                                if not result:
+                                                                    game = False
 
                                                             else:
                                                                 print("Something about this doesn't add up, and you decide to escape by yourself instead")
                                                                 print("Without warning you sprint off down a hallway and up a flight of stairs, losing him...\n")
 
-                                                                print("Deciding against the main door, you look for an alternative and spot signs pointing towards a fire exit")
-                                                                print("Hopeful of a way out, you hurry along until you reach a room with a large window on the wall")
-                                                                print("It's slightly ajar, and light shines through the dusty air\n")
-                                                                input("Press 1 to continue: ")
-                                                                print(line_break)
-                                                                print("You push the window open and peer out, it's a fire escape!")
-                                                                print("Stepping out and looking down into the alleyway, you see it's full of zombies!")
-                                                                print("Taking care not to make any noise, you make your way down the narrow stairway\n")
+                                                                result = fire_escape_exit(survivor, survivor2)
 
-                                                                chance = random.randint(1, 2)
+                                                                if result == 0:
+                                                                    result = -1
 
-                                                                if chance == 1:
-                                                                    print("But someone jumps out the window above you and races down the stairs!")
-                                                                    
-                                                                    chance = random.randint(1, 2)
+                                                                if not result:
+                                                                    game = False
 
-                                                                    if chance == 1:
-                                                                        last_survivor = survivor
-
-                                                                    else:
-                                                                        last_survivor = survivor2
-
-                                                                    print("It's " + last_survivor + "!")
-
-                                                                    print("He sees you and goes to shout something but slips and tumbles off the side")
-                                                                    print("Just about managing to hold on, he swings high above the ground")
-                                                                    print(last_survivor, "shouts in fear as he sees the zombies gathered below him and begs for your help")
-                                                                    print("Will you:\n1. Save him\n2. Leave him for the zombies")
-
-                                                                    choice = make_choice()
-
-                                                                    if choice == 1:
-                                                                        print("You can't just let him die like this, grabbing his arm and pulling him up")
-
-                                                                        if last_survivor != killer:
-                                                                            print("He thanks you profusely, but you still need to get yourselves out of this mess")
-                                                                            print(last_survivor, "grabs you and points toward a gap near the end of the alleyway\n")
-                                                                            print("It looks like his fall brought most of the zombies underneath you")
-                                                                            print("Thinking quick, the pair of you slide down the fire escape ladder and make a run for it")
-                                                                            input("Press 1 to continue: ")
-                                                                            print(line_break)
-
-                                                                            chance = random.randint(1, 2)
-
-                                                                            if chance == 1:
-                                                                                print("Somehow the two of you make it through and get away from the dozens of undead unharmed")
-                                                                                print("You've saved", survivor, "and he owes you his life\n")
-                                                                                print("He opens up his bag and gives you:")
-                                                                                random_item(3, 6, "normal", "no rot")
-                                                                                survivor_group = [last_survivor]
-                                                                                character[6].append(survivor_group)
-                                                                                print()
-                                                                                print(last_survivor, "is now your Friend")
-                                                                                print("\nAfter this you say goodbye and head home, glad to have escaped this place in one piece")
-
-                                                                            else:
-                                                                                print("But you're not fast enough, and the zombies begin to close around you!")
-                                                                                chance = random.randint(1, 2)
-
-                                                                                if chance == 1:
-                                                                                    print("An undead hand grabs you and pulls you back, but", last_survivor, "hacks it off and helps you up")
-                                                                                    print("The two of you are surrounded now and as you prepare for a last stand,", last_survivor, "nods at you and wishes you good luck\n")
-                                                                                    print("Before you can say anything he charges into the group of zombies and they pool around him")
-                                                                                    print("A gap opens up in the wall of zombies and you punch through, thanking him for his sacrifice\n")
-                                                                                    print("You get away unscathed, and on your way back home your mourn today's victims...")
-
-                                                                                else:
-                                                                                    print("Looks like you'll have to fight your way through!")
-                                                                                    zom_num = random.randint(3, 6)
-
-                                                                                    result = fight(zom_num, "zombies")
-
-                                                                                    if result:
-                                                                                        zombies_killed += zom_num
-
-                                                                                        print("You've made it out the other side, and as you turn back you see", last_survivor, "has too")
-                                                                                        print("The pair of you exit the alleyway and lose the zombies, before stopping to catch your breath\n")
-                                                                                        print("You've saved", survivor, "and he owes you his life")
-                                                                                        print("He opens up his bag and gives you:")
-                                                                                        random_item(3, 6, "normal", "no rot")
-                                                                                        survivor_group = [last_survivor]
-                                                                                        character[6].append(survivor_group)
-                                                                                        print()
-                                                                                        print(last_survivor, "is now your Friend")
-                                                                                        print("\nAfter this you say goodbye and head home, glad to have escaped this place in one piece")
-
-                                                                                    else:
-                                                                                        game = False
-
-                                                                        else:
-                                                                            print("But he doesn't thank you, and instead flashes an evil grin")
-                                                                            print(last_survivor, "was the killer all along!\n")
-                                                                            result = fight(1, "humans", last_survivor)
-
-                                                                            if result:
-                                                                                print("The killer lies dead and the zombies swarm below you")
-                                                                                print("Picking up his body, you heave it over the rails and drop it into their outstretched hands")
-                                                                                print("Using it as a distraction you manage to escape, you can't risk heading back into the building now the zombies know you're here...")
-
-                                                                                print("Heading back to the", character[7][0], "you think about what happened today...")
-
-                                                                            else:
-                                                                                game = False
-                                                                    
-                                                                    else:
-                                                                        print("You never trusted him, and you watch as his grip weakens and he falls to his death")
-                                                                        print("As soon as his body hits the ground he's swarmed by zombies and you turn to make your escape")
-                                                                        print("You slide down the ladder and run for the street\n")
-
-                                                                        chance = random.randint(1, 2)
-
-                                                                        if chance == 1:
-                                                                            zom_num = random.randint(2, 3)
-                                                                            print("But there are", zom_num, "zombies in your way!")
-
-                                                                            result = fight(zom_num, "zombies")
-
-                                                                            if result:
-                                                                                zombies_killed += zom_num
-                                                                                print("You fight your way through, taking one last look back at the old building before heading home...")
-
-                                                                            else:
-                                                                                game = False
-                                                                        
-                                                                        else:
-                                                                            print("It looks like all the zombies are distracted with " + last_survivor + "'s body")
-                                                                            print("Your path is clear and you head home unscathed, wondering if you made the right choice...")
-                                                                
                                                                 else:
-                                                                    print("They haven't noticed you yet, and you manage to climb down and hide behind some bins without making any noise")
-                                                                    print("The zombies are mostly gathered around the far end of the alleyway, looks like you might be able to sneak through\n")
-                                                                    print("You stick to the shadows and begin to sneak up the alleyway")
-
-                                                                    chance = random.randint(1, 2)
-
-                                                                    if chance == 1 or len(zombie_survivors) > 0:
-                                                                        if len(zombie_survivors) > 0:
-                                                                            print("Hearing movement to your right, you stare directly into the eyes of a familiar zombie")
-                                                                            if len(zombie_survivors) > 1:
-                                                                                named_zombie_group = zombie_survivors[random.randint(0, len(zombie_survivors) - 1)]
-                                                                                named_zombie = named_zombie_group[0]
-
-                                                                            else:
-                                                                                named_zombie_group = zombie_survivors[0]
-                                                                                named_zombie = named_zombie_group[0]
-
-                                                                            if len(named_zombie_group) > 1:
-                                                                                missing_friend = True
-                                                                                named_zombie2 = named_zombie_group[1]
-
-                                                                            print("\nIt's " + named_zombie + "!\n")
-                                                                            if missing_friend:
-                                                                                enemy_group = [named_zombie2, named_zombie]
-                                                                                enemy_list.append(enemy_group)
-
-                                                                            print("He snarls and shambles towards you, alerting the rest")
-                                                                            zom_num = random.randint(2, 4)
-                                                                            print("Turning to run, you find yourself facing", str(zom_num + 1), "zombies\n")
-                                                                            print("Looks like you'll be fighting your way through anyway...\n")
-
-                                                                            result = fight(zom_num, "zombies")
-
-                                                                            if result:
-                                                                                print("With nearly all the zombies in your path dead, only", named_zombie, "remains")
-
-                                                                                result = fight(1, "zombies", named_zombie)
-
-                                                                                if result:
-                                                                                    if named_zombie == "the Thief":
-                                                                                        print("You grab your bag off its back and run off")
-                                                                                        print("When you're sure you're not being followed you check it, and everything's there")
-                                                                                        for i in bag_items:
-                                                                                            add_item(i)
-                                                                                            bag_items.remove(i)
-
-                                                                                    else:
-                                                                                        print("You look down at", named_zombie, "then break into a sprint, leaving the zombies in the dust")
-
-                                                                                    print("Heading home, you count yourself lucky for escaping unharmed")
-
-                                                                                else:
-                                                                                    game = False
-                                                                            
-                                                                            else:
-                                                                                game = False
-
-                                                                        else:
-                                                                            print("You creep around a burnt out car, only to find a zombie slouched behind it!")
-                                                                            print("It growls, but you haven't alerted the rest just yet\n")
-
-                                                                            result = fight(1, "zombies")
-
-                                                                            if result:
-                                                                                print("The zombie is dead, and thankfully none of the others noticed")
-                                                                                print("Somehow you manage to slip by the rest, and head home to the", character[7][0])
-                                                                                print("But the killer is still out there somewhere...")
-
-                                                                            else:
-                                                                                game = False
+                                                                    if result > 0:
+                                                                        zombies_killed += result
 
                                         else:
                                             print("Will you:\n1. Go after the killer\n2. Find a way out")
@@ -8026,90 +7740,10 @@ while game:
                                                     choice = make_choice()
 
                                                     if choice == 1:
-                                                        run_for_it = False
-                                                        escape = False
+                                                        result = window_exit(survivor, survivor2, killer)
 
-                                                        print("You ask him why and he explains that someone locked the main door, he believes it was", survivor)
-                                                        print("He would have to smash a window to escape, and was afraid someone would hear")
-                                                        print("That seems to check out and the pair of you make your way towards a window in a nearby room")
-
-                                                        chance = random.randint(1, 3)
-
-                                                        if chance == 1 or survivor2 == killer:
-                                                            print("\nBut as you walk behind him you notice his shoes are flecked with blood")
-                                                            print("Will you:\n1. Make a run for it\n2. Ask him about the blood")
-                                                            choice = make_choice()
-
-                                                            if choice == 1:
-                                                                killer = survivor2
-                                                                run_for_it = True
-
-                                                            else:
-                                                                print("You ask him about the blood and he stops and grins")
-                                                                print("He shows you a cut on his palm and explains he tried to crack the glass earlier and cut himself")
-                                                                print("Will you:\n1. Follow him to the window\n2. Make a run for it")
-                                                                choice = make_choice()
-
-                                                                if choice == 1:
-                                                                    escape = True
-
-                                                                else:
-                                                                    run_for_it = True
-                                                                    killer = survivor2
-
-                                                        else:
-                                                            print("You don't see any sign of", survivor, "on your way and you get there with no hassle")
-                                                            escape = True
-
-                                                        if run_for_it:
-                                                            print("Thinking quick you dash the opposite way down the hall")
-                                                            print("Turning the corner you nearly trip on the body of", survivor)
-                                                            print("His throat has been slit and he's dead in a pool of blood!")
-                                                            print("You spin around and", killer, "rounds the corner, leaping over the body\n")
-
-                                                            result = fight(1, "humans", killer)
-
-                                                            if result:
-                                                                print(killer, "lies dead, on his body you find the key for the front door and in his bag you find:")
-                                                                random_item(2, 5, "normal", "no rot")
-                                                                random_item(0, 1, "special")
-
-                                                                print("\nTaking the key, you unlock the door and head home to the", character[7][0])
-                                                                print("You definitely won't forget what happened today...")
-
-                                                            else:
-                                                                game = False
-
-                                                        else:
-                                                            print("Entering the room, you see it's well lit by the large window in the centre")
-                                                            print("There's a slight crack in it, and you should be able to smash it open")
-                                                            print("It looks like", survivor2, "was telling the truth")
-                                                            input("Press 1 to continue: ")
-                                                            print(line_break)
-
-                                                            if survivor2 == killer:
-                                                                print("But as you climb up on a desk and look through the window, you notice it's barred")
-                                                                print(survivor2, "never meant to escape and before you can react, he pulls you down and stabs you in the neck...\nYOU DIED")
-                                                                game = False
-
-                                                            else:
-                                                                print("You climb up on a desk and look through the window, looks like you can jump down from here")
-                                                                print("Smashing the glass with a paperweight, you climb through")
-                                                                chance = random.randint(1, 2)
-
-                                                                if chance == 1:
-                                                                    print("Next up is", survivor2, "and he pushes himself through headfirst before toppling into the bushes outside")
-                                                                    print("He gets up and smiles at you, thanking you for trusting him")
-                                                                    print("Before he leaves he opens his bag and gives you:")
-                                                                    random_item(3, 6, "normal", "no rot")
-
-                                                                    print("You thank him and head home, but", survivor, "is still out there somewhere...")
-
-                                                                else:
-                                                                    print("Next up is", survivor2, "and he pushes himself through headfirst before stopping halfway")
-                                                                    print("You ask him what's wrong, right as he's dragged back inside")
-                                                                    print("Hearing his screams cut short, you have no choice but to run")
-                                                                    print("You take a detour home, but", survivor, "is still out there somewhere...")
+                                                        if not result:
+                                                            game = False
 
                                                     else:
                                                         print("He hesitates, then nods and agrees")
@@ -8621,8 +8255,6 @@ while game:
 
                                     print("But as you go to escape down a side street,", zom_num, "zombies stumble in front of you")
                                     print("If you want to avoid the horde, you'll have to take them out!")
-
-                                    zom_num = random.randint(3, 6)
 
                                     fight_result = fight(zom_num, "zombies")
 
@@ -9428,6 +9060,9 @@ while game:
 
                                     print(survivor1, "gathers the food and puts it in a bag, promising to share it out evenly after")
                                     print("You nod, and", survivor2, "goes to open the back door so the three of you can escape")
+
+                                    input("Press 1 to continue: ")
+                                    print(line_break)
 
                                     chance = random.randint(1, 3)
 
