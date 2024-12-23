@@ -136,6 +136,7 @@ pistol_supp = False
 
 weapon_durability = []
 max_weapon_durability = []
+weapon_parts = 0
 
 rotten_food = False
 rot_day = random.randint(7, 14)
@@ -175,12 +176,12 @@ def add_item(x):
             max_weapon_durability.append(40)
 
         elif weapon == "hammer":
-            weapon_durability.append(45)
-            max_weapon_durability.append(45)
+            weapon_durability.append(40)
+            max_weapon_durability.append(40)
 
         elif weapon == "baseball bat" or weapon == "*katana*" or weapon == "***diseased scalpel***":
-            weapon_durability.append(55)
-            max_weapon_durability.append(55)
+            weapon_durability.append(45)
+            max_weapon_durability.append(45)
 
         elif weapon == "*sledgehammer*" or weapon == "***flaming hand-axe***":
             weapon_durability.append(70)
@@ -695,6 +696,7 @@ def fight_zombie(zombie, weapon_choice, bonus_dam, weapon_val):
                 weapon_choice = select_weapon[0]
 
                 print("You swapped to your", weapon_choice)
+
             else:
                 result = ranged_attack(weapon_choice, "the zombie", zombie.health)
 
@@ -915,72 +917,102 @@ def fight_boss(boss, weapon_choice, bonus_dam, armour, weapon_val):
                 print("It has", int(boss.health), "HP left\n")
 
         else:
-            if weapon_choice == "hands":
-                miss_chance = random.randint(1, 2)
+            skip_turn = False
+            punish_swap = True
 
-            if miss_chance != 1:
-                chance = random.randint(1, 2)
-                if weapon_choice == "machete" or weapon_choice == "knife" or weapon_choice == "*katana*" or weapon_choice == "*butterfly knife*":
+            if weapon_choice != "hands":
+                if weapon_durability[weapon_val - 1] == 0:
+                    print("But your", weapon_choice, "has broken!")
+                    print("You'll have to swap weapons\n")
+                    print("You back away and quickly look in your bag")
+                    select_weapon = choose_weapon()
+                    weapon_val = select_weapon[1] - 1
+                    weapon_choice = select_weapon[0]
+
+                    skip_turn = True
+
+                    print("You swapped to your", weapon_choice)
+
+                    chance = random.randint(1, 2)
+
                     if chance == 1:
-                        print("You stab it with your", weapon_choice)
+                        print("But", boss.name, "takes the opportunity to strike!\n")
 
                     else:
-                        print("You slash the", boss.name,"with your", weapon_choice)
+                        print("Luckily you're back in the fight before", boss.name, "can strike")
+                        punish_swap = False
 
-                elif weapon_choice == "hands":
-                    if chance == 1:
-                        print("You swing and punch the ", boss.name, "in the head")
-
-                    else:
-                        print("You kick the him as hard as you can")
-
-                else:
-                    if chance == 1:
-                        print("You whack it with your", weapon_choice)
-
-                    else:
-                        print("You club the ", boss.name, "with your", weapon_choice)
-
-                if "*" in weapon_choice:
-                    bonus_dam += 20
-
-                if boss.health >= 20:
-                    damage = random.randint(20, 150) + bonus_dam
-
-                else:
-                    damage = boss.health
-
+            if not skip_turn:
                 if weapon_choice == "hands":
-                    if boss.health > 10:
-                        damage = random.randint(10, 100) + bonus_dam
-                        if damage == 0:
-                            damage = 10
+                    miss_chance = random.randint(1, 2)
+
+                if miss_chance != 1:
+                    chance = random.randint(1, 2)
+                    if weapon_choice == "machete" or weapon_choice == "knife" or weapon_choice == "*katana*" or weapon_choice == "*butterfly knife*":
+                        if chance == 1:
+                            print("You stab it with your", weapon_choice)
+
+                        else:
+                            print("You slash the", boss.name,"with your", weapon_choice)
+
+                        weapon_durability[weapon_val - 1] = weapon_durability[weapon_val - 1] - 1
+
+                    elif weapon_choice == "hands":
+                        if chance == 1:
+                            print("You swing and punch the ", boss.name, "in the head")
+
+                        else:
+                            print("You kick the him as hard as you can")
+
+                    else:
+                        if chance == 1:
+                            print("You whack it with your", weapon_choice)
+
+                        else:
+                            print("You club the ", boss.name, "with your", weapon_choice)
+
+                        weapon_durability[weapon_val - 1] = weapon_durability[weapon_val - 1] - 1
+
+                    if "*" in weapon_choice:
+                        bonus_dam += 20
+
+                    if boss.health >= 20:
+                        damage = random.randint(20, 150) + bonus_dam
 
                     else:
                         damage = boss.health
 
-                if damage > boss.health // 2:
-                    print("Critical Hit! You hit the", boss.name ,"for", int(damage), "damage\n")
+                    if weapon_choice == "hands":
+                        if boss.health > 10:
+                            damage = random.randint(10, 100) + bonus_dam
+                            if damage == 0:
+                                damage = 10
+
+                        else:
+                            damage = boss.health
+
+                    if damage > boss.health // 2:
+                        print("Critical Hit! You hit the", boss.name ,"for", int(damage), "damage\n")
+
+                    else:
+                        print("You hit the", boss.name ,"for", int(damage), "damage")
+
+                    boss.health -= damage
+                    if boss.health < 0:
+                        boss.health = 0
+
+                    print("It has", int(boss.health), "HP left\n")
 
                 else:
-                    print("You hit the", boss.name ,"for", int(damage), "damage")
+                    chance = random.randint(1,3)
+                    damage = 0
+                    if chance == 1:
+                        print("You swing your",weapon_choice,"and miss\n")
 
-                boss.health -= damage
-                if boss.health < 0:
-                    boss.health = 0
+                    else:
+                        boss.dodge()
 
-                print("It has", int(boss.health), "HP left\n")
-
-            else:
-                chance = random.randint(1,3)
-                damage = 0
-                if chance == 1:
-                    print("You swing your",weapon_choice,"and miss\n")
-
-                else:
-                    boss.dodge()
-
-        if boss.health > 0:
+        if boss.health > 0 and punish_swap == True:
             enemy_chance = random.randint(1, 4)
 
             if enemy_chance != 1:
@@ -1068,121 +1100,154 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
             damage = result[0]
 
         else:
-            finisher = 0
+            skip_turn = False
+            punish_swap = True
 
-            if weapon_choice == "hands":
-                miss_chance = random.randint(1, 2)
+            if weapon_choice != "hands":
+                if weapon_durability[weapon_val - 1] == 0:
+                    print("But your", weapon_choice, "has broken!")
+                    print("You'll have to swap weapons\n")
+                    print("You back away and quickly look in your bag")
+                    select_weapon = choose_weapon()
+                    weapon_val = select_weapon[1] - 1
+                    weapon_choice = select_weapon[0]
 
-            elif "*" in weapon_choice:
-                if human_enemy.health >= 30:
-                        finisher = random.randint(1, 7)
+                    skip_turn = True
 
-                else:
-                    finisher = random.randint(1, 3)
+                    print("You swapped to your", weapon_choice)
 
-            if miss_chance != 1:
-                if finisher != 1:
                     chance = random.randint(1, 2)
-                    if weapon_choice == "machete" or weapon_choice == "knife" or weapon_choice == "*katana*" or weapon_choice == "*butterfly knife*":
-                        if chance == 1:
-                            print("You stab him with your", weapon_choice)
 
-                        else:
-                            print("You slash", human_enemy.name,"with your", weapon_choice)
-
-                    elif weapon_choice == "hands":
-                        if chance == 1:
-                            print("You swing and punch", human_enemy.name, "in the head")
-
-                        else:
-                            print("You kick the him as hard as you can")
+                    if chance == 1:
+                        print("But", human_enemy.name, "takes the opportunity to strike!\n")
 
                     else:
-                        if chance == 1:
-                            print("You whack him with your", weapon_choice)
+                        print("Luckily you're back in the fight before", human_enemy.name, "can strike")
+                        punish_swap = False
 
-                        else:
-                            print("You club", human_enemy.name, "with your", weapon_choice)
+            if not skip_turn:
+                finisher = 0
 
-                    if human_enemy.health >= 20:
-                        damage = random.randint(20, human_enemy.health) + bonus_dam
+                if weapon_choice == "hands":
+                    miss_chance = random.randint(1, 2)
 
-                    else:
-                        damage = human_enemy.health
-
-                    if weapon_choice == "hands":
-                        if human_enemy.health > 15:
-                            damage = random.randint(15, 40) + bonus_dam
-                            if damage == 0:
-                                damage = 15
-
-                            elif damage > human_enemy.health:
-                                damage = human_enemy.health
-
-                        else:
-                            damage = human_enemy.health
-
-                else:
-                    if finisher == 1:
-                        damage = human_enemy.health + human_enemy.armour_val
-
-                        if weapon_choice == "*katana*":
-                            print("Your *katana* glints as it slices through the air,", human_enemy.name, "has no time to react before he is cut in half")
-
-                        elif weapon_choice == "*sledgehammer*":
-                            print("You bring your sledgehammer crashing down on his head, hearing bone splinter and crack")
-
-                        elif weapon_choice == "*butterfly knife*":
-                            print("Your *butterfly knife* blurs and dances as you slice at", human_enemy.name + ",", "and he falls back clutching his throat")
+                elif "*" in weapon_choice:
+                    if human_enemy.health >= 30:
+                            finisher = random.randint(1, 7)
 
                     else:
+                        finisher = random.randint(1, 3)
+
+                if miss_chance != 1:
+                    if finisher != 1:
+                        chance = random.randint(1, 2)
+                        if weapon_choice == "machete" or weapon_choice == "knife" or weapon_choice == "*katana*" or weapon_choice == "*butterfly knife*":
+                            if chance == 1:
+                                print("You stab him with your", weapon_choice)
+
+                            else:
+                                print("You slash", human_enemy.name,"with your", weapon_choice)
+                            
+                            weapon_durability[weapon_val - 1] = weapon_durability[weapon_val - 1] - 1
+
+                        elif weapon_choice == "hands":
+                            if chance == 1:
+                                print("You swing and punch", human_enemy.name, "in the head")
+
+                            else:
+                                print("You kick the him as hard as you can")
+
+                        else:
+                            if chance == 1:
+                                print("You whack him with your", weapon_choice)
+
+                            else:
+                                print("You club", human_enemy.name, "with your", weapon_choice)
+                            
+                            weapon_durability[weapon_val - 1] = weapon_durability[weapon_val - 1] - 1
+
+
                         if human_enemy.health >= 20:
                             damage = random.randint(20, human_enemy.health) + bonus_dam
 
                         else:
                             damage = human_enemy.health
 
-                if damage <= 0:
-                    damage = random.randint(5, 10)
+                        if weapon_choice == "hands":
+                            if human_enemy.health > 15:
+                                damage = random.randint(15, 40) + bonus_dam
+                                if damage == 0:
+                                    damage = 15
 
-                if damage > human_enemy.health // 2:
-                    print("Critical Hit! You hit", human_enemy.name ,"for", damage, "damage")
+                                elif damage > human_enemy.health:
+                                    damage = human_enemy.health
+
+                            else:
+                                damage = human_enemy.health
+
+                    else:
+                        if finisher == 1:
+                            damage = human_enemy.health + human_enemy.armour_val
+
+                            if weapon_choice == "*katana*":
+                                print("Your *katana* glints as it slices through the air,", human_enemy.name, "has no time to react before he is cut in half")
+
+                            elif weapon_choice == "*sledgehammer*":
+                                print("You bring your sledgehammer crashing down on his head, hearing bone splinter and crack")
+
+                            elif weapon_choice == "*butterfly knife*":
+                                print("Your *butterfly knife* blurs and dances as you slice at", human_enemy.name + ",", "and he falls back clutching his throat")
+
+                            weapon_durability[weapon_val - 1] = weapon_durability[weapon_val - 1] - 1
+
+                        else:
+                            if human_enemy.health >= 20:
+                                damage = random.randint(20, human_enemy.health) + bonus_dam
+
+                            else:
+                                damage = human_enemy.health
+
+                    if damage <= 0:
+                        damage = random.randint(5, 10)
+
+                    if damage > human_enemy.health // 2:
+                        print("Critical Hit! You hit", human_enemy.name ,"for", damage, "damage")
+
+                    else:
+                        print("You hit him for", damage, "damage\n")
+
+                elif miss_chance == 1:
+                    chance = random.randint(1,3)
+                    if chance == 1:
+                        print("You swing your",weapon_choice,"and miss\n")
+
+                    else:
+                        human_enemy.dodge()
+
+            if (miss_chance != 1 or result[1] == False) and not skip_turn:
+                if human_enemy.armour_val < damage and human_enemy.armour_val > 0:
+                        print("His armour blocked", human_enemy.armour_val, "damage")
+                        damage -= human_enemy.armour_val
+                        human_enemy.armour_val = 0
+                        human_enemy.health -= damage
+
+                        print("\nHe has", human_enemy.armour_val, "armour left")
+
+                elif human_enemy.armour_val > damage and human_enemy.armour_val > 0:
+                    og_enemy_armour = human_enemy.armour_val
+                    human_enemy.armour_val -= damage
+                    print("\nHe has", og_enemy_armour - human_enemy.armour_val, "armour left")
 
                 else:
-                    print("You hit him for", damage, "damage\n")
-
-            elif miss_chance == 1:
-                chance = random.randint(1,3)
-                if chance == 1:
-                    print("You swing your",weapon_choice,"and miss\n")
-
-                else:
-                    human_enemy.dodge()
-
-        if miss_chance != 1 or result[1] == False:
-            if human_enemy.armour_val < damage and human_enemy.armour_val > 0:
-                    print("His armour blocked", human_enemy.armour_val, "damage")
-                    damage -= human_enemy.armour_val
-                    human_enemy.armour_val = 0
                     human_enemy.health -= damage
-
-                    print("\nHe has", human_enemy.armour_val, "armour left")
-
-            elif human_enemy.armour_val > damage and human_enemy.armour_val > 0:
-                og_enemy_armour = human_enemy.armour_val
-                human_enemy.armour_val -= damage
-                print("\nHe has", og_enemy_armour - human_enemy.armour_val, "armour left")
-
-            else:
-                human_enemy.health -= damage
+                    
+                if human_enemy.health < 0:
+                    human_enemy.health = 0
                 
-            if human_enemy.health < 0:
-                human_enemy.health = 0
-            
-            if result[1] == False or miss_chance != 1:
-                print("He has", human_enemy.health, "HP left\n")
+                if result[1] == False or miss_chance != 1:
+                    print("He has", human_enemy.health, "HP left\n")
 
-        if human_enemy.health > 0:
+        if human_enemy.health > 0 and punish_swap == True:
             enemy_chance = random.randint(1, 4)
 
             if human_enemy.weapon == "hands":
@@ -3088,11 +3153,11 @@ def tunnel_exit(survivor, survivor2, killer, not_zombie_liar):
 
 
 username_list = []
-character[2][0] = 500
+character[0][0] = 500
 add_item("(weapon) hammer")
-weapon_durability[0] = 5
-fight(1, "zombies")
-fight(1, "zombies")
+weapon_durability[0] = 2
+fight(1, "humans")
+fight(1, "humans")
 fight(1, "zombies")
 fight(1, "zombies")
 
@@ -10559,6 +10624,29 @@ while game:
 
                     else:
                         print("You don't have any medicine\n")
+
+            damaged_weapon = False
+            for i in range(len(weapon_durability)):
+                if weapon_durability[i - 1] < max_weapon_durability[i - 1]:
+                    damaged_weapon = True
+
+            if damaged_weapon:
+                print("Looks like one of your weapons is damaged")
+                if len(weapon_durability) == 1 and weapon_parts == 0:
+                    print("You'd better start looking for parts to repair it, or maybe a new weapon...")
+
+                else:
+                    count = 1
+                    print("Will you:")
+                    if weapon_parts > 0:
+                        print(str(count) + ". Repair your weapon(s)")
+                        count += 1
+
+                    if len(weapon_durability) > 1:
+                        print(str(count) + ". Scrap a weapon for parts")
+                        
+                    choice = make_choice()
+
 
             if len(character[8]) > 0:
                 print("Would you like to open your inventory?\n1. Yes\n2. No")
