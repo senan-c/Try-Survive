@@ -19,6 +19,10 @@ boss_item_file= open("items/boss_items.txt", "r")
 boss_item_list = boss_item_file.readlines()
 boss_item_file.close()
 
+crafting_item_file = open("items/crafting_items.txt", "r")
+crafting_item_list = crafting_item_file.readlines()
+crafting_item_file.close()
+
 zom_descriptions_file = open("descriptions/zombie_descriptions.txt", "r")
 zom_description_list = zom_descriptions_file.readlines()
 zom_descriptions_file.close()
@@ -78,6 +82,9 @@ ultra_special_item_list = ultra_special_items.split(",")
 boss_items = boss_item_list[0]
 boss_item_list = boss_items.split(",")
 
+crafting_items = crafting_item_list[0]
+crafting_item_list = crafting_items.split(",")
+
 zom_descriptions = zom_description_list[0]
 zom_description_list = zom_descriptions.split(",")
 
@@ -99,10 +106,13 @@ chicken_name_list = chicken_names.split(",")
 raider_descriptions_list += survivor_descriptions_list
 
 #0 HP, 1 Water, 2 Calories, 3 Food, 4 Weapons, 5 Meds, 6 Friends, 7 Home, 8 Bag, 9 Fuel, 10 Ammo
-character = [[100], ["Hydrated"], [2000], [], ["hands"], [], [], [], ["Journal"], [0], [0, 0]]
+character = [[100], ["Hydrated"], [2000], [], ["hands"], [], [], [], ["journal"], [0], [0, 0]]
 #0 Head, 1 Torso, 2 Hands, 3 Legs, 4 Feet
 current_clothing = [[],[],[],[],[]]
 total_armour = 0
+
+good_deeds = 0
+bad_deeds = 0
 
 temp_items = []
 afflictions = []
@@ -110,6 +120,10 @@ enemy_list = []
 zombie_survivors = []
 latest_events = []
 journal = []
+bag_items = []
+
+#0 Nails, 1 Rope, 2 Leather, 3 Wooden Poles
+workshop_satchel = [[10], [10], [10], [10]]
 
 areas = ["Downtown","the Suburbs","the City Centre","the Industrial Estate"]
 zom_types = ["weak zombie","zombie","strong zombie"]
@@ -117,9 +131,9 @@ explore_list = ["Radio Tower (5 Litres)"]
 shelter = ["small shop","lonely house","secluded shack"]
 
 head_armour = ["*motorbike helmet*","*army helmet*"]
-torso_armour = ["***commander's armor***","***doctor's labcoat***","*body armour*","*leather jacket*","*police vest*","**combat armour**"]
+torso_armour = ["***commander's armor***","***doctor's labcoat***","*body armour*","*leather jacket*","*police vest*","**combat armour**", "*handmade armour*"]
 leg_armour = ["*combat pants*"]
-foot_armour = ["*work boots*"]
+foot_armour = ["*work boots*", "*handmade boots*"]
 hand_armour = ["***flame gloves***","*leather gloves*"]
 
 fight_list = []
@@ -129,6 +143,8 @@ day = 0
 days_no_water = 0
 zombies_killed = 0
 water_drank = True
+
+workshop_event_played = False
 
 rifle_supp = False
 pistol_supp = False
@@ -148,7 +164,7 @@ line_break = ("-" * 120)
 
 
 def add_item(x):
-    if x[0:2] == "(m":
+    if x[0:3] == "(me":
         character[5].append(x[7:])
 
     elif x[0:3] == "(fu":
@@ -167,21 +183,21 @@ def add_item(x):
             weapon_durability.append(20)
             max_weapon_durability.append(20)
 
-        elif weapon == "machete":
+        elif weapon == "machete" or weapon == "basic spear" or weapon == "*butterfly knife*":
             weapon_durability.append(30)
             max_weapon_durability.append(30)
 
-        elif weapon == "*butterfly knife*":
+        elif weapon == "hammer" or weapon == "heavy spear" or weapon == "*spiked baseball bat*" or weapon == "*tri-blade spear*":
             weapon_durability.append(40)
             max_weapon_durability.append(40)
 
-        elif weapon == "hammer":
-            weapon_durability.append(40)
-            max_weapon_durability.append(40)
-
-        elif weapon == "baseball bat" or weapon == "*katana*" or weapon == "***diseased scalpel***":
+        elif weapon == "baseball bat" or weapon == "*katana*" or weapon == "***diseased scalpel***" or weapon == "quality machete":
             weapon_durability.append(45)
             max_weapon_durability.append(45)
+
+        elif weapon == "heavy hammer":
+            weapon_durability.append(55)
+            max_weapon_durability.append(55)
 
         elif weapon == "*sledgehammer*" or weapon == "***flaming hand-axe***":
             weapon_durability.append(70)
@@ -196,6 +212,21 @@ def add_item(x):
 
     elif x[0:3] == "(mo":
         character[8].append(x)
+
+    elif x[0:3] == "(ma)":
+        value = str(x[0])
+
+        if "nail" in x:
+            workshop_satchel[0] += value
+
+        elif "rope" in x:
+            workshop_satchel[1] += value
+
+        elif "leather" in x:
+            workshop_satchel[2] += value
+
+        else:
+            workshop_satchel[3] += value
 
     elif x[0:3] == "(gu":
         character[4].append(x[6:])
@@ -246,6 +277,9 @@ def random_item(num1, num2, rarity, vers=None):
 
         elif rarity == "ultra special":
             temp_item = ultra_special_item_list[random.randint(0, len(ultra_special_item_list) - 1)]
+
+        elif rarity == "crafting":
+            temp_item = crafting_item_list[random.randint(0, len(crafting_item_list) - 1)]
 
         temp_items.append(temp_item)
         add_item(temp_item)
@@ -298,7 +332,7 @@ def get_cals(x):
         elif x == "sausages and pasta":
             cals = 1800 // 2
 
-        elif x == "fruits and cream" or x == "tuna sandwiches":
+        elif x == "fruit and cream" or x == "tuna sandwiches":
             cals = 1000 // 2
 
         elif x == "mega MRE":
@@ -377,7 +411,7 @@ def make_choice():
 def add_affliction(injury, health):
     character[0][0] -= health
     afflictions.append(injury)
-    print("You now have", character[0][0], "HP")
+    print("You now have", character[0][0], "HP\n")
 
     if character[0][0] <= 0:
         print("\nYOU DIED")
@@ -409,6 +443,7 @@ def choose_weapon():
     weapon_choice = make_choice()
 
     while weapon_choice > len(character[4]):
+        durability_count = 0
         print("SELECT A VALID OPTION")
 
         count = 1
@@ -1141,7 +1176,8 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
                 if miss_chance != 1:
                     if finisher != 1:
                         chance = random.randint(1, 2)
-                        if weapon_choice == "machete" or weapon_choice == "knife" or weapon_choice == "*katana*" or weapon_choice == "*butterfly knife*":
+                        if weapon_choice == "machete" or weapon_choice == "knife" or weapon_choice == "*katana*" or weapon_choice == "*butterfly knife*" or ("spear" in weapon_choice):
+                            bonus_dam += 5
                             if chance == 1:
                                 print("You stab him with your", weapon_choice)
 
@@ -1158,6 +1194,7 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
                                 print("You kick the him as hard as you can")
 
                         else:
+                            bonus_dam -= 5
                             if chance == 1:
                                 print("You whack him with your", weapon_choice)
 
@@ -1197,6 +1234,13 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
 
                             elif weapon_choice == "*butterfly knife*":
                                 print("Your *butterfly knife* blurs and dances as you slice at", human_enemy.name + ",", "and he falls back clutching his throat")
+
+                            elif weapon_choice == "*spiked baseball bat*":
+                                print("Driving your *spiked baseball bat* into his head with a sickening crunch,", human_enemy.name,"collapses and doesn't get back up")
+
+                            elif weapon_choice == "*tri-blade spear*":
+                                print("You slice your *tri-blade spear* across his face in a swift arc, before lunging forward and driving all three blades into his chest with lethal precision")
+
 
                             weapon_durability[weapon_val - 1] = weapon_durability[weapon_val - 1] - 1
 
@@ -1585,7 +1629,11 @@ def fight(num, battle, boss=None):
         for i in range(5 * loot_counter):
             loot_list.append(item_list[random.randint(0, len(item_list) -1)])
 
-        print("It looks like they had some loot:")
+        if loot_counter > 1:
+            print("It looks like they had some loot:")
+        
+        else:
+            print("It looks like he had some loot:")
         for i in range(loot_counter * 3):
             loot = loot_list[random.randint(0, len(loot_list) -1)]
             print(loot)
@@ -1699,11 +1747,12 @@ def describe_human(human_type,human_count):
 def select_random_item():
     chance = random.randint(1,10)
     armour_check = False
-    your_item = "Journal"
+    your_item = None
+    invalid_list = ["journal", "workshop satchel", "crafting recipes"]
 
     count = 30
 
-    while your_item == "Journal" and count > 0:
+    while (your_item == None or your_item in invalid_list) and count > 0:
         count -= 1
 
         for i in current_clothing:
@@ -1991,8 +2040,8 @@ def armour_val(armour):
     elif armour == torso_armour[2]:
         return 75
 
-    elif armour == torso_armour[3]:
-        return 15
+    elif armour == torso_armour[3] or armour == torso_armour[6]:
+        return 20
 
     elif armour == torso_armour[4]:
         return 40
@@ -2005,6 +2054,9 @@ def armour_val(armour):
 
     elif armour == foot_armour[0]:
         return 15
+    
+    elif armour == foot_armour[1]:
+        return 10
 
     elif armour == hand_armour[0]:
         return 50
@@ -2077,6 +2129,8 @@ def remove_item(item):
         character[3].remove(item[7:])
 
     elif item[0:2] == "(w":
+        weapon_durability.remove(weapon_durability[character[4].index(item[9:]) - 1])
+        max_weapon_durability.remove(max_weapon_durability[character[4].index(item[9:]) - 1])
         character[4].remove(item[9:])
 
     elif item[0:2] == "(c":
@@ -2104,7 +2158,7 @@ def cook_food():
 
     if "apple" in ingredients and ("banana" in ingredients or "strawberries" in ingredients) and "can of whipped cream" in ingredients:
         cook_check = True
-        cook_list.append("fruits and cream")
+        cook_list.append("fruit and cream")
 
     if "can of tuna" in ingredients and "bread" in ingredients:
         cook_check = True
@@ -2179,7 +2233,7 @@ def cook_food():
                     remove_list = ["sausages", "pasta", "tomato sauce"]
                     portion = 2
 
-                elif recipe == "fruits and cream":
+                elif recipe == "fruit and cream":
                     remove_list = ["apple", "can of whipped cream"]
 
                     if "strawberries" in ingredients:
@@ -3150,3 +3204,295 @@ def tunnel_exit(survivor, survivor2, killer, not_zombie_liar):
                 return False
     
     return True
+
+
+def repair_weapon(weapon_parts):
+    repair_list = []
+    count = 0
+    weapons_repaired = 0
+
+    for i in range(len(character[4])):
+        if character[4][i - 1] != "hands":
+            if weapon_durability[count] < max_weapon_durability[count]:
+                repair_list.append(character[4][count + 1])
+            
+            count += 1
+
+    repair_loop = True
+    all_repaired = False
+    temp_repair_list = list(repair_list)
+
+    while repair_loop:
+        save_counts = []
+        if weapons_repaired != len(repair_list):
+            print("Choose a weapon to repair:")
+            count = 1
+            weapon_count = 1
+            for i in repair_list:
+                if weapon_durability[count - 1] < max_weapon_durability[count - 1]:
+                    print(str(weapon_count) + ". " + i + " - condition: " + str(weapon_durability[count - 1]) + "/" + str(max_weapon_durability[count - 1]))
+                    save_counts.append(count -1)
+                    weapon_count += 1
+                count += 1
+            print(str(weapon_count) + ". " + "Exit")
+            weapon_choice = make_choice()
+
+        else:
+            all_repaired = True
+
+        if weapon_choice != weapon_count and not all_repaired:
+            weapon_chosen = temp_repair_list[weapon_choice - 1]
+            print("You have chosen to repair your", weapon_chosen)
+            weapon_condition = weapon_durability[save_counts[weapon_choice - 1]]
+            max_condition = max_weapon_durability[save_counts[weapon_choice - 1]]
+
+            if weapon_condition == 0:
+                cost = 3
+
+            elif weapon_condition < max_condition // 2:
+                cost = 2
+
+            else:
+                cost = 1
+
+            if cost > 1:
+                print("\nIt will cost", cost, "weapon parts to repair")
+
+            else:
+                print("\nIt will cost 1 weapon part to repair")
+            
+            if weapon_parts > 1:
+                print("You have", weapon_parts, "parts in your inventory\n")
+
+            else:
+                print("You have 1 weapon part in your inventory\n")
+
+            if weapon_parts < cost:
+                print("You can't repair this weapon")
+                print(line_break)
+
+            else:
+                print("Will you:\n1. Repair your", weapon_chosen, "\n2. Choose a different weapon")
+                choice = make_choice()
+
+                if choice == 1:
+                    weapon_parts -= cost
+                    condition_diff = max_condition - weapon_condition
+                    
+                    weapon_durability[save_counts[weapon_choice - 1]] += condition_diff
+                    print("Your", weapon_chosen, "has been repaired")
+                    temp_repair_list.remove(temp_repair_list[weapon_choice - 1])
+                    weapons_repaired += 1
+                
+                print(line_break)
+
+        else:
+            repair_loop = False
+
+    return weapon_parts
+
+
+def scrap_weapon():
+    print("Choose a weapon to scrap:")
+    count = 1
+    for i in character[4]:
+        if i != "hands":
+            print(str(count) + ". " + i + " - condition: " + str(weapon_durability[count - 1]) + "/" + str(max_weapon_durability[count - 1]))
+            count += 1
+    print(str(count) + ". " + "Exit")
+    choice = make_choice()
+
+    if choice != count:
+        weapon_chosen = character[4][choice]
+        print("You have chosen to scrap your", weapon_chosen)
+
+        weapon_condition = weapon_durability[character[4].index(weapon_chosen) - 1]
+        max_condition = max_weapon_durability[character[4].index(weapon_chosen) - 1]
+
+        scrap_success = False
+
+        if weapon_condition > (max_condition * 0.8):
+            scrap_success = True
+        
+        elif weapon_condition > (max_condition * 0.5):
+            chance = random.randint(1, 3)
+
+            if chance != 1:
+                scrap_success = True
+
+        elif weapon_condition > (max_condition * 0.3):
+            chance = random.randint(1, 2)
+
+            if chance == 1:
+                scrap_success = True
+        
+        else:
+            chance = random.randint(1, 3)
+
+            if chance == 1:
+                scrap_success = True
+
+        if scrap_success:
+            parts_found = random.randint(1, 3)
+
+            if parts_found > 1:
+                print("\nYou've scrapped it and recovered", parts_found, "weapon parts")
+
+            else:
+                print("\nYou've scrapped it and recovered 1 weapon part")
+
+        else:
+            print("But you weren't able to recover any weapon parts...")
+            parts_found = 0
+
+        print(line_break)
+        remove_item("(weapon) " + weapon_chosen)
+        return [True, parts_found]
+
+    else:
+        parts_found = 0
+        return [False, parts_found]
+    
+
+def crafting_recipes():
+    print("You open the book and begin reading:\n")
+
+    print("basic spear:")
+    print("Requires a knife, 1 wooden pole, and 1 piece of rope\n")
+
+    print("heavy spear:")
+    print("Requires a machete, 1 wooden pole, and 1 piece of rope\n")
+
+    print("quality machete:")
+    print("Requires a machete, 2 pieces of leather, 1 weapon part, and 1 piece of rope\n")
+
+    print("heavy hammer:")
+    print("Requires a hammer, 4 nails and 3 weapon parts\n")
+
+    print("*tri-blade spear*:")
+    print("Requires a machete, 2 knives, a wooden pole, and 2 pieces of rope\n")
+
+    print("*spiked baseball bat*:")
+    print("Requires a baseball bat, 10 nails, and the use of a hammer\n")
+
+    print("handmade armour:")
+    print("Requires 8 pieces of leather and 2 pieces of rope\n")
+
+    print("handmade boots:")
+    print("Requires 2 pieces of leather and 1 piece of rope")
+    print(line_break)
+
+def craft_list(weapon_parts):
+    craft_list = []
+    nails = workshop_satchel[0][0]
+    rope = workshop_satchel[1][0]
+    leather = workshop_satchel[2][0]
+    wood = workshop_satchel[3][0]
+
+    if "knife" in character[4] and wood >= 1 and rope >= 1:
+        craft_list.append("basic spear")
+
+    if "machete" in character[4] and wood >= 1 and rope >= 1:
+        craft_list.append("heavy spear")
+    
+    if "knife" in character[4] and "machete" in character[4] and wood >= 1 and rope >= 2:
+        knife_count = 0
+        for i in character[4]:
+            if i == "knife":
+                knife_count += 1
+        
+        if knife_count >= 2:
+            craft_list.append("*tri-blade spear*")
+
+    if "baseball bat" in character[4] and "hammer" in character[4] and nails >= 10:
+        craft_list.append("*spiked baseball bat*")
+
+    if "hammer" in character[4] and nails >= 4 and weapon_parts >= 3:
+        craft_list.append("heavy hammer")
+
+    if "machete" in character[4] and leather >= 2 and rope >= 1 and weapon_parts >= 1:
+        craft_list.append("quality machete")
+
+    if leather >= 8 and rope >= 2:
+        craft_list.append("handmade armour")
+
+    if leather >= 2 and rope >= 1:
+        craft_list.append("handmade boots")
+
+    return craft_list
+
+def craft_item(weapon_parts):
+    craftable = craft_list(weapon_parts)
+    craft_loop = True
+
+    while len(craftable) > 0 and craft_loop == True:
+        craftable = craft_list(weapon_parts)
+        if len(craftable) > 0:
+            print("Select an item to craft:")
+            count = 1
+            for i in craftable:
+                print(str(count) + ". " + i)
+                count += 1
+            print(str(count) + ". " + "Exit")
+            choice = make_choice()
+
+            if choice <= len(craftable):
+                item_chosen = craftable[choice - 1]
+
+                if item_chosen == "basic spear":
+                    add_item("(weapon) basic spear")
+                    remove_item("(weapon) knife")
+                    workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+                    workshop_satchel[3][0] = workshop_satchel[3][0] - 1
+
+                elif item_chosen == "heavy spear":
+                    add_item("(weapon) heavy spear")
+                    remove_item("(weapon) machete")
+                    workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+                    workshop_satchel[3][0] = workshop_satchel[3][0] - 1
+
+                elif item_chosen == "*tri-blade spear*":
+                    add_item("(weapon) *tri-blade spear*")
+                    remove_item("(weapon) machete")
+                    remove_item("(weapon) knife")
+                    remove_item("(weapon) knife")
+                    workshop_satchel[1][0] = workshop_satchel[1][0] - 2
+                    workshop_satchel[3][0] = workshop_satchel[3][0] - 1
+
+                elif item_chosen == "*spiked baseball bat*":
+                    add_item("(weapon) *spiked baseball bat*")
+                    character[4].remove("baseball bat")
+                    workshop_satchel[0][0] = workshop_satchel[0][0] - 10
+
+                elif item_chosen == "heavy hammer":
+                    add_item("(weapon) heavy hammer")
+                    character[4].remove("hammer")
+                    workshop_satchel[0][0] = workshop_satchel[0][0] - 4
+                    weapon_parts -= 3
+
+                elif item_chosen == "quality machete":
+                    add_item("(weapon) quality machete")
+                    remove_item("(weapon) machete")
+                    workshop_satchel[2][0] = workshop_satchel[2][0] - 2
+                    workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+                    weapon_parts -= 1
+
+                elif item_chosen == "handmade armour":
+                    add_item("(clothing) *handmade armour*")
+                    workshop_satchel[2][0] = workshop_satchel[2][0] - 8
+                    workshop_satchel[1][0] = workshop_satchel[1][0] - 2
+
+                elif item_chosen == "handmade boots":
+                    add_item("(clothing) *handmade boots*")
+                    workshop_satchel[2][0] = workshop_satchel[2][0] - 2
+                    workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+
+                print("You have crafted '" + item_chosen + "'")
+                print(line_break)
+
+            else:
+                craft_loop = False
+
+        else:
+            print("There is nothing you can craft")
+            craft_loop = False

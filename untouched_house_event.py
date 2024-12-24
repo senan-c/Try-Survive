@@ -335,4 +335,9 @@ def untouched_house_event(area, zombies_killed, character, day):
                 print("\nYou head back without any hassle, but you wonder if you could've taken a bit more loot with you...")
                 journal_entry(day, "Looted a house and escaped a horde without being seen")
 
+    else:
+        print("Though the house looks promising, you won't risk an encounter with a horde")
+        print("You head back to the", character[7][0], "wondering what might have been inside...")
+        journal_entry("Saw a promising house but there was a horde on the way")
+
     return [game, zombies_killed]

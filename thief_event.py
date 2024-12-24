@@ -336,9 +336,9 @@ def thief_event(area, zombies_killed, character, day, item_check):
                     print("On your way home, you try not to think about all the stuff you left behind")
 
             elif chance == 2:
-                print("The bag is weighing the Thief down, and you've almost caught up with him")
+                print("\nThe bag is weighing the Thief down, and you've almost caught up with him")
                 print("He tries to hop over a burnt out car but catches his foot and lands on his face")
-                print("It looks like he's badly hurt his leg and can't run anymore!")
+                print("It looks like he's badly hurt his leg and can't run anymore!\n")
                 print("The noise has alerted some nearby zombies and they'll be here soon")
                 print("Will you:\n1. Take the bag and leave\n2. Help him")
                 choice = make_choice()
@@ -388,62 +388,62 @@ def thief_event(area, zombies_killed, character, day, item_check):
                         else:
                             game = False
 
-                        if game:
-                            print("\nThe interior is deserted and you set the Thief down, he'll be safe for now")
-                            thief_name = survivors_male_list[random.randint(0, len(survivors_male_list) - 1)]
+                    if game:
+                        print("\nThe interior is deserted and you set the Thief down, he'll be safe for now")
+                        thief_name = survivors_male_list[random.randint(0, len(survivors_male_list) - 1)]
 
-                            print("He thanks you profusely, and introduces himself as", thief_name)
-                            print(thief_name, "still can't believe you saved him, but he needs something for his leg")
-                            print("You've already done more than enough, but he says he won't survive long if he can't walk")
+                        print("He thanks you profusely, and introduces himself as", thief_name)
+                        print(thief_name, "still can't believe you saved him, but he needs something for his leg")
+                        print("You've already done more than enough, but he says he won't survive long if he can't walk")
 
-                            if len(character[5]) > 0:
-                                print("Will you:\n1.Give", thief_name, "some medicine\n2.Refuse to help")
+                        if len(character[5]) > 0:
+                            print("Will you:\n1.Give", thief_name, "some medicine\n2.Refuse to help")
+                            choice = make_choice()
+
+                            if choice == 1:
+                                print("You choose to help", thief_name)
+                                print("Click the corresponding button to select an item")
+                                print("You have:")
+                                count = 1
+                                for i in character[5]:
+                                    print(str(count) + ". " + i)
+                                    count += 1
                                 choice = make_choice()
+                                print("You give him", character[5][choice - 1])
+                                character[5].remove(character[5][choice - 1])
 
-                                if choice == 1:
-                                    print("You choose to help", thief_name)
-                                    print("Click the corresponding button to select an item")
-                                    print("You have:")
-                                    count = 1
-                                    for i in character[5]:
-                                        print(str(count) + ". " + i)
-                                        count += 1
-                                    choice = make_choice()
-                                    print("You give him", character[5][choice - 1])
-                                    character[5].remove(character[5][choice - 1])
+                                print("He thanks you for saving his life, even though he tried to steal your bag")
+                                print("He promises to try help you in the future")
+                                survivor_group = [thief_name]
+                                character[6].append(survivor_group)
+                                print(thief_name, "is now your Friend")
 
-                                    print("He thanks you for saving his life, even though he tried to steal your bag")
-                                    print("He promises to try help you in the future")
-                                    survivor_group = [thief_name]
-                                    character[6].append(survivor_group)
-                                    print(thief_name, "is now your Friend")
+                                print("\nWith this good deed, you say goodbye and head on your way")
+                                journal_entry(day, "Decided to save a Thief, and made a new friend")
 
-                                    print("\nWith this good deed, you say goodbye and head on your way")
-                                    journal_entry(day, "Decided to save a Thief, and made a new friend")
+                            elif choice == 2:
+                                print(thief_name, "looks at you sadly, but he understands")
+                                print("He tried to steal your bag and you chose to save him, he shouldn't have asked for medicine as well")
+                                journal_entry(day, "Saved a Thief from a horde, but didn't give him any medicine")
 
-                                elif choice == 2:
-                                    print(thief_name, "looks at you sadly, but he understands")
-                                    print("He tried to steal your bag and you chose to save him, he shouldn't have asked for medicine as well")
-                                    journal_entry(day, "Saved a Thief from a horde, but didn't give him any medicine")
-
-                                    chance = random.randint(1, 2)
-
-                                    if chance == 1:
-                                        zombie_survivor = [thief_name]
-                                        zombie_survivors.append(zombie_survivor)
-
-                            else:
-                                print("But you don't have any medicine and you cannot help")
-                                print("Before you leave he thanks you for saving him from the zombies, even if you couldn't give him any medicine")
-                                journal_entry(day, "Saved a Thief from a horde, but couldn't give him any medicine")
-
-                                chance = random.randint(1, 3)
+                                chance = random.randint(1, 2)
 
                                 if chance == 1:
                                     zombie_survivor = [thief_name]
                                     zombie_survivors.append(zombie_survivor)
 
-                            print("On your way back to the", character[7][0], "you think about the decisions you made today, and wonder if anyone else would have done the same...")
+                        else:
+                            print("But you don't have any medicine and you cannot help")
+                            print("Before you leave he thanks you for saving him from the zombies, even if you couldn't give him any medicine")
+                            journal_entry(day, "Saved a Thief from a horde, but couldn't give him any medicine")
+
+                            chance = random.randint(1, 3)
+
+                            if chance == 1:
+                                zombie_survivor = [thief_name]
+                                zombie_survivors.append(zombie_survivor)
+
+                        print("On your way back to the", character[7][0], "you think about the decisions you made today, and wonder if anyone else would have done the same...")
 
     else:
         print("It isn't worth chasing a Thief through", area, "and you decide to just let him go")

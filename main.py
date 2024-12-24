@@ -20,8 +20,7 @@ from group_loot_event import *
 from thief_event import *
 from free_supplies_event import *
 from unlooted_pharmacy_event import *
-
-bag_items = []
+from workshop_event import *
 
 username_list = []
 
@@ -960,373 +959,104 @@ while game:
             latest_events.append(chance)
 
             if chance == 1:
-                chance = random.randint(1, 3)
+                result = supply_crate_event(area, zombies_killed, character, day)
 
-                if chance != 1:
-                    result = supply_crate_event(area, zombies_killed, character, day)
-
-                    if result[0] == False:
-                        game = False
-                    
-                    zombies_killed = result[1]
-
-                else:
-                    chance = random.randint(1, 2)
-                    if chance == 1:
-                        print("As you journey towards", area, "you get an unsettling feeling in your gut")
-                        print("You decide to tread carefully today, avoiding that area for now")
-                        print("Better than to risk a fatal mistake")
-                        print("Maybe tomorrow...")
-
-                    elif chance == 2:
-                        print("It's too foggy to search for long, you can't risk a horde sneaking up on you")
-                        print("Better safe than sorry...")
-
-                    filler_loot()
+                if result[0] == False:
+                    game = False
+                
+                zombies_killed = result[1]
 
             elif chance == 2:
-                chance = random.randint(1, 3)
+                result = zombie_horde_event(area, zombies_killed, day)
 
-                if chance == 1:
-                    result = zombie_horde_event(area, zombies_killed, day)
-
-                    if result[0] == False:
-                        game = False
-                    
-                    zombies_killed = result[1]
-
-                else:
-                    chance = random.randint(1, 3)
-
-                    if chance == 1:
-                        print("As you cross through a park on your way, you hear a horde nearby")
-                        print("The sounds of moaning and shuffling remind you that your survival depends on more than just calories")
-                        print("With that, your fear of being eaten beats out your hunger")
-                        print("For now at least...")
-
-                        filler_loot()
-
-                    else:
-                        result = dead_survivor_event(area, zombies_killed, day)
-
-                    if result[0] == False:
-                        game = False
-                    
-                    zombies_killed = result[1]
+                if result[0] == False:
+                    game = False
+                
+                zombies_killed = result[1]
 
             elif chance == 3:
-                chance = random.randint(1, 3)
+                result = dead_survivor_event(area, zombies_killed, day)
 
-                if chance != 1:
-                    result = unlooted_store_event(area, zombies_killed, character, day, bag_items)
-
-                    if result[0] == False:
-                        game = False
-                    
-                    zombies_killed = result[1]
-
-                else:
-                    chance = random.randint(1, 6)
-
-                    if chance == 1:
-                        print("One of your usual paths is a bridge across the nearby river, but it looks to have collapsed")
-                        print("Upon closer inspection it seems someone blew it up during the night")
-                        print("You're frustrated, but can't help but wonder what their motives were...")
-
-                    elif chance == 2:
-                        survivor_num = random.randint(3, 15)
-                        print("You've nearly reached", area, "when a group of", survivor_num, "raggedy survivors race out of a nearby building")
-                        print("You duck into cover trying to remain unseen, just as they're cornered by a squad of soldiers in gas masks\n")
-                        print("You're too far away to hear much but the survivors appear to be trying to reason")
-                        print("Suddenly the leader of the soldiers barks an order, and his men raise their guns")
-                        print("You watch in sudden horror as the survivors are gunned down in cold blood, and their bodies searched")
-                        print("The soldiers set the corpses alight, and you use the distraction to make your escape...")
-
-                    else:
-                        print("It rained heavily last night, and when you arrive at", area,"a flood has made the streets impassable")
-                        print("Bodies float on the waters surface, and you don't even want to think about what lies below...")
-                        print("You'll have to head home for today, but the flood should clear up soon")
-
-                    filler_loot()
+                if result[0] == False:
+                    game = False
+            
+                zombies_killed = result[1]
 
             elif chance == 4:
-                chance = random.randint(1,3)
+                result = unlooted_store_event(area, zombies_killed, character, day, bag_items)
 
-                if chance != 1:
-                    result = surrounded_van_event(area, zombies_killed, character, day)
-
-                    if result[0] == False:
-                        game = False
-                    
-                    zombies_killed = result[1]
-
-                else:
-                    zombies = random.randint(100,250)
-                    print("As you leave the",character[7][0],"to head towards",area,"a huge horde of",zombies,"zombies walks in front of you")
-                    print("You manage to avoid them and get away without being seen")
-                    print("But you won't be able to scavenge in",area,"today")
-
-                    filler_loot()
+                if result[0] == False:
+                    game = False
+                
+                zombies_killed = result[1]
 
             elif chance == 5:
-                chance = random.randint(1, 3)
+                result = surrounded_van_event(area, zombies_killed, character, day)
 
-                if chance != 1:
-                    blackjack_event(area, character, day)
-
-                else:
-                    print("As you're walking towards", area, "you hear hoots and shouting")
-                    print("You dash to cover and a band of Raiders runs past")
-                    print("It's a close call, and you can't risk scavenging out here today")
-                    print("You'll have to head home and try tomorrow")
-
-                    filler_loot()
+                if result[0] == False:
+                    game = False
+                
+                zombies_killed = result[1]
 
             elif chance == 6:
-                chance = random.randint(1, 3)
-
-                if chance != 1:
-                    result = locked_safe_event(area, zombies_killed, character, day)
-
-                    if result[0] == False:
-                        game = False
-                    
-                    zombies_killed = result[1]
-
-                else:
-                    chance = random.randint(1, 2)
-
-                    if chance == 1:
-                        print("You round the corner towards", area, "but it looks like there's been a huge battle")
-                        print("There are bodies strewn around, and the only movement comes from the hordes of undead scavengers")
-                        print("You manage to stay out of sight, but you'll have to head home")
-
-                    else:
-                        print("You arrive at", area, "with no hassle, but only because someone else beat you to it")
-                        print("The promising area you marked on your map has already been looted")
-                        print("It looks like it was recent enough, dead zombies lie here and there")
-                        print("Doesn't look like they left anything interesting for you...")
-
-                    filler_loot()
+                blackjack_event(area, character, day)
 
             elif chance == 7:
-                chance = random.randint(1, 3)
+                result = locked_safe_event(area, zombies_killed, character, day)
 
-                if chance != 1:
-                    result = survivor_footprints_event(area, zombies_killed, character, day)
-
-                    if result[0] == False:
-                        game = False
-                    
-                    zombies_killed = result[1]
-
-                else:
-                    chance = random.randint(1, 2)
-                    if chance == 1 or len(character[6]) == 0:
-                        print("You hear voices arguing up ahead, and while making sure to stay hidden, you take a look\n")
-                        print("You peek over an overturned truck and see a two groups of Raiders arguing!")
-                        print("It looks like they were waiting to ambush unsuspecting survivors, but couldn't decide who gets what")
-                        print("You count yourself thankful for their incompetence, and head home")
-
-                    elif chance == 2 and len(character[6]) > 0:
-                        chance = random.randint(1, 5)
-                        if chance == 1:
-                            friends = character[6][random.randint(0, len(character[6]) - 1)]
-                            friend1 = friends[0]
-                            friend_count = 1
-
-                            if len(friends) > 1:
-                                friend2 = friends[1]
-                                friend_count = 2
-
-                            character[6].remove(friends)
-
-                            print("You're on-route to your destination when you hear a commotion ahead")
-                            print("You peek around some cars and spot a large group of Raiders")
-
-                            if friend_count == 1:
-                                print(
-                                    "You inch closer, and it looks like they have a human head on the end of a pike...")
-
-                            else:
-                                print(
-                                    "You inch closer, and it looks like they have two human head on the ends of pikes...")
-
-                            print("Will you:\n1. Take a closer look\n2. Make a run for it")
-                            choice = make_choice()
-
-                            if choice == 1:
-                                print("You sneak closer, moving between burnt out cars until you're close enough to see properly...\n")
-
-                                if friend_count == 1:
-                                    print("It's", (friend1 + "'s"), "head on the pike")
-                                    print("Your friend", friend1, "is dead, killed by Raiders")
-
-                                    log = "Raiders killed my friend " + friend1
-                                    journal_entry(day, log)
-
-                                else:
-                                    print("The heads belong to", friend1, "and", friend2)
-                                    print("The Raiders have killed your friends")
-
-                                    log = "Raiders killed my friends " + friend1 + " and " + friend2
-                                    journal_entry(day, log)
-
-                                print("Shaking with rage, you hold yourself back")
-                                print("There's no way you could take this many Raiders in a fight")
-                                print("You walk home in the rain, plotting your revenge...")
-
-                            else:
-                                print("You don't risk the Raiders spotting you, not wanting to end up on a pike, so you make your exit")
-                                print("As you walk home, you hope those heads didn't belong to anyone you knew...")
-
-                                journal_entry(day, "Some Raiders had heads on pikes, hope it was nobody I knew")
-
-                        else:
-                            print("You're making your way down to", area, "when you hear gunfire ahead")
-                            print("It continues briefly before stopping, but the damage has been done")
-                            print("Dozens of zombies emerge from the streets around you, and you dive into cover")
-                            print("Scavenging here is going to be a no-go today...")
-
-                    filler_loot()
+                if result[0] == False:
+                    game = False
+                
+                zombies_killed = result[1]
 
             elif chance == 8:
-                chance = random.randint(1, 3)
+                result = survivor_footprints_event(area, zombies_killed, character, day)
 
-                if chance == 1:
-                    if day > 5:
-                        chance = random.randint(1, 2)
-
-                        if chance == 1:
-                            result = save_survivors_event(area, zombies_killed, character, day, bag_items)
-
-                            if result[0] == False:
-                                game = False
-                    
-                            zombies_killed = result[1]
-
-                    else:
-                        chance = random.randint(1, 3)
-
-                        if chance != 1:
-                            print("You've nearly reach your destination when you hear alarms ring out ahead")
-                            print("Someone must have set them off!")
-                            print("Dozens of zombies pour out onto the street behind you, and you dive for cover\n")
-                            chance = random.randint(1, 4)
-
-                            if day < 5:
-                                chance = 2
-
-                            if chance != 1:
-                                print("You roll behind a greasy black bin, and the zombies pass by")
-                                print("Looks like they didn't spot you!")
-
-                                log = "Was scavenging near " + area + " and nearly got caught by some zombies"
-                                journal_entry(day, log)
-
-                            else:
-                                zom_num = random.randint(2,3)
-                                print("But in your effort to escape the horde, you've jumped in front of", zom_num, "zombies!")
-                                result = fight(zom_num, "zombies")
-
-                                if not result:
-                                    game = False
-
-                                else:
-                                    zombies_killed += zom_num
-                                    log = "Was scavenging near " + area + " and had to fight off " + str(zom_num) + " zombies"
-                                    journal_entry(day, log)
-
-                            if game:
-                                print("After this narrow escape, you head back to the", character[7][0])
-                                filler_loot()
-
-                        else:
-                            print("You've nearly arrived at", area, "when you see smoke rising ahead...")
-                            print("Deciding to check it out, you find a burning pile of dozens of bodies")
-                            print("You're glad to see someone is sorting out all these zombies\n")
-                            print("But as you make your way around, you realise not all of these bodies were undead")
-                            print("One of the smouldering bodies on the edge of the pile is a survivor")
-                            print("It looks like he was shot, and you make a quick exit")
-                            print("\nOn your way home, you wonder what could have happened to him...")
-                            filler_loot()
-
-                elif chance == 2:
-                    result = killer_within_event(area, zombies_killed, character, day, bag_items)
-
-                    if result[0] == False:
-                        game = False
-            
-                    zombies_killed = result[1]
-
-                else:
-                    print("You're on your way to", area, "when a chorus of shouts rings out")
-                    print("You duck behind a billboard and watch a gang of Raiders descend on a group of zombies")
-                    print("They're brutal fighters, and you find yourself learning new moves as you watch them")
-                    print("\nThere's only one casualty on the Raider's side, and the zombies are dead")
-                    print("With the action over, you stealthily creep away and head back to the", character[7][0])
-
-                    filler_loot()
+                if result[0] == False:
+                    game = False
+                
+                zombies_killed = result[1]
 
             elif chance == 9:
-                if len(enemy_list) > 0:
-                    result = enemy_survivor_event(area, day)
+                result = workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_event_played)
 
-                    if result == False:
-                        game = False
-
-                else:
-                    chance = random.randint(1, 10)
-
-                    if chance == 1:
-                        print("You're walking up towards", area, "when a barricade in the street catches your eye")
-                        soldier_num = random.randint(4, 10)
-                        print("It's being patrolled by", soldier_num, "soldiers!")
-                        print("Hopeful of some order being restored to society you creep closer, sticking to the shadows")
-                        print("\nThe soldiers are wearing gas masks, and as you get near you begin to hear bits of conversation")
-                        print("You're just about to reveal yourself when you hear an order from the soldier in command...")
-                        print("He reminds his men to kill anything that moves, and putting aside your hopes, you head home")
-
-                    elif chance == 2:
-                        print("Working your way carefully towards", area, "you start to smell something strange")
-                        print("When you turn onto the main road, you see a murky yellow gas blocking your way")
-                        print("It hisses as it spreads from building to building, and as it makes contact with a lone zombie its skin begins to dissolve")
-                        print("You won't be able to scavenge here today...")
-
-                    else:
-                        print("As you near", area,"the clouds above darken, and when you arrive it begins to pour rain")
-                        print("You can barely see what's in front of you, and it'd be too dangerous to seek shelter")
-                        print("You'll have to head back home for today...")
-
-                    filler_loot()
+                if result[0] == False:
+                    game = False
+                
+                zombies_killed = result[1]
+                weapon_parts = result[2]
 
             elif chance == 10:
-                chance = random.randint(1, 2)
+                result = save_survivors_event(area, zombies_killed, character, day, bag_items)
 
-                if chance == 1:
-                    result = untouched_house_event(area, zombies_killed, character, day)
+                if result[0] == False:
+                    game = False
+        
+                zombies_killed = result[1]
 
-                    if result[0] == False:
-                        game = False
-            
-                    zombies_killed = result[1]
-
-                else:
-                    chance = random.randint(1, 2)
-
-                    if chance == 1:
-                        print("You saw a huge shadow go by in the night, you'd want to lay low until it's definitely gone")
-                        print("You won't go far today, no reason to attract unnecessary attention")
-                        print("Whatever it was...")
-
-                    else:
-                        print("As you head down your usual road towards", area, "the smell of smoke drifts towards you")
-                        print("You climb onto the roof of a smashed up store, and see a huge fire raging ahead")
-                        print("The noise is drawing hundreds of zombies from all directions, you'll have to head home...")
-
-                    filler_loot()
-                
             elif chance == 11:
+                result = killer_within_event(area, zombies_killed, character, day, bag_items)
+
+                if result[0] == False:
+                    game = False
+        
+                zombies_killed = result[1]
+           
+            elif chance == 12 and len(enemy_list) > 0:
+                result = enemy_survivor_event(area, day)
+
+                if result == False:
+                    game = False
+
+            elif chance == 13:
+                result = untouched_house_event(area, zombies_killed, character, day)
+
+                if result[0] == False:
+                    game = False
+        
+                zombies_killed = result[1]
+
+            elif chance == 14:
                 if day >= rot_day:
                     if first_hunt == True:
                         print("It's been", day, "days since the outbreak, and foods like chicken, apples and bread have rotted away")
@@ -1363,7 +1093,7 @@ while game:
                     zombies_killed = result[1]
 
                 elif choice == 2:
-                    chance = random.randint(1, 3)
+                    chance = random.randint(1, 2)
 
                     if chance == 1:
                         result = loot_cars_event(zombies_killed, character, day)
@@ -1379,114 +1109,252 @@ while game:
             
                         zombies_killed = result[1]
 
-                    elif chance == 3:
-                        chance = random.randint(1, 2)
+            elif chance == 15:
+                item_check = False
+                if len(character[3]) > 0:
+                    item_check = True
 
-                        if chance == 1:
-                            print("You're checking around", area, "when you see signs leading to a fuel silo nearby")
-                            print("You follow them for a few minutes, before finding the remains of the silo")
-                            print("\nIt looks like the army lured a horde here before lighting the fuel on fire")
-                            print("Ashen bones litter the wasteland, there's nothing here left to loot here")
-                            print("Disappointed, you head back to the", character[7][0])
+                elif len(character[4]) > 1:
+                    item_check = True
 
-                        else:
-                            print("But something isn't right")
-                            print("It feels like someone, or something is watching you...\n")
-
-                            chance = random.randint(1, 3)
-
-                            if chance == 1:
-                                print("You keep walking straight, then dash off to the side")
-                                print("Sprinting through sidestreets, you're taking a big risk, but your mind tells you it's the right decision")
-
-                            elif chance == 2:
-                                print("As you scavenge through some cars, you jump behind a van and run down a neighbouring alley")
-                                print("You don't know what was watching you, but you've lost it")
-
-                            else:
-                                print("You keep moving towards your destination, when you feel a strange presence behind you")
-                                print("Adrenaline fills your veins as you leap and jump over a fence, circling back down a different street")
-
-                            print("As you head back to the", character[7][0], "you no longer feel that uneasy sensation...")
-
-                        filler_loot()
-
-            elif chance == 12:
-                chance = random.randint(1, 3)
-                if chance == 1:
-                    item_check = False
-                    if len(character[3]) > 0:
-                        item_check = True
-
-                    elif len(character[4]) > 1:
-                        item_check = True
-
-                    elif len(character[5]) > 0:
-                        item_check = True
-                    
-                    if item_check:
-                        result = thief_event(area, zombies_killed, character, day, item_check)
-
-                        if result[0] == False:
-                            game = False
-            
-                        zombies_killed = result[1]
-
-                    else:
-                        free_supplies_event(area, day)
-
-                elif chance == 2:
-                    result = unlooted_pharmacy_event(area, zombies_killed, character, day)
+                elif len(character[5]) > 0:
+                    item_check = True
+                
+                if item_check:
+                    result = thief_event(area, zombies_killed, character, day, item_check)
 
                     if result[0] == False:
                         game = False
-            
+        
                     zombies_killed = result[1]
 
                 else:
-                    print("You're close to", area, "when a sound stops you in your tracks")
-                    print("Something is roaring up ahead, and screams echo through the streets")
-                    print("Suddenly they're cut short, and you duck into cover as zombies lumber out of buildings and towards the noise")
-                    print("You're not interested in whatever that was, and turn around to head back to the", character[7][0])
+                    free_supplies_event(area, day)
 
-                    filler_loot()
+            elif chance == 16:
+                result = unlooted_pharmacy_event(area, zombies_killed, character, day)
+
+                if result[0] == False:
+                    game = False
+        
+                zombies_killed = result[1]
 
             else:
-                if day < 14:
+                chance = random.randint(1, 20)
+                
+                if chance == 1:
+                    print("As you journey towards", area, "you get an unsettling feeling in your gut")
+                    print("You decide to tread carefully today, avoiding that area for now")
+                    print("Better than to risk a fatal mistake")
+                    print("Maybe tomorrow...")
+
+                elif chance == 2:
+                    print("It's too foggy to search for long, you can't risk a horde sneaking up on you")
+                    print("Better safe than sorry...")
+
+                elif chance == 3:
+                    print("As you cross through a park on your way, you hear a horde nearby")
+                    print("The sounds of moaning and shuffling remind you that your survival depends on more than just calories")
+                    print("With that, your fear of being eaten beats out your hunger")
+                    print("For now at least...")
+
+                elif chance == 4:
+                    print("One of your usual paths is a bridge across the nearby river, but it looks to have collapsed")
+                    print("Upon closer inspection it seems someone blew it up during the night")
+                    print("You're frustrated, but can't help but wonder what their motives were...")
+
+                elif chance == 5:
+                    survivor_num = random.randint(3, 15)
+                    print("You've nearly reached", area, "when a group of", survivor_num, "raggedy survivors race out of a nearby building")
+                    print("You duck into cover trying to remain unseen, just as they're cornered by a squad of soldiers in gas masks\n")
+                    print("You're too far away to hear much but the survivors appear to be trying to reason")
+                    print("Suddenly the leader of the soldiers barks an order, and his men raise their guns")
+                    print("You watch in sudden horror as the survivors are gunned down in cold blood, and their bodies searched")
+                    print("The soldiers set the corpses alight, and you use the distraction to make your escape...")
+
+                elif chance == 6:
+                    print("It rained heavily last night, and when you arrive at", area,"a flood has made the streets impassable")
+                    print("Bodies float on the waters surface, and you don't even want to think about what lies below...")
+                    print("You'll have to head home for today, but the flood should clear up soon")
+
+                elif chance == 7:
+                    zombies = random.randint(100,250)
+                    print("As you leave the",character[7][0],"to head towards",area,"a huge horde of",zombies,"zombies walks in front of you")
+                    print("You manage to avoid them and get away without being seen")
+                    print("But you won't be able to scavenge in",area,"today")
+
+                elif chance == 8:
+                    print("As you're walking towards", area, "you hear hoots and shouting")
+                    print("You dash to cover and a band of Raiders runs past")
+                    print("It's a close call, and you can't risk scavenging out here today")
+                    print("You'll have to head home and try tomorrow")
+
+                elif chance == 9:
+                    print("You round the corner towards", area, "but it looks like there's been a huge battle")
+                    print("There are bodies strewn around, and the only movement comes from the hordes of undead scavengers")
+                    print("You manage to stay out of sight, but you'll have to head home")
+
+                elif chance == 10:
+                    print("You arrive at", area, "with no hassle, but only because someone else beat you to it")
+                    print("The promising area you marked on your map has already been looted")
+                    print("It looks like it was recent enough, dead zombies lie here and there")
+                    print("Doesn't look like they left anything interesting for you...")
+
+                elif chance == 11:
+                    print("You hear voices arguing up ahead, and while making sure to stay hidden, you take a look\n")
+                    print("You peek over an overturned truck and see a two groups of Raiders arguing!")
+                    print("It looks like they were waiting to ambush unsuspecting survivors, but couldn't decide who gets what")
+                    print("You count yourself thankful for their incompetence, and head home")
+                    
+                elif chance == 12:
+                    print("You're making your way down to", area, "when you hear gunfire ahead")
+                    print("It continues briefly before stopping, but the damage has been done")
+                    print("Dozens of zombies emerge from the streets around you, and you dive into cover")
+                    print("Scavenging here is going to be a no-go today...")
+
+                elif chance == 13:
+                    print("You've nearly arrived at", area, "when you see smoke rising ahead...")
+                    print("Deciding to check it out, you find a burning pile of dozens of bodies")
+                    print("You're glad to see someone is sorting out all these zombies\n")
+                    print("But as you make your way around, you realise not all of these bodies were undead")
+                    print("One of the smouldering bodies on the edge of the pile is a survivor")
+                    print("It looks like he was shot, and you make a quick exit")
+                    print("\nOn your way home, you wonder what could have happened to him...")
+
+                elif chance == 14:
+                    print("You're on your way to", area, "when a chorus of shouts rings out")
+                    print("You duck behind a billboard and watch a gang of Raiders descend on a group of zombies")
+                    print("They're brutal fighters, and you find yourself learning new moves as you watch them")
+                    print("\nThere's only one casualty on the Raider's side, and the zombies are dead")
+                    print("With the action over, you stealthily creep away and head back to the", character[7][0])
+
+                elif chance == 15:
                     chance = random.randint(1, 3)
 
                     if chance == 1:
-                        print("You're keeping an eye out for zombies when a horde passes across the street ahead")
-                        print("You watch as zombies trickle in from side streets and head towards it")
-                        print("As you turn to head back home something catches your eye")
-                        print("\nA huge zombie, about 10 feet tall and clad in riot gear is lumbering around in the centre of the horde")
-                        print("Could it be possible that the zombies can mutate?")
+                        print("RARE EVENT!\n")
+                        print("You're walking up towards", area, "when a barricade in the street catches your eye")
+                        soldier_num = random.randint(4, 10)
+                        print("It's being patrolled by", soldier_num, "soldiers!")
+                        print("Hopeful of some order being restored to society you creep closer, sticking to the shadows")
+                        print("\nThe soldiers are wearing gas masks, and as you get near you begin to hear bits of conversation")
+                        print("You're just about to reveal yourself when you hear an order from the soldier in command...")
+                        print("He reminds his men to kill anything that moves, and putting aside your hopes, you head home")
 
                     else:
-                        print("You're on your way towards", area, "when a commotion ahead makes you stop and duck down")
-                        print("Peering around the corner, you can't believe your eyes...")
-                        print("A tank is being swarmed by zombies, and as you watch a soldier is dragged out and pulled into the horde")
-                        print("With the hatch open, the zombies climb into the tank")
-                        print("\nThe world belongs to them now")
-                        print("As you head home, you wonder if that was the last remnant of the army you'll see...")
+                        print("As you near", area,"the clouds above darken, and when you arrive it begins to pour rain")
+                        print("You can barely see what's in front of you, and it'd be too dangerous to seek shelter")
+                        print("You'll have to head back home for today...")
 
-                else:
-                    chance = random.randint(1, 10)
+                elif chance == 16:
+                    print("As you head down your usual road towards", area, "the smell of smoke drifts towards you")
+                    print("You climb onto the roof of a smashed up store, and see a huge fire raging ahead")
+                    print("The noise is drawing hundreds of zombies from all directions, you'll have to head home...")
+
+                elif chance == 17:
+                    print("You're checking around", area, "when you see signs leading to a fuel silo nearby")
+                    print("You follow them for a few minutes, before finding the remains of the silo")
+                    print("\nIt looks like the army lured a horde here before lighting the fuel on fire")
+                    print("Ashen bones litter the wasteland, there's nothing here left to loot here")
+                    print("Disappointed, you head back to the", character[7][0])
+
+                elif chance == 18:
+                    print("But something isn't right")
+                    print("It feels like someone, or something is watching you...\n")
+
+                    chance = random.randint(1, 3)
 
                     if chance == 1:
-                        print("You're nearing", area, "when an eerie sight stops you in your tracks")
-                        head_num = random.randint(3, 5)
-                        print(head_num, "long wooden pikes stand upright in the center of the road, and each has a human head on top")
-                        print("A gang of Raiders must have done this, looks like they're marking their territory")
-                        print("You heed their warning, and head back home to the", character[7][0], "without scavenging...")
+                        print("You keep walking straight, then dash off to the side")
+                        print("Sprinting through sidestreets, you're taking a big risk, but your mind tells you it's the right decision")
+
+                    elif chance == 2:
+                        print("As you scavenge through some cars, you jump behind a van and run down a neighbouring alley")
+                        print("You don't know what was watching you, but you've lost it")
 
                     else:
+                        print("You keep moving towards your destination, when you feel a strange presence behind you")
+                        print("Adrenaline fills your veins as you leap and jump over a fence, circling back down a different street")
+
+                    print("As you head back to the", character[7][0], "you no longer feel that uneasy sensation...")
+
+                elif chance == 19:
+                    chance = random.randint(1, 3)
+                    if chance == 1:
+                        print("RARE EVENT!\n")
                         print("You've nearly reached", area, "and are taking a look around when a loud whir echoes through the streets")
                         print("It's a helicopter overhead!")
                         print("It's flying close to the ground but you can't make out the markings on the side")
                         print("\nBut it's not alone, it's being chased by hundreds of zombies!")
                         print("Thankfully they're too focused on the helicopter to notice you, and you're able to sneak away")
                         print("\nOn your way back home, you ponder who might have been flying, and where they were headed...")
+                    
+                    else:
+                        print("You're close to", area, "when a sound stops you in your tracks")
+                        print("Something is roaring up ahead, and screams echo through the streets")
+                        print("Suddenly they're cut short, and you duck into cover as zombies lumber out of buildings and towards the noise")
+                        print("You're not interested in whatever that was, and turn around to head back to the", character[7][0])
+
+                elif chance == 20:
+                    chance = random.randint(1, 3)
+
+                    if chance == 1 and len(character[6]) > 0:
+                        friends = character[6][random.randint(0, len(character[6]) - 1)]
+                        friend1 = friends[0]
+                        friend_count = 1
+
+                        if len(friends) > 1:
+                            friend2 = friends[1]
+                            friend_count = 2
+
+                        character[6].remove(friends)
+
+                        print("RARE EVENT!\n")
+                        print("You're on-route to your destination when you hear a commotion ahead")
+                        print("You peek around some cars and spot a large group of Raiders")
+
+                        if friend_count == 1:
+                            print("You inch closer, and it looks like they have a human head on the end of a pike...")
+
+                        else:
+                            print("You inch closer, and it looks like they have two human head on the ends of pikes...")
+
+                        print("Will you:\n1. Take a closer look\n2. Make a run for it")
+                        choice = make_choice()
+
+                        if choice == 1:
+                            print("You sneak closer, moving between burnt out cars until you're close enough to see properly...\n")
+
+                            if friend_count == 1:
+                                print("It's", (friend1 + "'s"), "head on the pike")
+                                print("Your friend", friend1, "is dead, killed by Raiders")
+
+                                log = "Raiders killed my friend " + friend1
+                                journal_entry(day, log)
+
+                            else:
+                                print("The heads belong to", friend1, "and", friend2)
+                                print("The Raiders have killed your friends")
+
+                                log = "Raiders killed my friends " + friend1 + " and " + friend2
+                                journal_entry(day, log)
+
+                            print("Shaking with rage, you hold yourself back")
+                            print("There's no way you could take this many Raiders in a fight")
+                            print("You walk home in the rain, plotting your revenge...")
+
+                        else:
+                            print("You don't risk the Raiders spotting you, not wanting to end up on a pike, so you make your exit")
+                            print("As you walk home, you hope those heads didn't belong to anyone you knew...")
+
+                            journal_entry(day, "Some Raiders had heads on pikes, hope it was nobody I knew")
+
+                    else:
+                        print("You're nearing", area, "when an eerie sight stops you in your tracks")
+                        head_num = random.randint(3, 5)
+                        print(head_num, "long wooden pikes stand upright in the center of the road, and each has a human head on top")
+                        print("A gang of Raiders must have done this, looks like they're marking their territory")
+                        print("You heed their warning, and head back home to the", character[7][0], "without scavenging...")
 
                 filler_loot()
 
@@ -1664,7 +1532,7 @@ while game:
             if damaged_weapon:
                 print("Looks like one of your weapons is damaged")
                 if len(weapon_durability) == 1 and weapon_parts == 0:
-                    print("You'd better start looking for parts to repair it, or maybe a new weapon...")
+                    print("You'd better start looking for parts to repair it, or maybe a new weapon...\n")
 
                 else:
                     count = 1
@@ -1675,9 +1543,39 @@ while game:
 
                     if len(weapon_durability) > 1:
                         print(str(count) + ". Scrap a weapon for parts")
+                        count += 1
+
+                    print(str(count) + ". Ignore")
                         
                     choice = make_choice()
 
+                    if choice == 1 and weapon_parts > 0:
+                        result = repair_weapon(weapon_parts)
+
+                        weapon_parts = result
+
+                    elif choice == 2 or (weapon_parts == 0 and choice == 1):
+                        scrap_loop = True
+
+                        while scrap_loop:
+                            result = scrap_weapon()
+                            weapon_parts += result[1]
+
+                            if not result[0]:
+                                scrap_loop = False
+                                count = 1
+                                if weapon_parts > 0:
+                                    print("Will you:")
+                                    print(str(count) + ". Repair your weapon(s)")
+                                    count += 1
+
+                                    print(str(count) + ". Exit")
+                                    choice = make_choice()
+
+                                    if choice == 1: 
+                                        result = repair_weapon(weapon_parts)
+
+                                        weapon_parts = result           
 
             if len(character[8]) > 0:
                 print("Would you like to open your inventory?\n1. Yes\n2. No")
@@ -1686,7 +1584,7 @@ while game:
                     loop = True
                     while loop:
                         if len(character[8]) > 0:
-                            print("Click the corresponding button to select an item")
+                            print("Click the corresponding number to select an item")
                             print("You have:")
                             count = 1
                             for i in character[8]:
@@ -1700,7 +1598,7 @@ while game:
                                 if item_chosen[0:2] == "(c":
                                     total_armour = equip_armour(item_chosen[11:],total_armour)
 
-                                elif item_chosen == "Journal":
+                                elif item_chosen == "journal":
                                     print("Important Events:")
                                     if len(journal) > 0:
                                         for entry in journal:

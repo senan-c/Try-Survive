@@ -15,7 +15,7 @@ def surrounded_van_event(area, zombies_killed, character, day):
         van = "Food Truck"
 
     print("You turn the corner, and spot an abandoned",van,"surrounded by dozens of zombies")
-    print("From this distance you can't see if it's been looted or not")
+    print("From this distance you can't see if it's been looted or not\n")
     print("A horde of this size is very dangerous, but it could be worth it...")
     print("Will you:\n1. Distract the horde\n2. Lead the horde away\n3. Leave the horde alone")
     choice = make_choice()
@@ -61,7 +61,7 @@ def surrounded_van_event(area, zombies_killed, character, day):
 
         elif chance == 2:
             print("You throw the rock and the window smashes, but suddenly the alarm blares, this is way too loud!")
-            print("Your distraction has worked too well and another horde of zombies appears from behind you")
+            print("Your distraction has worked too well and another horde of zombies appears from behind you\n")
             print("You need to escape, and quickly!")
             print("Will you:\n1. Fight your way through a weak spot in the hordes\n2. Make a run for a side street")
             choice = make_choice()
@@ -70,7 +70,7 @@ def surrounded_van_event(area, zombies_killed, character, day):
                 chance = random.randint(1,3)
                 print("You run straight for the weakest zombies in the horde behind you")
                 if chance != 1:
-                    print("As they reach out to grab you, you use your",character[4][-1],"to fight them off")
+                    print("As they reach out to grab you, you use your",character[4][-1],"to fight them off\n")
                     print("Somehow you fight your way through without a scratch and head back to the",character[7][0])
 
                     journal_entry(day, "Ended up fighting my way through a horde, wouldn't recommend")

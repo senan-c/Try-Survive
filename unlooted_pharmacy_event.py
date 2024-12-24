@@ -198,13 +198,13 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                     else:
                         print("But there's a reason this pharmacy was left alone")
                         print("It was used as a morgue, and now the dead are waking back up!")
-                        print("All around you, the undead rise in the darkness and lurch towards you")
+                        print("All around you, the undead rise in the darkness and lurch towards you\n")
                         chance = random.randint(1, 2)
                         zom_num = random.randint(3, 5)
 
                         if chance == 1:
                             print("You run for the door, but your path is blocked by", zom_num, "zombies!")
-                            print("\nYou've got no choice, it's time to fight")
+                            print("You've got no choice, it's time to fight\n")
                             result = fight(zom_num, "zombies")
 
                             if result:

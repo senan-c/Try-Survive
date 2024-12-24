@@ -34,8 +34,10 @@ def loot_cars_event(zombies_killed, character, day):
             if police_car_chance == 1:
                 car = "Police Cruiser"
 
-            if car not in cars:
-                cars.append(car)
+            while car in cars:
+                car = car_colours[random.randint(0, len(car_colours) - 1)] + " " + car_types[random.randint(0, len(car_types) - 1)]
+
+            cars.append(car)
 
             if alarm_set == False:
                 if alarm > 0:
@@ -237,7 +239,7 @@ def loot_cars_event(zombies_killed, character, day):
                 else:
                     cars_looted = 5 - len(cars)
 
-                    log = "Found some cars on the highway and looted " + cars_looted + " of them"
+                    log = "Found some cars on the highway and looted " + str(cars_looted) + " of them"
                     journal_entry(day, log)
 
     return [game, zombies_killed]
