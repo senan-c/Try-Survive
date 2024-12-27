@@ -32,11 +32,12 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                 present_zombies.append(key_zombie)
 
                 if key_set == False:
-                    if key_num > 0:
+                    if key_num > 1:
                         key_chance = random.randint(1, key_num)
 
                     else:
-                        key_num = 1
+                        key_set = True
+                        keys.append(1)
 
                     if key_chance == 1:
                         key_set = True
@@ -148,7 +149,10 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                                     print("In the dim light you see", zom_num, "zombies approaching you!")
                                     result = fight(zom_num, "zombies")
 
-                                    if result:
+                                    if not result:
+                                        game = False
+
+                                    if game:
                                         zombies_killed += zom_num
                                         print("That seems to be all of them, and you're free to loot behind the counters at the back")
                                         print("Grabbing everything you can find from the prescriptions section, you wonder if the owners will ever come looking for it")

@@ -21,8 +21,10 @@ from thief_event import *
 from free_supplies_event import *
 from unlooted_pharmacy_event import *
 from workshop_event import *
+from start_mission import *
 
 username_list = []
+character[9][0] = 100
 
 with open("scores.csv", "r") as prev_usernames:
     read_users = csv.reader(prev_usernames)
@@ -226,17 +228,31 @@ while game:
                 loop = False
 
         if choice == 2 and len(afflictions) == 0:
+            no_explore = False
+
             print("You decide to fuel up your car and explore")
             print("\nWhere will you travel to?")
             count = 1
             for i in explore_list:
                 print(str(count) + ". " + i)
                 count += 1
+            print(str(count) + ". Exit")
             choice = make_choice()
 
-            temp_location = explore_list[choice - 1]
-            location = temp_location[0:-11]
-            fuel_needed = int(explore_list[choice - 1][-9])
+            if choice != count:
+                temp_location = explore_list[choice - 1]
+                location = temp_location[0:-11]
+                fuel_needed = int(explore_list[choice - 1][-9])
+
+            else:
+                fuel_needed = 0
+                print("What will you choose to do today?\n1. Scavenge for supplies\n2. Take some rest")
+                choice = make_choice()
+
+                if choice == 2:
+                    choice = 3
+
+                no_explore = True
 
             while character[9][0] < fuel_needed:
                 print("You don't have enough fuel to go this far...")
@@ -245,718 +261,54 @@ while game:
                 for i in explore_list:
                     print(str(count) + ". " + i)
                     count += 1
+                print(str(count) + ". Exit")
                 choice = make_choice()
 
-                location = explore_list[choice - 1][0:-11]
-                fuel_needed = int(explore_list[choice - 1][-9])
+                if choice != count:
+                    location = explore_list[choice - 1][0:-11]
+                    fuel_needed = int(explore_list[choice - 1][-9])
 
-            kilometres = random.randint(20, 50)
-            chance = random.randint(1, 3)
-            result = True
-            print("You decide to explore the", location)
-            character[9][0] -= fuel_needed
-
-            if chance == 1:
-                setting = "still daytime"
-
-            elif chance == 2:
-                setting = "getting late"
-
-            else:
-                setting = "the middle of the night"
-
-            print("You drive roughly", kilometres, "kilometres, but when you arrive it's", setting)
-            print("You're close by, but you park your car to avoid unwanted attention")
-            if setting == "getting late":
-                print("It'll be dangerous at night, so you better be quick")
-
-            elif setting == "the middle of the night":
-                print("You can't make out much in your pitch black surroundings")
-                print("Will you:\n1. Push forward through the dark\n2. Take shelter till the morning")
-                choice = make_choice()
-
-                if choice == 1:
-                    chance = random.randint(1, 3)
-                    zom_num = random.randint(3, 8)
-                    if chance == 1:
-                        print("You narrowly avoid a group of", zom_num , "zombies, making it through without being seen")
-
-                    elif chance == 2:
-                        print("You make your way towards the", location, "but a group of",zom_num, "zombies cuts you off!")
-                        print("They've seen you, and you'll have to fight them")
-                        result = fight(zom_num, "zombies")
-
-                        if not result:
-                            game = False
-
-                        if result:
-                            print("After making sure nothing is following you, you head towards the", location)
-                            zombies_killed += zom_num
-
-                elif choice == 2:
-                    print("You decide to wait until morning to explore the", location)
-                    chosen_shelter = shelter[random.randint(0, 2)]
-                    print("You find a", chosen_shelter, "to sleep in till morning")
-
-                    chance = random.randint(1, 2)
-                    if chance == 1:
-                        zom_num = random.randint(2, 4)
-                        print("But inside is", zom_num, "zombies!")
-                        print("You'll have to fight them off quick before they attract attention")
-                        result = fight(zom_num, "zombies")
-
-                        if result:
-                            zombies_killed += zom_num
-                            print("You manage to fight off the zombies and secure the", chosen_shelter,"for the night")
-                            print("You check around, and it looks like there's some clean water here to drink")
-
-                            eat_food()
-                            journal_entry(day, "Had to fight some zombies to secure shelter while exploring")
-                            day += 1
-
-                        if not result:
-                            game = False
-
-                    elif chance == 2:
-                        print("It's deserted thankfully, and you're able to set up for the night")
-                        print("You check around, and it looks like there's some clean water here to drink")
-
-                        eat_food()
-                        journal_entry(day, "Had to find shelter while exploring, will get there tomorrow")
-                        day += 1
-
-                    if game:
-                        if character[2][0] == 0:
-                            print("You are now starving")
-                            print("You have lost 5 HP, find some food soon...")
-                            character[0][0] -= 5
-                            print("\nYou now have", character[0][0], "HP")
-
-                        water_drank = True
-                        days_no_water = 0
-
-                        print("You close your eyes and go to sleep")
-                        input("\nPress 1 to continue to Day "  + str((day)) + ": ")
-
-                        if character[0][0] < 0:
-                            character[0][0] = 0
-
-                        if character[0][0] == 0:
-                            print("Your body couldn't take it any more and in your sleep...\nYOU DIED")
-                            game= False
-
-                        if game:
-                            print(line_break)
-                            print("Day",str(day))
-                            print(line_break)
-
-                            water_drank = True
-                            print("When you wake up you drink the rest of your water, and head to the", location)
-                            print("You feel Hydrated")
-
-            if game:
-                print("\nYou walk for a bit, keeping your head low and your eyes up, but you meet nothing along the way")
-                print("\nYou've arrived at the", location)
-                print("It looks deserted, so you head inside")
-                chance = random.randint(1, 2)
-                if chance == 1:
-                    human_amount = random.randint(1, 2)
-                    if human_amount == 1:
-                        print("You enter the", location, "but you hear someone moving around up ahead")
-
-                    else:
-                        print("As you enter the", location, "you hear some people talking up ahead")
-
-                    chance = random.randint(1, 2)
-                    if chance == 1:
-                        human = "survivor"
-
-                    elif chance == 2:
-                        human = "raider"
-
-                    print("As you get closer, you notice...")
-                    print(describe_human(human, human_amount))
-                    print()
-
-                    print("Will you:\n1. Try sneak past\n2. Approach them")
+                else:
+                    print("What will you choose to do today?\n1. Scavenge for supplies\n2. Take some rest")
                     choice = make_choice()
 
-                    if choice == 1:
-                        print("You stick to the shadows, hoping you aren't spotted")
+                    if choice == 2:
+                        choice = 3
 
-                        chance = random.randint(1, 2)
-                        if chance == 1:
-                            print("As you pass by, they shout out and you come to a stop")
-                            spotted = True
+                    no_explore = True
 
-                        elif chance == 2:
-                            print("Your attempt at stealth succeeds, and you sneak by undetected")
-                            spotted = False
+            if choice != count and not no_explore:
+                result = True
+                print("You decide to explore the", location)
+                character[9][0] -= fuel_needed
 
-                    elif choice == 2:
-                        print("You take a quick breath and then step out of your cover")
-                        if human_amount == 1:
-                            print("He spins around, alarmed at your presence and grabs for his weapon")
+                result = start_mission(location, temp_location, possible_locations, day, zombies_killed, water_drank, days_no_water)
 
-                        else:
-                            print("They spin around, alarmed at your presence and grab for their weapons")
-                        print("But you quickly explain you're not here to hurt anyone\n")
-                        spotted = True
+                if result[0] == False:
+                    game = False
 
-                    if spotted:
-                        if human == "survivor":
-                            print("You prepare for the worst but instead they smile and greet you")
-                            survivor1 = survivors_male_list[random.randint(0, len(survivors_male_list) - 1)]
-                            if human_amount == 1:
-                                print("He introduces himself as", survivor1)
-                            else:
-                                survivor2 = survivors_male_list[random.randint(0, len(survivors_male_list) - 1)]
-                                print("They introduce themselves as", survivor1, "and", survivor2)
-                                print("\nThey don't have any problem with you being here")
-
-                            print("But", survivor1, "has hurt himself and really needs medicine\n")
-                            if len(character[5]) > 0:
-                                print("Will you:\n1.Give", survivor1, "some medicine\n2.Refuse")
-                                choice = make_choice()
-
-                                if choice == 1:
-                                    print("You choose to help", survivor1)
-                                    print("Click the corresponding button to select an item")
-                                    print("You have:")
-                                    count = 1
-                                    for i in character[5]:
-                                        print(str(count) + ". " + i)
-                                        count += 1
-                                    choice = make_choice()
-                                    print("You give him", character[5][choice - 1])
-                                    character[5].remove(character[5][choice - 1])
-
-                                    if human_amount == 1:
-                                        print("He thanks you as you have saved his life")
-                                        print("He promises to try help you in the future")
-                                        survivor_group = [survivor1]
-                                        character[6].append(survivor_group)
-                                        print(survivor1, "is now your Friend")
-                                        log = "Made a new friend named " + survivor1 + " while exploring"
-                                        journal_entry(day, log)
-
-                                    elif human_amount > 1:
-                                        print("They thank you as you have saved", survivor1 + "'s", "life")
-                                        print("They promise to try help you in the future")
-                                        survivor_group = [survivor1, survivor2]
-                                        character[6].append(survivor_group)
-                                        print(survivor1, "and", survivor2, "are now your Friends")
-
-                                        log = "Made some new friends named " + survivor1 + " and " + survivor2 + " while exploring"
-                                        journal_entry(day, log)
-
-                                    print("\nWith this good deed, you say goodbye and head on your way")
-
-                                elif choice == 2:
-                                    if human_amount == 1:
-                                        print(survivor1, "looks at you sadly but doesn't speak")
-                                        print("You turn and leave him to die, he will not last long...")
-
-                                        journal_entry(day, "Found a survivor needing medicine but left him to die")
-
-                                    else:
-                                        print(survivor2, "goes to shout at you but he's stopped by", survivor1)
-                                        print("They look at you sadly as you walk away, he will not last long...")
-
-                                        journal_entry(day, "Found some survivors needing medicine but didn't help them")
-
-                            else:
-                                print("But you don't have any medicine and you cannot help")
-                                print("You explain this to him and he nods, accepting his fate")
-                                print("With nothing more to do or say, you leave him to die...")
-
-                                journal_entry(day, "A survivor was in need of medicine but I couldn't help him")
-
-                        elif human == "raider":
-                            print("You've fallen into a Raider trap!")
-                            fight_result = fight(human_amount, "humans")
-                            if not fight_result:
-                                game = False
-
-                            else:
-                                if character[0][0] > 20:
-                                    journal_entry(day, "Had to fight a Raider while exploring")
-
-                                else:
-                                    journal_entry(day, "Had to fight a Raider while exploring, I barely survived")
-
-                elif chance == 2:
-                    print("You tread lightly through the", location, "but it looks like there's nobody else here")
-
-                if game:
-                    if location == "Radio Tower":
-                        print("\nYou find the main terminal at the Radio Tower, and it's intact")
-                        print("On the terminal you find two possible locations:")
-
-                        temp_location_list = []
-                        count = 1
-                        for i in range(2):
-                            new_location = ""
-                            if new_location in temp_location_list:
-                                while new_location in temp_location_list:
-                                    new_location = possible_locations[random.randint(0,len(possible_locations) - 1)]
-
-                                temp_location_list.append(new_location)
-
-                            else:
-                                new_location = possible_locations[random.randint(0, len(possible_locations) - 1)]
-                                temp_location_list.append(new_location)
-                            print(str(count) + ". " + new_location)
-                            possible_locations.remove(new_location)
-                            count += 1
-
-                        choice = make_choice()
-                        print("You have gathered info on the location of the",temp_location_list[choice - 1])
-                        fuel_required = random.randint(5,9)
-                        explore_list.append(temp_location_list[choice - 1] + " (" + str(fuel_required) + " Litres)")
-
-                        log = "Found a terminal at a Radio tower and got the location of the " + temp_location_list[choice - 1]
-                        journal_entry(day, log)
-
-                    elif location == "Military Base":
-                        print("\nYou walk by deserted barracks and empty offices, but something doesn't feel right")
-                        print("You make your way deeper and deeper into the complex")
-                        print("But you can't shake the feeling that you're not alone")
-                        chance = random.randint(1,3)
-
-                        if chance == 1:
-                            print("\nYou find yourself looking at a huge reinforced door, it's clearly hiding something...")
-                            print("You investigate and find it's unlocked, the army must have left in a hurry")
-                            print("As you struggle to open it you hear a roar and the door flies open!")
-
-                            enemy = "Infected Commander"
-                            fight_result = fight(1, "boss", enemy)
-                            if not fight_result:
-                                game = False
-
-                        else:
-                            print("\nYou find yourself at the storage depot")
-                            zom_num = random.randint(3,8)
-                            enemy = "military zombies"
-                            print("But as you prepare to enter, a group of", str(zom_num) + " " + enemy, "swarms out!")
-                            fight_result = fight(zom_num, "military zombies")
-
-                            if not fight_result:
-                                game = False
-
-                        if game:
-                            print("With the", enemy, "dead, you're free to look around")
-                            print("You scavenge around the area and find a chest of military loot!")
-                            print("\nYou look inside and find:")
-                            random_item(1,5,"normal")
-                            random_item(1,3,"special")
-                            random_item(0,1, "ultra special")
-
-                            if chance == 1:
-                                journal_entry(day, "Had to fight an Infected Commander, but got some good loot for my trouble")
-
-                            else:
-                                journal_entry(day, "Had to fight an some military zombies, but got some good loot for my trouble")
-
-                    elif location == "Hospital":
-                        print("There must have been a huge battle here recently, the hospital is in bad shape")
-                        print("The smell of gunpowder is still in the air as you creep through the main building")
-                        print("You follow the signs towards the storage rooms")
-
-                        chance = random.randint(1, 3)
-
-                        if chance == 1:
-                            chance = random.randint(1, 2)
-                            zom_num = random.randint(3,8)
-                            print()
-
-                            
-                            print("You find yourself in the waiting room, and it's full of undead patients!")
-                            enemy = "zombies"
-
-                            print("Will you:\n1. Attack them head on\n2. Try sneak past")
-                            choice = make_choice()
-
-                            if choice == 1:
-                                print("You sprint towards the group of",zom_num, "zombies and cut one down in a surprise attack")
-                                fight_result = fight(zom_num - 1, enemy)
-
-                                if not fight_result:
-                                    game = False
-
-                                else:
-                                    print("With the", enemy, "dead, you can loot the area")
-
-                            elif choice == 2:
-                                chance = random.randint(1,2)
-                                print("You wait for a few minutes till you see a gap in the crowd, and then you move")
-
-                                if chance == 1:
-                                    print("As quietly as possible you begin to inch forward towards the door on the other side")
-                                    print("You're obscured by the shadows the fresh blood and gunpowder covers your scent")
-                                    print("You make it to the next room and continue on your way, unseen...")
-
-                                else:
-                                    print("You stick to the shadows and try navigate around the group unseen")
-                                    print("But as you reach the door, your shoe squeaks in a pool of blood")
-                                    print("The zombies jolt towards the sound in unison and you know you'll have to fight...")
-
-                                    fight_result = fight(zom_num, enemy)
-
-                                    if not fight_result:
-                                        game = False
-
-                                    else:
-                                        print("With the", enemy, "dead, you can loot the area")
-
-                                        journal_entry(day, "Had to kill some infected patients, but there were good meds at the hospital")
-
-                        else:
-                            print("You find the storage room and without a single zombie in your way")
-                            if chance == 2:
-                                print("As you push the door and it creaks open, you can't help but feel a sense of dread...")
-                                print("You make your way in and thankfully it's not pitch black")
-                                print("\nBut there's something else in here with you...")
-                                print("A Diseased Doctor snarls and jumps out from the shadows!")
-
-                                fight_result = fight(1, "boss", "Diseased Doctor")
-
-                                if not fight_result:
-                                    game = False
-
-                                else:
-                                    print("With the Diseased Doctor dead, you can loot the area")
-
-                                    journal_entry(day, "Had to kill a Diseased Doctor, but there were good meds at the hospital")
-
-                            elif chance == 3:
-                                print("It seems you've finally gotten lucky and there's nobody around")
-                                journal_entry(day, "Got lucky while exploring the hospital, nothing here but loot")
-
-                        if game:
-                            print("You scavenge the area and find a chest of medical loot!")
-                            print("\nYou look inside and find:")
-                            random_item(5, 8, "normal","meds")
-                            random_item(1, 3, "special")
-
-                    elif location == "Fuel Depot":
-                        print("It looks like the", location, "has seen better days")
-                        print("Most of the people in the area must have come here to scavenge for fuel")
-                        print("You see burnt out cars and buses full of skeletons")
-                        print("It looks like the military must have used the fuel as a last ditch weapon")
-                        print("You'll have to hope there's some left")
-
-                        print("\nAs you navigate the complex, you see more and more bodies")
-                        print("You round the corner towards the centre of the depot and see an undamaged fuel tank")
-
-                        chance = random.randint(1, 3)
-
-                        if chance == 1:
-                            print("But you're suddenly face to face with a burning zombie clad in flame-proof gear!")
-                            print("If you want to scavenge at the", location, "you'll have to fight the Fuel Beast first...")
-
-                            fight_result = fight(1, "boss", "Fuel Beast")
-
-                            if not fight_result:
-                                game = False
-
-                            else:
-                                print("With the Fuel Beast dead, you can loot the area")
-                                journal_entry(day, "Killed the Fuel Beast and found loads of fuel for my car")
-
-                        elif chance == 2:
-                            print("But as you move out from cover a horde of scorched zombies pours out into the open!")
-                            print("You run for some containers and they give chase")
-                            print("Will you:\n1. Hide and wait for them to pass\n2. Try lose them in the containers")
-                            choice = make_choice()
-
-                            if choice == 1:
-                                print("You've got a head start on the horde and are able to duck into an open container")
-                                chance = random.randint(1,4)
-
-                                if chance == 1:
-                                    print("But instead of passing by, the horde pours in and tears you to shreds...\nYOU HAVE DIED")
-                                    game = False
-
-                                else:
-                                    print("As the horde passes by, you almost choke on the fumes and give yourself away")
-                                    print("But you manage to hold yourself together and they don't notice you")
-                                    print("You wait till they're long gone before you sneak back out and towards the fuel tank")
-
-                                    journal_entry(day, "Dodged a horde and found loads of fuel for my car")
-
-                            elif choice == 2:
-                                print("With the horde hot on your tail you run left and right between the stacks of containers")
-                                chance = random.randint(1, 2)
-
-                                if chance == 1:
-                                    zom_num = random.randint(3,8)
-                                    print("You look back and see", zom_num, "zombies are still behind you")
-                                    print("You'll have to fight them here...")
-                                    fight_result = fight(zom_num,"zombies")
-
-                                    if not fight_result:
-                                        game = False
-
-                                    else:
-                                        zombies_killed += zom_num
-                                        print("With the horde gone and the zombies dealt with, you're free to scavenge")
-
-                                        journal_entry(day, "Fought some scorched zombies and found loads of fuel for my car")
-
-                                elif chance == 2:
-                                    print("You run as fast as you can, and when you finally look back, there's nothing there")
-                                    print("Looks like you outpaced the horde, and you'll be able to loop around")
-
-                                    journal_entry(day, "Evaded a horde while exploring and found loads of fuel for my car")
-
-                        if game:
-                            print("You make it to the undamaged fuel tanks and find:")
-                            random_item(5,8,"normal","fuel")
-
-                    elif location == "Trader's Hideout":
-                        print("You enter the", location, "and find the Trader himself waiting for you\n")
-                        chance = random.randint(1, 2)
-
-                        if chance == 1:
-                            print("But he's not alone, looks like a Raider has taken him captive!")
-                            raider = describe_human("raider", 1)
-                            print(raider)
-
-                            if raider[28:] in survivor_descriptions_list:
-                                print("Perhaps this Raider can be reasoned with...")
-                                print("Will you:\n1. Negotiate with the Raider\n2. Fight the Raider")
-                                choice = make_choice()
-
-                                if choice == 1:
-                                    print("\nYou try and reason with the Raider and he considers your proposal")
-                                    print("He asks for some food, and in exchange he will leave without conflict")
-                                    print("Will you:\n1. Give him some food\n2. Deny his request")
-                                    choice = make_choice()
-
-                                    if choice == 1:
-                                        print("\nClick the corresponding button to select an item")
-                                        print("You have:")
-                                        count = 1
-                                        for i in character[3]:
-                                            print(str(count) + ". " + i)
-                                            count += 1
-                                        choice = make_choice()
-                                        print("You give him (food)", character[3][choice - 1])
-                                        raider_hunger = random.randint(200, 800)
-
-                                        if get_cals(character[3][choice - 1]) < raider_hunger:
-                                            print("But the Raider is starving and unsatisfied with this offer")
-                                            print("He'd prefer to have his choice from your corpse!")
-                                            fight_result = fight(1, "humans")
-
-                                            if not fight_result:
-                                                game  = False
-
-                                            else:
-                                                print("After the battle you pick back up your", character[3][choice - 1])
-                                                print("Seems you'll enjoy it more than him")
-
-                                                journal_entry(day, "Tried unsuccessfully to reason with a Raider and met with the Trader")
-
-                                        else:
-                                            print("He seems happy with this, and nods at you before leaving")
-                                            character[3].remove(character[3][choice - 1])
-
-                                            journal_entry(day, "Somehow managed to reason with a Raider and met with the Trader")
-
-                                    elif choice == 2:
-                                        print("The Raider curses at you and his eyes narrow")
-                                        print("It looks like he'd rather fight you for your food anyway...")
-                                        fight_result = fight(1, "humans")
-
-                                        if not fight_result:
-                                            game = False
-
-                                        journal_entry(day, "Fought with a Raider and met with a Trader")
-
-                                elif choice == 2:
-                                    print("You don't negotiate with Raiders, time for him to die!")
-                                    fight_result = fight(1, "humans")
-
-                                    if not fight_result:
-                                        game = False
-
-                                    journal_entry(day, "Fought with a Raider and met with a Trader")
-
-                            else:
-                                print("This Raider can't be reasoned with...\n")
-                                print("You'll have to fight him instead")
-                                fight_result = fight(1, "humans")
-
-                                if not fight_result:
-                                    game = False
-
-                                journal_entry(day, "Fought with a Raider and met with a Trader")
-
-                            if game:
-                                print("\nWith the Raider dealt with, you're free to talk to the Trader")
-
-                        if game:
-                            print("He studies you for a second, then decides you're on his side\n")
-                            print("With this out of the way, he proposes his trades:")
-                            print(line_break)
-
-                            trader_pool = []
-                            for i in range(25):
-                                trader_pool.append(item_list[random.randint(0,len(item_list) -1)])
-
-                            for i in range(5):
-                                trader_pool.append(special_item_list[random.randint(0, len(special_item_list) - 1)])
-
-                            count = 1
-                            none_count = 0
-                            your_item_list = []
-                            trader_item_list = []
-
-                            for i in range(3):
-                                your_item = select_random_item()
-                                if your_item is not None:
-                                    if your_item[7:] in character[3]:
-                                        if your_item[7:] not in cal_list_800 and your_item[7:] not in cal_list_1000:
-                                            if len(character[5]) > 0:
-                                                category = character[5]
-                                                your_item = character[5][random.randint(0, len(character[5]) - 1)]
-
-                                            elif len(character[4]) > 1:
-                                                category = character[4]
-                                                your_item = character[4][random.randint(0, len(character[4]) - 1)]
-                                                while your_item == "hands":
-                                                    your_item = character[4][random.randint(0, len(character[4]) - 1)]
-
-                                            else:
-                                                your_item = None
-
-                                            if your_item is not None:
-                                                if category[0] == character[4][0]:
-                                                    your_item = "(weapon) " + your_item
-
-                                                elif category[0] == character[5][0]:
-                                                    your_item = "(meds) " + your_item
-
-                                if your_item is not None:
-                                    your_item_list.append(your_item)
-
-                                trader_item = trader_pool[random.randint(0, len(trader_pool) -1)]
-                                trader_item_list.append(trader_item)
-                                stored_trades = []
-                                if your_item is not None:
-                                    trade = "Your " + your_item + " for his " + trader_item
-                                    if trade not in stored_trades:
-                                        print(str(count) + ". " + trade)
-                                        count += 1
-                                    stored_trades.append(trade)
-
-                                else:
-                                    none_count += 1
-
-                            if none_count == 3:
-                                print("The Trader has no interest in your items")
-                                print("Come back next time with a better selection")
-
-                            else:
-                                print(str(count) + ".", "Reject all")
-                                line_break
-                                print("\n(You may only choose one trade)")
-                                choice = make_choice()
-
-                                if choice != count:
-                                    print("You trade your", your_item_list[choice - 1], "for the Trader's", trader_item_list[choice - 1])
-                                    add_item(trader_item_list[choice - 1])
-
-                                    your_item = your_item_list[choice - 1]
-
-                                    if your_item[0:2] == "(m":
-                                        character[5].remove(your_item[7:])
-
-                                    elif your_item[0:2] == "(f":
-                                        character[3].remove(your_item[7:])
-
-                                    elif your_item[0:2] == "(w":
-                                        character[4].remove(your_item[9:])
-
-                                else:
-                                    print("You choose to reject the Trader's offers")
-
-                            print("\nBefore you leave, the Trader offers to play a game of Blackjack")
-
-                            trader_pool = []
-                            for i in range(20):
-                                trader_item = item_list[random.randint(0, len(item_list) - 1)]
-
-                                while trader_item == "(food) rotten food":
-                                    trader_item = item_list[random.randint(0, len(item_list) - 1)]
-
-                                trader_pool.append(trader_item)
-
-                            for i in range(5):
-                                trader_pool.append(special_item_list[random.randint(0, len(special_item_list) - 1)])
-
-                            your_item = select_random_item()
-                            trader_item = trader_pool[random.randint(0, len(trader_pool) - 1)]
-
-                            while your_item == trader_item:
-                                your_item = select_random_item()
-                                trader_item = trader_pool[random.randint(0, len(trader_pool) - 1)]
-
-                            print("He proposes his", trader_item, "for your", your_item)
-                            print("Will you:\n1. Play Blackjack\n2. Head home")
-                            choice = make_choice()
-
-                            if choice == 1:
-                                result = play_blackjack("The Trader")
-
-                                if result == True:
-                                    print("YOU WIN")
-                                    print("You take the", trader_item, "and the Trader nods")
-                                    print("He tells you he'll be sure to win next time, and you shake hands")
-                                    add_item(trader_item)
-
-                                elif result == False:
-                                    print("TRADER WINS")
-                                    print("The Trader takes the", your_item, "and smiles")
-                                    print("You tell him you want a rematch next time and he nods agreeingly")
-                                    if your_item[0:2] == "(m":
-                                        character[5].remove(your_item[7:])
-
-                                    elif your_item[0:2] == "(f":
-                                        character[3].remove(your_item[7:])
-
-                                    elif your_item[0:2] == "(w":
-                                        character[4].remove(your_item[9:])
-
-                                elif result == "Draw":
-                                    print("DRAW")
-                                    print("Looks like you've stalemated, but you'll be sure to play again next time")
-
-            if game:
-                print("\nWith this done, your mission is complete")
-                print("You head back to your car and drive back to the", character[7][0])
-
-                if location != "Radio Tower":
-                    explore_list.remove(temp_location)
+                else:
+                    zombies_killed = result[1]
+                    water_drank = result[2]
+                    days_no_water = result[3]
 
             loop = False
 
-        elif choice == 1 and len(afflictions) == 0:
+        if choice == 1 and len(afflictions) == 0:
             area = areas[random.randint(0,len(areas)-1)]
             print("You decide to go scavenge in",area,"today\n")
-            chance = random.randint(1, 13)
+            chance = random.randint(1, 23)
 
-            if len(latest_events) >= 5:
+            if len(latest_events) >= 7:
                 latest_events.remove(latest_events[0])
 
             count = 20
             while chance in latest_events and count > 0:
-                chance = random.randint(1, 13)
+                chance = random.randint(1, 23)
                 count -= 1
 
-            latest_events.append(chance)
+            if chance < 17:
+                latest_events.append(chance)
 
             if chance == 1:
                 result = supply_crate_event(area, zombies_killed, character, day)
@@ -1368,7 +720,20 @@ while game:
                         water_drank = True
 
         elif choice == 3:
-            take_rest()
+            count = 0
+            medical_prompt = ""
+            for i in afflictions:
+                if count == 0:
+                    medical_prompt += i
+
+                elif count + 1 == len(afflictions):
+                    medical_prompt += " and a " + i
+
+                else:
+                    medical_prompt += ", " + i
+
+                    count += 1
+            take_rest(medical_prompt)
 
         elif len(afflictions) > 0:
             count = 0
@@ -1514,7 +879,7 @@ while game:
                                     character[0][0] = 100
                                     print("You gained", hp_healed, "HP")
 
-                                print("You now have", character[0][0], "/ 100 HP")
+                                print("You now have " + str(character[0][0]) + "/100 HP")
                                 character[5].remove(character[5][choice -1])
                             print()
 
@@ -1554,7 +919,7 @@ while game:
 
                         weapon_parts = result
 
-                    elif choice == 2 or (weapon_parts == 0 and choice == 1):
+                    elif (choice == 2 and choice != count) or (weapon_parts == 0 and choice == 1):
                         scrap_loop = True
 
                         while scrap_loop:
@@ -1598,7 +963,7 @@ while game:
                                 if item_chosen[0:2] == "(c":
                                     total_armour = equip_armour(item_chosen[11:],total_armour)
 
-                                elif item_chosen == "journal":
+                                elif item_chosen == "Journal":
                                     print("Important Events:")
                                     if len(journal) > 0:
                                         for entry in journal:
@@ -1650,23 +1015,26 @@ while game:
                 print("You are now starving")
                 print("You have lost 5 HP, find some food soon...")
                 character[0][0] -= 5
-                print("\nYou now have", character[0][0], "HP")
+                if character[0][0] < 0:
+                    character[0][0] = 0
+                print("\nYou now have " + str(character[0][0]) + "/100 HP")
 
             if not water_drank:
                 if character[1][0] == "Dehydrated":
                     print("\nYou are now dehydrated")
                     print("You have lost 10 HP, find some water soon...")
                     character[0][0] -= 10
-                    print("\nYou now have", character[0][0], "HP")
+                    if character[0][0] < 0:
+                        character[0][0] = 0
+                    print("\nYou now have " + str(character[0][0]) + "/100 HP")
 
                 elif character[1][0] == "Severely Dehydrated":
                     print("\nYou are now severely dehydrated")
                     print("You have lost 20 HP, find some water URGENTLY...")
                     character[0][0] -= 20
-                    print("\nYou now have", character[0][0], "HP")
-
-            if character[0][0] < 0:
-                character[0][0] = 0
+                    if character[0][0] < 0:
+                        character[0][0] = 0
+                    print("\nYou now have " + str(character[0][0]) + "/100 HP")
 
             print("You close your eyes and go to sleep")
             input("\nPress 1 to continue to Day "  + str((day + 1)) + ": ")
@@ -1674,6 +1042,17 @@ while game:
             if character[0][0] == 0:
                 print("Your body couldn't take it any more and in your sleep...\nYOU DIED")
                 game= False
+
+            elif character[2][0] > 2000:
+                if character[0][0] < 100:
+                    hp_healed = random.randint(5, 20)
+
+                    if character[0][0] + hp_healed > 100:
+                        hp_healed = 100 - character[0][0]
+
+                    print(line_break)
+                    print("Overnight you heal", hp_healed, "HP")
+                    print("You now have", character[0][0] + hp_healed, "/100 HP")
 
             if not water_drank:
                 days_no_water += 1
@@ -1699,7 +1078,7 @@ with open("scores.csv", "r") as prev_scores:
     for row in read_scores:
         scoreboard.append(row)
 
-scoreboard = scoreboard[1:11]
+scoreboard = scoreboard[1:]
 
 for i in range(1, len(scoreboard)):
     key = scoreboard[i]
@@ -1711,9 +1090,21 @@ for i in range(1, len(scoreboard)):
 
     scoreboard[count + 1] = key
 
+scoreboard = scoreboard[:11]
+
 print()
 print("{:-^46}".format("HIGH SCORES"))
 print("{0:15}".format("Player:"), ("Days Survived:"), ("Zombies Killed:"))
 for index, player in enumerate(scoreboard):
     print("{0:15}".format(player[0]), "{0:14}".format(player[1]), player[2])
 print("-" * 46)
+
+print("\nClear the Scoreboard?\n1. Yes\n2. No")
+choice = make_choice()
+
+if choice == 1:
+    with open("scores.csv", "w", newline = "") as score:
+        clear_score = csv.writer(score)
+        clear_score.writerow(" ")
+
+    print("Scoreboard cleared")

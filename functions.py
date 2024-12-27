@@ -106,7 +106,7 @@ chicken_name_list = chicken_names.split(",")
 raider_descriptions_list += survivor_descriptions_list
 
 #0 HP, 1 Water, 2 Calories, 3 Food, 4 Weapons, 5 Meds, 6 Friends, 7 Home, 8 Bag, 9 Fuel, 10 Ammo
-character = [[100], ["Hydrated"], [2000], [], ["hands"], [], [], [], ["journal"], [0], [0, 0]]
+character = [[100], ["Hydrated"], [2000], [], ["hands"], [], [], [], ["Journal"], [0], [0, 0]]
 #0 Head, 1 Torso, 2 Hands, 3 Legs, 4 Feet
 current_clothing = [[],[],[],[],[]]
 total_armour = 0
@@ -123,7 +123,7 @@ journal = []
 bag_items = []
 
 #0 Nails, 1 Rope, 2 Leather, 3 Wooden Poles
-workshop_satchel = [[10], [10], [10], [10]]
+workshop_satchel = [[0], [0], [0], [0]]
 
 areas = ["Downtown","the Suburbs","the City Centre","the Industrial Estate"]
 zom_types = ["weak zombie","zombie","strong zombie"]
@@ -230,6 +230,8 @@ def add_item(x):
 
     elif x[0:3] == "(gu":
         character[4].append(x[6:])
+        weapon_durability.append(1)
+        max_weapon_durability.append(1)
 
     elif x[0:2] == "(a":
         if x[8] == "*":
@@ -372,40 +374,15 @@ def get_cals(x):
 
 
 def make_choice():
-    choice = input("Make your choice: ")
-
-    not_choice = "abcdefghijklmnopqrstuvwxyz```-"
-    not_choice2 = "1234567890"
-
-    inc_entry = False
-
-    for i in choice:
-        if i in not_choice:
-            inc_entry = True
-
-    while inc_entry == True:
+    while True:
         choice = input("Make your choice: ")
-
-        count = 0
-
-        for i in choice:
-            if i in not_choice or not_choice2:
-                inc_entry = True
-
-                if i in not_choice2:
-                    count += 1
-
-            else:
-                count += 1
-
-        if count == len(choice):
-            inc_entry = False
-
-    while choice == "":
-        choice = input("Make your choice: ")
-
-    print(line_break)
-    return int(choice)
+        if choice.isdigit():
+            print(line_break)
+            return int(choice)
+        else:
+            print(line_break)
+            print("Please enter a valid number")
+            print(line_break)
 
 
 def add_affliction(injury, health):
@@ -573,7 +550,7 @@ def ranged_attack(weapon, enemy, health, armour=0):
     if weapon == "*pistol*":
         weapon = "pistol"
         ammo = character[10][0]
-        chance = random.randint(1,3)
+        chance = random.randint(1,4)
 
     elif weapon == "**assault rifle**":
         weapon = "assault rifle"
@@ -621,10 +598,10 @@ def ranged_attack(weapon, enemy, health, armour=0):
                 if boss == True:
                     damage = health//2.5
 
-                    if (damage + 100) < health:
+                    if (damage + 70) < health:
                         crit_chance = random.randint(1, 3)
                         if crit_chance == 1:
-                            damage += 100
+                            damage += 70
 
                     else:
                         damage = health
@@ -634,7 +611,7 @@ def ranged_attack(weapon, enemy, health, armour=0):
 
                 if weapon == "**assault rifle**":
                     if (damage + 20) < health:
-                        damage += 20
+                        damage += 30
 
                 print("Critical Hit! You hit", enemy, "for", int(damage), "damage")
 
@@ -672,8 +649,14 @@ def ranged_attack(weapon, enemy, health, armour=0):
                         damage += 10
 
                 if weapon == "**assault rifle**":
-                    if (damage + 20) < health:
+                    if (damage + 30) < health:
+                        damage += 30
+
+                    elif (damage + 20) < health:
                         damage += 20
+
+                    elif (damage + 10) < health:
+                        damage += 10
 
                 if part_hit == 1:
                     print("The", round, "on target, but", strike + " " + enemy, "in the torso")
@@ -925,6 +908,8 @@ def fight_zombie(zombie, weapon_choice, bonus_dam, weapon_val):
 
 
 def fight_boss(boss, weapon_choice, bonus_dam, armour, weapon_val):
+    punish_swap = True
+
     while boss.health > 0:
         print(line_break)
         boss.shout()
@@ -937,8 +922,18 @@ def fight_boss(boss, weapon_choice, bonus_dam, armour, weapon_val):
                 print("Looks like you don't have enough ammo!")
                 print("You'll have to swap weapons\n")
                 print("You back away from the", boss.name, "and find space to look in your bag")
-
+                
                 weapon_choice = choose_weapon()
+
+                chance = random.randint(1, 2)
+
+                if chance == 1:
+                    print("But", boss.name, "takes the opportunity to strike!\n")
+
+                else:
+                    print("Luckily you're back in the fight before", boss.name, "can strike")
+                    punish_swap = False
+                    
             else:
                 result = ranged_attack(weapon_choice, boss.name, boss.health)
 
@@ -1095,7 +1090,6 @@ def fight_boss(boss, weapon_choice, bonus_dam, armour, weapon_val):
 
             else:
                 boss.miss()
-                print()
 
             if character[0][0] == 0:
                 print("\nThe", boss.name, "Has killed you!\nYOU ARE DEAD")
@@ -1112,6 +1106,8 @@ def fight_boss(boss, weapon_choice, bonus_dam, armour, weapon_val):
 def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
     swapped_weapon = False
     result = [0, True]
+    punish_swap = True
+    skip_turn = False
 
     while human_enemy.health > 0:
         print(line_break)
@@ -1129,15 +1125,21 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
 
                 weapon_choice = choose_weapon()
                 swapped_weapon = True
+
+                chance = random.randint(1, 2)
+
+                if chance == 1:
+                    print("But", human_enemy.name, "takes the opportunity to strike!\n")
+
+                else:
+                    print("Luckily you're back in the fight before", human_enemy.name, "can strike")
+                    punish_swap = False
             else:
                 result = ranged_attack(weapon_choice, human_enemy.name, human_enemy.health, human_enemy.armour_val)
 
             damage = result[0]
 
         else:
-            skip_turn = False
-            punish_swap = True
-
             if weapon_choice != "hands":
                 if weapon_durability[weapon_val - 1] == 0:
                     print("But your", weapon_choice, "has broken!")
@@ -1254,6 +1256,9 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
                     if damage <= 0:
                         damage = random.randint(5, 10)
 
+                    elif damage < 20:
+                        damage = random.randint(15, 20)
+
                     if damage > human_enemy.health // 2:
                         print("Critical Hit! You hit", human_enemy.name ,"for", damage, "damage")
 
@@ -1268,28 +1273,28 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
                     else:
                         human_enemy.dodge()
 
-            if (miss_chance != 1 or result[1] == False) and not skip_turn:
-                if human_enemy.armour_val < damage and human_enemy.armour_val > 0:
-                        print("His armour blocked", human_enemy.armour_val, "damage")
-                        damage -= human_enemy.armour_val
-                        human_enemy.armour_val = 0
-                        human_enemy.health -= damage
-
-                        print("\nHe has", human_enemy.armour_val, "armour left")
-
-                elif human_enemy.armour_val > damage and human_enemy.armour_val > 0:
-                    og_enemy_armour = human_enemy.armour_val
-                    human_enemy.armour_val -= damage
-                    print("\nHe has", og_enemy_armour - human_enemy.armour_val, "armour left")
-
-                else:
+        if (miss_chance != 1 or result[1] == False) and not skip_turn:
+            if human_enemy.armour_val < damage and human_enemy.armour_val > 0:
+                    print("His armour blocked", human_enemy.armour_val, "damage")
+                    damage -= human_enemy.armour_val
+                    human_enemy.armour_val = 0
                     human_enemy.health -= damage
-                    
-                if human_enemy.health < 0:
-                    human_enemy.health = 0
+
+                    print("\nHe has", human_enemy.armour_val, "armour left")
+
+            elif human_enemy.armour_val > damage and human_enemy.armour_val > 0:
+                og_enemy_armour = human_enemy.armour_val
+                human_enemy.armour_val -= damage
+                print("\nHe has", og_enemy_armour - human_enemy.armour_val, "armour left")
+
+            else:
+                human_enemy.health -= damage
                 
-                if result[1] == False or miss_chance != 1:
-                    print("He has", human_enemy.health, "HP left\n")
+            if human_enemy.health < 0:
+                human_enemy.health = 0
+            
+            if result[1] == False or miss_chance != 1:
+                print("He has", human_enemy.health, "HP left\n")
 
         if human_enemy.health > 0 and punish_swap == True:
             enemy_chance = random.randint(1, 4)
@@ -1593,7 +1598,7 @@ def fight(num, battle, boss=None):
             if enemy_weapon != "hands":
                 loot_list.append(enemy_weapon)
 
-            armour_chance = random.randint(1,3)
+            armour_chance = random.randint(1,2)
 
             if armour_chance == 1:
                 enemy_armour = special_item_list[random.randint(0, len(special_item_list) - 1)]
@@ -1608,11 +1613,7 @@ def fight(num, battle, boss=None):
             human_enemy = h.Human(human_name, enemy_weapon, enemy_armour)
             human_enemy.display_armour()
 
-            if armour_chance == 1 and weapon_choice == "*pistol*" and weapon_choice == "**assault rifle**":
-                print("He has", human_enemy.armour_val, "armour\n")
-
-            else:
-                print("He has", human_enemy.armour_val, "armour")
+            print("He has", human_enemy.armour_val, "armour")
 
             result = fight_human(human_enemy, weapon_choice, bonus_dam, total_armour, weapon_val)
             opp_list.remove(opp_list[0])
@@ -1694,16 +1695,15 @@ def fight(num, battle, boss=None):
 
         if chance == 1:
             print("But it looks like the shooting attracted some zombies")
-            zom_num = random.randint(2, 5)
+            zom_num = random.randint(2, 3)
 
             fight_result = fight(zom_num, "zombies")
 
             if fight_result:
                 print("The zombies lie dead, and you really need to find a suppressor")
-                zombies_killed += zom_num
 
             else:
-                game = False
+                return False
 
     return True
 
@@ -1748,7 +1748,7 @@ def select_random_item():
     chance = random.randint(1,10)
     armour_check = False
     your_item = None
-    invalid_list = ["journal", "workshop satchel", "crafting recipes"]
+    invalid_list = ["Journal", "workshop satchel", "crafting recipes"]
 
     count = 30
 
@@ -1789,7 +1789,11 @@ def select_random_item():
             your_item = "(food) " + your_item
 
         elif len(character[4]) > 1 and category[0] == character[4][0]:
-            your_item = "(weapon) " + your_item
+            if your_item == "*pistol*" or your_item == "**assault rifle**":
+                your_item = "(gun) " + your_item
+
+            else:
+                your_item = "(weapon) " + your_item
 
         elif len(character[5]) > 0 and category[0] == character[5][0]:
             your_item = "(meds) " + your_item
@@ -2156,7 +2160,7 @@ def cook_food():
         cook_check = True
         cook_list.append("sausages and pasta")
 
-    if "apple" in ingredients and ("banana" in ingredients or "strawberries" in ingredients) and "can of whipped cream" in ingredients:
+    if "strawberries" in ingredients and ("banana" in ingredients or "apple" in ingredients) and "can of whipped cream" in ingredients:
         cook_check = True
         cook_list.append("fruit and cream")
 
@@ -2234,10 +2238,10 @@ def cook_food():
                     portion = 2
 
                 elif recipe == "fruit and cream":
-                    remove_list = ["apple", "can of whipped cream"]
+                    remove_list = ["strawberries", "can of whipped cream"]
 
-                    if "strawberries" in ingredients:
-                        remove_list.append("strawberries")
+                    if "apple" in ingredients:
+                        remove_list.append("apple")
 
                     else:
                         remove_list.append("banana")
@@ -2311,10 +2315,10 @@ def cook_food():
                     print()
 
 
-def take_rest(medical_prompt=None):
+def take_rest(medical_prompt):
     print("You'll be taking some rest today")
 
-    if medical_prompt != None:
+    if medical_prompt != "":
         if len(afflictions) > 0:
             print("You lie down and try get some sleep")
             print("Hopefully your", medical_prompt, "will heal and you'll be able to go out tomorrow\n")
@@ -3213,8 +3217,9 @@ def repair_weapon(weapon_parts):
 
     for i in range(len(character[4])):
         if character[4][i - 1] != "hands":
-            if weapon_durability[count] < max_weapon_durability[count]:
-                repair_list.append(character[4][count + 1])
+            if i != "*pistol*" and i != "**assault rifle**":
+                if weapon_durability[count] < max_weapon_durability[count]:
+                    repair_list.append(character[4][count + 1])
             
             count += 1
 
@@ -3295,14 +3300,17 @@ def repair_weapon(weapon_parts):
 def scrap_weapon():
     print("Choose a weapon to scrap:")
     count = 1
+    weapon_count = 1
     for i in character[4]:
         if i != "hands":
-            print(str(count) + ". " + i + " - condition: " + str(weapon_durability[count - 1]) + "/" + str(max_weapon_durability[count - 1]))
+            if i != "*pistol*" and i != "**assault rifle**":
+                print(str(weapon_count) + ". " + i + " - condition: " + str(weapon_durability[count - 1]) + "/" + str(max_weapon_durability[count - 1]))
+                weapon_count += 1
             count += 1
-    print(str(count) + ". " + "Exit")
+    print(str(weapon_count) + ". " + "Exit")
     choice = make_choice()
 
-    if choice != count:
+    if choice != weapon_count:
         weapon_chosen = character[4][choice]
         print("You have chosen to scrap your", weapon_chosen)
 
