@@ -44,10 +44,13 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                         keys.append(1)
 
                     else:
-                        key_num -= 1
                         keys.append(0)
 
+                else:
+                    keys.append(0)
+
             random.shuffle(keys)
+            print(keys)
 
             no_key = True
             give_up = False
@@ -158,6 +161,9 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                                         print("Grabbing everything you can find from the prescriptions section, you wonder if the owners will ever come looking for it")
                                         print("Hopefully some of it will be of use to you")
 
+                                        input("Press 1 to continue: ")
+                                        print(line_break)
+
                                         loot_amount = random.randint(2, 4)
 
                                         for i in range(loot_amount):
@@ -191,7 +197,7 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                             print("It seems the coast is clear and you can check the items you grabbed")
                         
                         if game:
-                                print("When you're finished you're left with:")
+                                print("\nWhen you're finished you're left with:")
                                 for i in loot_taken:
                                     print(i)
                                     add_item(i)

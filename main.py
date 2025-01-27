@@ -21,10 +21,10 @@ from thief_event import *
 from free_supplies_event import *
 from unlooted_pharmacy_event import *
 from workshop_event import *
+from get_your_bag_event import *
 from start_mission import *
 
 username_list = []
-character[9][0] = 100
 
 with open("scores.csv", "r") as prev_usernames:
     read_users = csv.reader(prev_usernames)
@@ -472,13 +472,28 @@ while game:
                 elif len(character[5]) > 0:
                     item_check = True
                 
-                if item_check:
-                    result = thief_event(area, zombies_killed, character, day, item_check)
+                if item_check and len(bag_items) == 0:
+                    if len(raider_bag_items) == 0:
+                        result = thief_event(area, zombies_killed, character, day, item_check)
 
-                    if result[0] == False:
-                        game = False
-        
-                    zombies_killed = result[1]
+                        if result[0] == False:
+                            game = False
+            
+                        zombies_killed = result[1]
+                        raider_has_bag = result[3]
+
+                        if raider_has_bag:
+                            bag_raiders = result[2]
+                            raider_bag_items = result[4]
+                            bag_items = []
+
+                    else:
+                        result = get_your_bag_event(area, character, day, raider_bag_items, bag_raiders)
+
+                        if result[0] == False:
+                            game = False
+
+                        raider_bag_items = []
 
                 else:
                     free_supplies_event(area, day)
@@ -963,7 +978,7 @@ while game:
                                 if item_chosen[0:2] == "(c":
                                     total_armour = equip_armour(item_chosen[11:],total_armour)
 
-                                elif item_chosen == "Journal":
+                                elif item_chosen == "journal":
                                     print("Important Events:")
                                     if len(journal) > 0:
                                         for entry in journal:
@@ -971,6 +986,9 @@ while game:
 
                                     else:
                                         print("You haven't written anything in your journal yet")
+
+                                elif item_chosen == "crafting recipes":
+                                    crafting_recipes()
 
                                 elif item_chosen == "(mod) **suppressor**":
                                     mod_options = []

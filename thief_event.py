@@ -5,6 +5,8 @@ def thief_event(area, zombies_killed, character, day, item_check):
 
     loot_spot = ["burnt out police station", "destroyed military checkpoint", "looted pharmacy", "burnt down petrol station"]
     event_location = loot_spot[random.randint(0, len(loot_spot) - 1)]
+    raider_num = random.randint(1, 2)
+    raider_has_bag = False
 
     print("You've arrived at", area, "and are taking a look around when you spot a", event_location)
     print("It looks to be in bad shape, but the area is deserted and you decide to take a look anyway")
@@ -287,7 +289,6 @@ def thief_event(area, zombies_killed, character, day, item_check):
 
             if chance == 1:
                 print("\nYou turn the corner and he's right in front of you")
-                raider_num = random.randint(1, 2)
 
                 if raider_num == 1:
                     print("But so is a Raider!")
@@ -325,6 +326,8 @@ def thief_event(area, zombies_killed, character, day, item_check):
                         game = False
 
                 else:
+                    raider_has_bag = True
+
                     if raider_num == 1:
                         print("You're not going to risk fighting a Raider for that bag, and decide to just head home instead")
                         journal_entry(day, "A Thief grabbed my bag but a Raider got to him first")
@@ -333,7 +336,7 @@ def thief_event(area, zombies_killed, character, day, item_check):
                         print("You're not going to fight a pair of Raiders for that bag, and instead you head back to the", character[7][0])
                         journal_entry(day, "A Thief grabbed my bag but some Raiders got to him first")
 
-                    print("On your way home, you try not to think about all the stuff you left behind")
+                    print("On your way home, you try not to think about what you left behind")
 
             elif chance == 2:
                 print("\nThe bag is weighing the Thief down, and you've almost caught up with him")
@@ -450,4 +453,4 @@ def thief_event(area, zombies_killed, character, day, item_check):
         print("As you make your way home, you find yourself hoping someone else sorts him out")
         journal_entry(day, "A Thief stole my bag but I didn't risk chasing him")
 
-    return [game, zombies_killed]
+    return [game, zombies_killed, raider_num, raider_has_bag, bag_items]

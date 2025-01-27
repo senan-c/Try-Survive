@@ -338,6 +338,6 @@ def untouched_house_event(area, zombies_killed, character, day):
     else:
         print("Though the house looks promising, you won't risk an encounter with a horde")
         print("You head back to the", character[7][0], "wondering what might have been inside...")
-        journal_entry("Saw a promising house but there was a horde on the way")
+        journal_entry(day, "Saw a promising house but there was a horde on the way")
 
     return [game, zombies_killed]

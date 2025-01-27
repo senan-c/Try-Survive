@@ -80,6 +80,8 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
                 else:
                     print("You won't risk attracting zombies, and decide to head home instead")
 
+                journal_entry(day, "Found a DIY store but decided against breaking in")
+
                 go_home = True
 
         else:
@@ -273,6 +275,7 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
 
                         if choice == 1:
                             crafting_recipes()
+                            print(line_break)
 
                     workshop_event_played = True
                     print("It looks like you'll be able to use this workbench")
@@ -280,10 +283,12 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
                     choice = make_choice()
 
                     if choice == 1:
-                        craft_item(weapon_parts)
+                        craft_item(weapon_parts) 
                         print("Once you've finished at the workbench, you head home to the", character[7][0])
+                        journal_entry(day, "Found a workbench in a DIY store")
 
                     else:
                         print("Deciding not to use the workbench, you head home to the", character[7][0])
+                        journal_entry(day, "Found a workbench in a DIY store but decided not to use it")
 
     return [game, zombies_killed, weapon_parts]

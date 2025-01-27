@@ -106,7 +106,7 @@ chicken_name_list = chicken_names.split(",")
 raider_descriptions_list += survivor_descriptions_list
 
 #0 HP, 1 Water, 2 Calories, 3 Food, 4 Weapons, 5 Meds, 6 Friends, 7 Home, 8 Bag, 9 Fuel, 10 Ammo
-character = [[100], ["Hydrated"], [2000], [], ["hands"], [], [], [], ["Journal"], [0], [0, 0]]
+character = [[100], ["Hydrated"], [2000], [], ["hands"], [], [], [], ["journal", "crafting recipes"], [0], [0, 0]]
 #0 Head, 1 Torso, 2 Hands, 3 Legs, 4 Feet
 current_clothing = [[],[],[],[],[]]
 total_armour = 0
@@ -121,6 +121,8 @@ zombie_survivors = []
 latest_events = []
 journal = []
 bag_items = []
+bag_raiders = 0
+raider_bag_items = []
 
 #0 Nails, 1 Rope, 2 Leather, 3 Wooden Poles
 workshop_satchel = [[0], [0], [0], [0]]
@@ -1748,7 +1750,7 @@ def select_random_item():
     chance = random.randint(1,10)
     armour_check = False
     your_item = None
-    invalid_list = ["Journal", "workshop satchel", "crafting recipes"]
+    invalid_list = ["journal", "workshop satchel", "crafting recipes"]
 
     count = 30
 
@@ -3388,7 +3390,6 @@ def crafting_recipes():
 
     print("handmade boots:")
     print("Requires 2 pieces of leather and 1 piece of rope")
-    print(line_break)
 
 def craft_list(weapon_parts):
     craft_list = []
@@ -3433,74 +3434,78 @@ def craft_item(weapon_parts):
     craftable = craft_list(weapon_parts)
     craft_loop = True
 
-    while len(craftable) > 0 and craft_loop == True:
-        craftable = craft_list(weapon_parts)
-        if len(craftable) > 0:
-            print("Select an item to craft:")
-            count = 1
-            for i in craftable:
-                print(str(count) + ". " + i)
-                count += 1
-            print(str(count) + ". " + "Exit")
-            choice = make_choice()
+    if len(craftable) > 0:
+        while len(craftable) > 0 and craft_loop == True:
+            craftable = craft_list(weapon_parts)
+            if len(craftable) > 0:
+                print("Select an item to craft:")
+                count = 1
+                for i in craftable:
+                    print(str(count) + ". " + i)
+                    count += 1
+                print(str(count) + ". " + "Exit")
+                choice = make_choice()
 
-            if choice <= len(craftable):
-                item_chosen = craftable[choice - 1]
+                if choice <= len(craftable):
+                    item_chosen = craftable[choice - 1]
 
-                if item_chosen == "basic spear":
-                    add_item("(weapon) basic spear")
-                    remove_item("(weapon) knife")
-                    workshop_satchel[1][0] = workshop_satchel[1][0] - 1
-                    workshop_satchel[3][0] = workshop_satchel[3][0] - 1
+                    if item_chosen == "basic spear":
+                        add_item("(weapon) basic spear")
+                        remove_item("(weapon) knife")
+                        workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+                        workshop_satchel[3][0] = workshop_satchel[3][0] - 1
 
-                elif item_chosen == "heavy spear":
-                    add_item("(weapon) heavy spear")
-                    remove_item("(weapon) machete")
-                    workshop_satchel[1][0] = workshop_satchel[1][0] - 1
-                    workshop_satchel[3][0] = workshop_satchel[3][0] - 1
+                    elif item_chosen == "heavy spear":
+                        add_item("(weapon) heavy spear")
+                        remove_item("(weapon) machete")
+                        workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+                        workshop_satchel[3][0] = workshop_satchel[3][0] - 1
 
-                elif item_chosen == "*tri-blade spear*":
-                    add_item("(weapon) *tri-blade spear*")
-                    remove_item("(weapon) machete")
-                    remove_item("(weapon) knife")
-                    remove_item("(weapon) knife")
-                    workshop_satchel[1][0] = workshop_satchel[1][0] - 2
-                    workshop_satchel[3][0] = workshop_satchel[3][0] - 1
+                    elif item_chosen == "*tri-blade spear*":
+                        add_item("(weapon) *tri-blade spear*")
+                        remove_item("(weapon) machete")
+                        remove_item("(weapon) knife")
+                        remove_item("(weapon) knife")
+                        workshop_satchel[1][0] = workshop_satchel[1][0] - 2
+                        workshop_satchel[3][0] = workshop_satchel[3][0] - 1
 
-                elif item_chosen == "*spiked baseball bat*":
-                    add_item("(weapon) *spiked baseball bat*")
-                    character[4].remove("baseball bat")
-                    workshop_satchel[0][0] = workshop_satchel[0][0] - 10
+                    elif item_chosen == "*spiked baseball bat*":
+                        add_item("(weapon) *spiked baseball bat*")
+                        character[4].remove("baseball bat")
+                        workshop_satchel[0][0] = workshop_satchel[0][0] - 10
 
-                elif item_chosen == "heavy hammer":
-                    add_item("(weapon) heavy hammer")
-                    character[4].remove("hammer")
-                    workshop_satchel[0][0] = workshop_satchel[0][0] - 4
-                    weapon_parts -= 3
+                    elif item_chosen == "heavy hammer":
+                        add_item("(weapon) heavy hammer")
+                        character[4].remove("hammer")
+                        workshop_satchel[0][0] = workshop_satchel[0][0] - 4
+                        weapon_parts -= 3
 
-                elif item_chosen == "quality machete":
-                    add_item("(weapon) quality machete")
-                    remove_item("(weapon) machete")
-                    workshop_satchel[2][0] = workshop_satchel[2][0] - 2
-                    workshop_satchel[1][0] = workshop_satchel[1][0] - 1
-                    weapon_parts -= 1
+                    elif item_chosen == "quality machete":
+                        add_item("(weapon) quality machete")
+                        remove_item("(weapon) machete")
+                        workshop_satchel[2][0] = workshop_satchel[2][0] - 2
+                        workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+                        weapon_parts -= 1
 
-                elif item_chosen == "handmade armour":
-                    add_item("(clothing) *handmade armour*")
-                    workshop_satchel[2][0] = workshop_satchel[2][0] - 8
-                    workshop_satchel[1][0] = workshop_satchel[1][0] - 2
+                    elif item_chosen == "handmade armour":
+                        add_item("(clothing) *handmade armour*")
+                        workshop_satchel[2][0] = workshop_satchel[2][0] - 8
+                        workshop_satchel[1][0] = workshop_satchel[1][0] - 2
 
-                elif item_chosen == "handmade boots":
-                    add_item("(clothing) *handmade boots*")
-                    workshop_satchel[2][0] = workshop_satchel[2][0] - 2
-                    workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+                    elif item_chosen == "handmade boots":
+                        add_item("(clothing) *handmade boots*")
+                        workshop_satchel[2][0] = workshop_satchel[2][0] - 2
+                        workshop_satchel[1][0] = workshop_satchel[1][0] - 1
 
-                print("You have crafted '" + item_chosen + "'")
-                print(line_break)
+                    print("You have crafted '" + item_chosen + "'")
+                    print(line_break)
+
+                else:
+                    craft_loop = False
 
             else:
+                print("There is nothing you can craft")
                 craft_loop = False
 
-        else:
-            print("There is nothing you can craft")
-            craft_loop = False
+    else:
+        print("There is nothing you can craft")
