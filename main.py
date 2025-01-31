@@ -22,6 +22,9 @@ from free_supplies_event import *
 from unlooted_pharmacy_event import *
 from workshop_event import *
 from get_your_bag_event import *
+from zombie_patrol_event import *
+from survivor_fuel_event import *
+from crumbling_bridge_event import *
 from start_mission import *
 
 username_list = []
@@ -74,7 +77,7 @@ while game:
         print("You're driving home from work when the radio is interrupted by an emergency broadcast")
         print("The government is warning of a disease which makes the dead come back to life and attack the living\n")
         print("You realise you need to find shelter")
-        print("Will you:\n1. Make your way home, but closer to the city\n2. Get back to the restaurant you work at\n3. Drive to the forest nearby and camp out in your car")
+        print("Will you:\n1. Make your way home - Heal faster from injuries\n2. Get back to the restaurant you work at - Bonus calories when cooking\n3. Drive to the forest nearby and camp out in your car - Unlimited water from the spring")
         choice = make_choice()
 
         if choice == 1:
@@ -183,7 +186,7 @@ while game:
                     print("They left you:")
 
                 rarity_chance = random.randint(1,8)
-                random_item(1,3, "normal")
+                random_item(2,3, "normal", "no rot")
 
                 if rarity_chance == 1:
                     random_item(1,2, "special")
@@ -505,6 +508,15 @@ while game:
                     game = False
         
                 zombies_killed = result[1]
+
+            elif chance == 17:
+                result = survivor_fuel_event(area, character, day, rot_day, zombies_killed)
+
+                if result[0] == False:
+                    game = False
+        
+                zombies_killed = result[1]
+                character[9][0] -= result[2]
 
             else:
                 chance = random.randint(1, 20)
@@ -989,6 +1001,22 @@ while game:
 
                                 elif item_chosen == "crafting recipes":
                                     crafting_recipes()
+
+                                elif item_chosen == "material satchel":
+                                    material_check = False
+                                    for i in workshop_satchel:
+                                        if i > 0:
+                                            material_check = True
+
+                                    if material_check:
+                                        print("You check your satchel and see the following:")
+                                        print("(material) nails x" + str(workshop_satchel[0]))
+                                        print("(material) rope x" + str(workshop_satchel[1]))
+                                        print("(material) leather x" + str(workshop_satchel[2]))
+                                        print("(material) wooden poles x" + str(workshop_satchel[3]))
+
+                                    else:
+                                        print("Your satchel is empty")
 
                                 elif item_chosen == "(mod) **suppressor**":
                                     mod_options = []

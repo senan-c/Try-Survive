@@ -34,7 +34,8 @@ def surrounded_van_event(area, zombies_killed, character, day):
                 print("You open the doors and find:")
                 if van == "Survivor's Van":
                     random_item(1,2,"special")
-                    random_item(2,5,"normal")
+                    random_item(2, 4, "normal")
+                    random_item(1, 3, "crafting")
 
                     log = "Lured a horde away and looted a " + van
                     journal_entry(day, log)
@@ -53,7 +54,7 @@ def surrounded_van_event(area, zombies_killed, character, day):
 
                 print("\nHappy with today's score, you head home, wishing every day was like this")
 
-            elif chance == 2:
+            else:
                 print("But it looks like the horde got to the van first")
                 print("Disappointed, you head back to the",character[7][0])
 
@@ -133,7 +134,8 @@ def surrounded_van_event(area, zombies_killed, character, day):
                         print("You open the doors and find:")
                         if van == "Survivor's Van":
                             random_item(1, 2, "special")
-                            random_item(2, 5, "normal")
+                            random_item(2, 4, "normal")
+                            random_item(1, 3, "crafting")
 
                             log = "Lured a horde away and looted a " + van
                             journal_entry(day, log)
@@ -226,7 +228,8 @@ def surrounded_van_event(area, zombies_killed, character, day):
                         print("You open the doors and find:")
                         if van == "Survivor's Van":
                             random_item(1, 2, "special")
-                            random_item(2, 5, "normal")
+                            random_item(2, 4, "normal")
+                            random_item(1, 3, "crafting")
 
                             log = "Lured a horde away and looted a " + van
                             journal_entry(day, log)

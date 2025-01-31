@@ -171,12 +171,18 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
 
                 elif choice == 1 and len(character[5]) == 0:
                     print("But you tell him you don't have any medicine, and his face drops")
-                    print(survivor, "goes to comfort his friend, and you head off to loot the building")
+                    print(survivor, "goes to comfort his friend, and you head off to loot the building\n")
+                    
+                    input("Press 1 to continue: ")
+                    print(line_break)
 
                 elif choice == 2 and len(character[5]) > 0:
                     print("You think for a second, then refuse his offer")
                     print("He looks at you in disbelief before his eyes narrow, turning his back on you to go comfort his friend")
-                    print("With nothing else to say, you turn to go loot the building")
+                    print("With nothing else to say, you turn to go loot the building\n")
+
+                    input("Press 1 to continue: ")
+                    print(line_break)
 
                 elif (choice == 2 and len(character[5]) == 0) or choice == 3:
                     print("You consider his offer, then tell him you'd rather just take all off his stuff")

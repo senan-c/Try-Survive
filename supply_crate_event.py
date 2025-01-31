@@ -113,7 +113,7 @@ def supply_crate_event(area, zombies_killed, character, day):
                 print("They draw their weapons and tell you to hand over your spoils")
                 print("Will you:\n1. Fight the Raiders\n2. Give them the supplies")
 
-                choice = make_choice
+                choice = make_choice()
 
                 if choice == 1:
                     print("You briefly consider their offer, then drop your bag and draw your own weapon")

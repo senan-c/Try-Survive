@@ -106,13 +106,10 @@ chicken_name_list = chicken_names.split(",")
 raider_descriptions_list += survivor_descriptions_list
 
 #0 HP, 1 Water, 2 Calories, 3 Food, 4 Weapons, 5 Meds, 6 Friends, 7 Home, 8 Bag, 9 Fuel, 10 Ammo
-character = [[100], ["Hydrated"], [2000], [], ["hands"], [], [], [], ["journal", "crafting recipes"], [0], [0, 0]]
+character = [[100], ["Hydrated"], [200], [], ["hands"], [], [], [], ["journal", "material satchel"], [0], [0, 0]]
 #0 Head, 1 Torso, 2 Hands, 3 Legs, 4 Feet
 current_clothing = [[],[],[],[],[]]
 total_armour = 0
-
-good_deeds = 0
-bad_deeds = 0
 
 temp_items = []
 afflictions = []
@@ -125,7 +122,7 @@ bag_raiders = 0
 raider_bag_items = []
 
 #0 Nails, 1 Rope, 2 Leather, 3 Wooden Poles
-workshop_satchel = [[0], [0], [0], [0]]
+workshop_satchel = [0, 0, 0, 0]
 
 areas = ["Downtown","the Suburbs","the City Centre","the Industrial Estate"]
 zom_types = ["weak zombie","zombie","strong zombie"]
@@ -215,8 +212,8 @@ def add_item(x):
     elif x[0:3] == "(mo":
         character[8].append(x)
 
-    elif x[0:3] == "(ma)":
-        value = str(x[0])
+    elif x[0:3] == "(ma":
+        value = int(x[11])
 
         if "nail" in x:
             workshop_satchel[0] += value
@@ -299,7 +296,7 @@ cal_list_600 = ["can of soup", "can of peaches", "can of beans", "can of tuna", 
 cal_list_800 = ["chicken", "pasta", "beef jerky", "box of chocolates", "can of whipped cream", "cake"]
 cal_list_1000 = ["pre-made meal", "venison"]
 cal_list_1500 = ["condensed milk"]
-cal_list_2000 = ["MRE"]
+cal_list_2500 = ["MRE"]
 
 def get_cals(x):
     if x in cal_list_100:
@@ -326,8 +323,8 @@ def get_cals(x):
     elif x in cal_list_1500:
         return 1500
 
-    elif x in cal_list_2000:
-        return 2000
+    elif x in cal_list_2500:
+        return 2500
 
     else:
         if x == "chicken and pasta" or x == "chicken and beef sandwiches":
@@ -732,11 +729,33 @@ def fight_zombie(zombie, weapon_choice, bonus_dam, weapon_val):
 
             if result[1] == True:
                 print("The zombie strikes!")
-                chance = random.randint(1, 10)
+                chance = random.randint(1, 9)
                  
                 if chance == 1:
-                    print("The", zombie.character, "grabs you and bites!\nYOU ARE DEAD")
-                    return False
+                    escape_num = random.randint(1, 3)
+                    print("It grabs you and goes for the kill!")
+                    print("Choose a number between 1 and 3 to try break free")
+                    choice = make_choice()
+
+                    if choice == escape_num:
+                        chance = random.randint(1, 2)
+
+                        if chance == 1:
+                            print("Somehow you manage to push the zombie away and its gnashing teeth barely miss you")
+                        
+                        else:
+                            print("You manage to land a kick on the zombie and its grip weakens")
+                            print("Seizing the oppurtunity you twist and manage to get away")
+
+                    else:
+                        if weapon_choice == "hands":
+                                print("You kick and punch at the", zombie.character, "but you can't break free")
+                            
+                        else:
+                            print("Your", weapon_choice, "is trapped between you and the", zombie.character, "and you can't reach it!")
+
+                        print("With a terrible groan the zombie pulls you in and bites!\nYOU ARE DEAD")
+                        return False
 
                 elif chance == 2 or chance == 3:
                     print("The zombie charges forward, but you knock back its attack with your", weapon_choice)
@@ -769,8 +788,14 @@ def fight_zombie(zombie, weapon_choice, bonus_dam, weapon_val):
             else:
                 miss_chance = random.randint(1, 5)
 
-                if zombies_killed > 50:
+                if zombies_killed >= 30:
+                    miss_chance = random.randint(1, 8)
+
+                elif zombies_killed >= 20:
                     miss_chance = random.randint(1, 7)
+
+                elif zombies_killed >= 10:
+                    miss_chance = random.randint(1, 6)
 
             if not skip_turn:
                 if miss_chance != 1:
@@ -849,28 +874,68 @@ def fight_zombie(zombie, weapon_choice, bonus_dam, weapon_val):
                         print("You hit the zombie for",damage,"damage")
 
                 else:
-                    print("You swing your",weapon_choice,"and miss")
-                    print("\nThe zombie strikes!")
+                    chance = random.randint(1, 3)
+
+                    if chance == 1:
+                        print("You swing your",weapon_choice,"and miss")
+                        print("\nThe zombie strikes!")
+
+                    elif chance == 2:
+                        if weapon_choice != "hands":
+                            print("You swing your",weapon_choice,"but it only strikes a glancing blow")
+
+                        else:
+                            print("You swing your fist at the zombie, but the blow glances off")
+                        
+                        print("\nTaking the opportunity, the zombie strikes!")
+
+                    else:
+                        if weapon_choice != "hands":
+                            print("You swing your", weapon_choice, "but it catches on the zombie's clothes and you almost lose it")
+
+                        else:
+                            print("Launching a kick at the zombie, it grabs for your leg and sends you stumbling back")
+
+                        print("\nYou're off balance now, and the zombie strikes!")
                     
                     if weapon_choice == "hands":
                         chance = random.randint(1,6)
 
                     else:
                         if character[2][0] > 2000:
-                            chance = random.randint(1,11)
+                            chance = random.randint(1,12)
+
+                        elif character[2][0] > 1500:
+                            chance = random.randint(1, 11)
 
                         else:
                             chance = random.randint(1, 10)
 
-                    if "*" in weapon_choice:
-                        chance = random.randint(1, 11)  
-
-                        if character[2][0] > 2000:
-                            chance = random.randint(1,12)
-
                     if chance == 1:
-                        print("The",zombie.character,"grabs you and bites!\nYOU ARE DEAD")
-                        return False
+                        escape_num = random.randint(1, 3)
+                        print("It grabs you and goes for the kill!\n")
+                        print("Choose a number between 1 and 3 to try break free")
+                        choice = make_choice()
+
+                        if choice == escape_num:
+                            chance = random.randint(1, 2)
+
+                            if chance == 1:
+                                print("Somehow you manage to push the zombie away and its gnashing teeth barely miss you")
+                            
+                            else:
+                                print("You manage to land a kick on the zombie and its grip weakens")
+                                print("Seizing the oppurtunity you twist and manage to get away")
+
+                        else:
+                            if weapon_choice == "hands":
+                                print("You kick and punch at the", zombie.character, "but you can't break free")
+                            
+                            else:
+                                print("Your", weapon_choice, "is trapped between you and the", zombie.character, "and you can't reach it!")
+
+                            print("With a terrible groan the zombie pulls you in and bites!\nYOU ARE DEAD")
+                            return False
 
                     elif (chance == 2 or chance == 3) and weapon_choice != "hands":
                         print("The zombie charges forward, but you block its attack with your",weapon_choice)
@@ -1388,6 +1453,10 @@ def fight(num, battle, boss=None):
         print("You're starving and you'll barely be able to fight!")
         bonus_dam -= 30
 
+    elif character[2][0] < 500:
+        print("You're almost starving and won't be able to fight as well")
+        bonus_dam -= 25
+
     elif character[2][0] >= 500 and character[2][0] < 1000:
         print("You're very hungry and feel weak, you won't be able to fight as well")
         bonus_dam -= 20
@@ -1750,7 +1819,7 @@ def select_random_item():
     chance = random.randint(1,10)
     armour_check = False
     your_item = None
-    invalid_list = ["journal", "workshop satchel", "crafting recipes"]
+    invalid_list = ["journal", "material satchel", "crafting recipes"]
 
     count = 30
 
@@ -2139,6 +2208,9 @@ def remove_item(item):
         max_weapon_durability.remove(max_weapon_durability[character[4].index(item[9:]) - 1])
         character[4].remove(item[9:])
 
+    elif item[0:2] == "(g":
+        character[4].remove(item[6:])
+
     elif item[0:2] == "(c":
         if item in character[8]:
             character[8].remove(item)
@@ -2476,9 +2548,9 @@ def loot_car(car):
 
             if chance == 1:
                 print("(gun) *pistol*")
-                print("(ammo) 10 pistol bullets")
+                print("(ammo) *10 pistol bullets*")
                 add_item("(gun) *pistol*")
-                add_item("(ammo) 10 pistol bullets")
+                add_item("(ammo) *10 pistol bullets*")
 
             elif chance == 2:
                 print("(clothing) *police vest*")
@@ -2659,7 +2731,7 @@ def food_search(group_num, group=None, victim=None):
             add_item(food)
 
         print("\nWith the food in your bag, you leave this place and head back to the", character[7][0])
-        journal_entry("Stopped a killer and found some food in an old government building")
+        journal_entry(day, "Stopped a killer and found some food in an old government building")
 
     else:
         print("The", group_num, "of you decide to take a look around the old building")
@@ -2676,7 +2748,7 @@ def food_search(group_num, group=None, victim=None):
             add_item(food)
 
         print("\nAfter packing the food in your bag, you say goodbye and head home")
-        journal_entry("Looted an old government building with a group and found some food")
+        journal_entry(day, "Looted an old government building with a group and found some food")
 
 def weapon_search(killer):
     input("\nPress 1 to continue: ")
@@ -2702,7 +2774,7 @@ def weapon_search(killer):
             add_item(meds)
 
         print("\nWith the medical supplies in your bag, you leave this place and head back to the", character[7][0])
-        journal_entry("Stopped a killer and found some supplies in a medical storage room")
+        journal_entry(day, "Stopped a killer and found some supplies in a medical storage room")
 
     else:
         print("You open the door, and it looks the security office they were talking about")
@@ -2733,7 +2805,7 @@ def weapon_search(killer):
                 add_item("(ammo) *10 pistol bullets*")
 
         print("\nTaking the supplies from the security office, you head back to the", character[7][0])
-        journal_entry("Stopped a killer and found some supplies in a security office")
+        journal_entry(day, "Stopped a killer and found some supplies in a security office")
 
 
 def killer_return(killer):
@@ -2818,7 +2890,7 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items):
                         print("A gap opens up in the wall of zombies and you punch through, thanking him for his sacrifice\n")
                         print("You get away unscathed, and on your way back home your mourn today's victims...")
 
-                        journal_entry("A survivor sacrificed himself so I could escape a horde of zombies")
+                        journal_entry(day, "A survivor sacrificed himself so I could escape a horde of zombies")
 
                     else:
                         print("Looks like you'll have to fight your way through!")
@@ -2859,7 +2931,7 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items):
 
                     print("Heading back to the", character[7][0], "you think about what happened today...")
 
-                    journal_entry("Took care of a killer and used his body to distract a horde of zombies")
+                    journal_entry(day, "Took care of a killer and used his body to distract a horde of zombies")
 
                 else:
                     game = False
@@ -2888,7 +2960,7 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items):
                 print("It looks like all the zombies are distracted with " + last_survivor + "'s body")
                 print("Your path is clear and you head home unscathed, wondering if you made the right choice...")
 
-            journal_entry("I didn't help a survivor and he fell to his death, but he could have been a killer")
+            journal_entry(day, "I didn't help a survivor and he fell to his death, but he could have been a killer")
 
     else:
         print("They haven't noticed you yet, and you manage to climb down and hide behind some bins without making any noise")
@@ -2968,7 +3040,7 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items):
                 print("Somehow you manage to slip by the rest, and head home to the", character[7][0])
                 print("But the killer is still out there somewhere...")
 
-                journal_entry("Had to stealthily kill a zombies to escape a killer")
+                journal_entry(day, "Had to stealthily kill a zombies to escape a killer")
 
                 killer_return(killer)
 
@@ -3053,14 +3125,14 @@ def window_exit(survivor, survivor2, killer):
                 random_item(3, 6, "normal", "no rot")
 
                 print("You thank him and head home, but", survivor, "is still out there somewhere...")
-                journal_entry("Escaped a killer with the help of another survivor")
+                journal_entry(day, "Escaped a killer with the help of another survivor")
 
             else:
                 print("Next up is", survivor2, "and he pushes himself through headfirst before stopping halfway")
                 print("You ask him what's wrong, right as he's dragged back inside")
                 print("Hearing his screams cut short, you have no choice but to run")
                 print("You take a detour home, but", survivor, "is still out there somewhere...")
-                journal_entry("Escaped a killer with the help of another survivor, but he didn't make it")
+                journal_entry(day, "Escaped a killer with the help of another survivor, but he didn't make it")
 
             killer_return(killer)
 
@@ -3127,7 +3199,7 @@ def tunnel_exit(survivor, survivor2, killer, not_zombie_liar):
             print("\nYou shout in fear and sprint up the tunnel in the dark, somehow pushing aside the manhole on the other side and escaping")
             print("Horrified at what happened, you run all the way home to the", character[7][0])
 
-            journal_entry("Escaped a killer through a secret tunnel, but I was the only one who made it")
+            journal_entry(day, "Escaped a killer through a secret tunnel, but I was the only one who made it")
 
         else:
             print("The murky tunnel is covered in dust and cobwebs, but it's safer than the old building")
@@ -3139,7 +3211,7 @@ def tunnel_exit(survivor, survivor2, killer, not_zombie_liar):
             print(survivor2, "is now your Friend")
             print("\nYou turn to towards the old government building knowing", survivor, "is somewhere inside, before you head home")
 
-            journal_entry("Escaped a killer with the help of a new friend")
+            journal_entry(day, "Escaped a killer with the help of a new friend")
 
         killer_return(killer)
     
@@ -3163,7 +3235,7 @@ def tunnel_exit(survivor, survivor2, killer, not_zombie_liar):
 
                 print("You're not going to stick around, and you thank", survivor, "before hurrying home...")
 
-                journal_entry("Managed to escape a killer with the help of another survivor")
+                journal_entry(day, "Managed to escape a killer with the help of another survivor")
 
                 killer_return(killer)
             
@@ -3393,10 +3465,10 @@ def crafting_recipes():
 
 def craft_list(weapon_parts):
     craft_list = []
-    nails = workshop_satchel[0][0]
-    rope = workshop_satchel[1][0]
-    leather = workshop_satchel[2][0]
-    wood = workshop_satchel[3][0]
+    nails = workshop_satchel[0]
+    rope = workshop_satchel[1]
+    leather = workshop_satchel[2]
+    wood = workshop_satchel[3]
 
     if "knife" in character[4] and wood >= 1 and rope >= 1:
         craft_list.append("basic spear")
@@ -3452,50 +3524,50 @@ def craft_item(weapon_parts):
                     if item_chosen == "basic spear":
                         add_item("(weapon) basic spear")
                         remove_item("(weapon) knife")
-                        workshop_satchel[1][0] = workshop_satchel[1][0] - 1
-                        workshop_satchel[3][0] = workshop_satchel[3][0] - 1
+                        workshop_satchel[1] = workshop_satchel[1] - 1
+                        workshop_satchel[3] = workshop_satchel[3] - 1
 
                     elif item_chosen == "heavy spear":
                         add_item("(weapon) heavy spear")
                         remove_item("(weapon) machete")
-                        workshop_satchel[1][0] = workshop_satchel[1][0] - 1
-                        workshop_satchel[3][0] = workshop_satchel[3][0] - 1
+                        workshop_satchel[1] = workshop_satchel[1] - 1
+                        workshop_satchel[3] = workshop_satchel[3] - 1
 
                     elif item_chosen == "*tri-blade spear*":
                         add_item("(weapon) *tri-blade spear*")
                         remove_item("(weapon) machete")
                         remove_item("(weapon) knife")
                         remove_item("(weapon) knife")
-                        workshop_satchel[1][0] = workshop_satchel[1][0] - 2
-                        workshop_satchel[3][0] = workshop_satchel[3][0] - 1
+                        workshop_satchel[1] = workshop_satchel[1] - 2
+                        workshop_satchel[3] = workshop_satchel[3] - 1
 
                     elif item_chosen == "*spiked baseball bat*":
                         add_item("(weapon) *spiked baseball bat*")
                         character[4].remove("baseball bat")
-                        workshop_satchel[0][0] = workshop_satchel[0][0] - 10
+                        workshop_satchel[0] = workshop_satchel[0] - 10
 
                     elif item_chosen == "heavy hammer":
                         add_item("(weapon) heavy hammer")
                         character[4].remove("hammer")
-                        workshop_satchel[0][0] = workshop_satchel[0][0] - 4
+                        workshop_satchel[0] = workshop_satchel[0] - 4
                         weapon_parts -= 3
 
                     elif item_chosen == "quality machete":
                         add_item("(weapon) quality machete")
                         remove_item("(weapon) machete")
-                        workshop_satchel[2][0] = workshop_satchel[2][0] - 2
-                        workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+                        workshop_satchel[2] = workshop_satchel[2] - 2
+                        workshop_satchel[1] = workshop_satchel[1] - 1
                         weapon_parts -= 1
 
                     elif item_chosen == "handmade armour":
                         add_item("(clothing) *handmade armour*")
-                        workshop_satchel[2][0] = workshop_satchel[2][0] - 8
-                        workshop_satchel[1][0] = workshop_satchel[1][0] - 2
+                        workshop_satchel[2] = workshop_satchel[2] - 8
+                        workshop_satchel[1] = workshop_satchel[1] - 2
 
                     elif item_chosen == "handmade boots":
                         add_item("(clothing) *handmade boots*")
-                        workshop_satchel[2][0] = workshop_satchel[2][0] - 2
-                        workshop_satchel[1][0] = workshop_satchel[1][0] - 1
+                        workshop_satchel[2] = workshop_satchel[2] - 2
+                        workshop_satchel[1] = workshop_satchel[1] - 1
 
                     print("You have crafted '" + item_chosen + "'")
                     print(line_break)

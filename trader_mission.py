@@ -114,7 +114,7 @@ def trader_mission(location, character, day):
             your_item = select_random_item()
             if your_item is not None:
                 if your_item[7:] in character[3]:
-                    if your_item[7:] not in cal_list_800 and your_item[7:] not in cal_list_1000 and your_item[7:] not in cal_list_1500 and your_item[7:] not in cal_list_2000:
+                    if your_item[7:] not in cal_list_800 and your_item[7:] not in cal_list_1000 and your_item[7:] not in cal_list_1500 and your_item[7:] not in cal_list_2500:
                         if len(character[5]) > 0:
                             category = character[5]
                             your_item = character[5][random.randint(0, len(character[5]) - 1)]

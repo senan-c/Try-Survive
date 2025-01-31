@@ -206,8 +206,9 @@ def survivor_footprints_event(area, zombies_killed, character, day):
 
                                 if game:
                                     zombies_killed += 1
-                                    print("\n Shaken but alive, you search his body, retrieving your", chosen_meds, "and finding:")
+                                    print("\n Shaken but alive you search his bag, retrieving your", chosen_meds, "and finding:")
                                     random_item(1, 3, "normal")
+                                    random_item(1, 2, "crafting")
                                     print("\n You return home to the", character[7][0], "but vow to be more cautious next time...")
 
                                     journal_entry(day, "Tried to help a dying survivor but he turned and attacked me")
@@ -258,6 +259,7 @@ def survivor_footprints_event(area, zombies_killed, character, day):
                                         print("With the zombie dead you breathe a sigh of relief")
                                         print("\nShaken but alive, you search his body, finding:")
                                         random_item(1, 3, "normal")
+                                        random_item(1, 2, "crafting")
 
                                         print("\nYou return home to the", character[7][0], "but vow to be more cautious next time...")
 
@@ -440,7 +442,8 @@ def survivor_footprints_event(area, zombies_killed, character, day):
                         print("With the zombies dead, you're free to take a look around the room")
                         print("You spot the dead survivor's backpack, and inside you find:")
                         random_item(0, 1, "special")
-                        random_item(3, 6, "normal")
+                        random_item(2, 3, "normal")
+                        random_item(1, 3, "crafting")
                         print()
 
                         journal_entry(day, "Fought a recently deceased survivor and his friends")
@@ -453,7 +456,8 @@ def survivor_footprints_event(area, zombies_killed, character, day):
                     print("As you check his pockets, you think about what type of person he could have been\n")
                     print("You find nothing there, but spot a backpack in the corner")
                     print("Inside the backpack you find:")
-                    random_item(3, 5, "normal")
+                    random_item(2, 4, "normal")
+                    random_item(1, 3, "crafting")
 
                     journal_entry(day, "Found a dead survivor and looted his backpack")
 

@@ -1919,13 +1919,13 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
             else:
                 print("Though the thought of looting some guns is enticing, you won't risk it today")
                 print("Explaining this to the group, you decide to head home instead...")
-                journal_entry("Met a group of 4 survivors but didn't want to loot with them")
+                journal_entry(day, "Met a group of 4 survivors but didn't want to loot with them")
 
     else:
         print("But you aren't going to risk revealing yourself to a group this size")
         print("Odds are they're friendly, but if they're not you'd be in big trouble\n")
         print("On your way back to the", character[7][0], "you wonder what they were up to...")
 
-        journal_entry("Saw a group of 4 survivors but didn't approach them")
+        journal_entry(day, "Saw a group of 4 survivors but didn't approach them")
     
     return [game, zombies_killed]

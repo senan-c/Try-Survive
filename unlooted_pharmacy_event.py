@@ -39,18 +39,19 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                         key_set = True
                         keys.append(1)
 
-                    if key_chance == 1:
+                    if key_chance == 1 and key_num > 1:
                         key_set = True
                         keys.append(1)
 
-                    else:
+                    elif key_num != 1:
                         keys.append(0)
 
                 else:
                     keys.append(0)
 
+                key_num -= 1
+
             random.shuffle(keys)
-            print(keys)
 
             no_key = True
             give_up = False
