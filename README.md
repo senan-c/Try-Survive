@@ -1,4 +1,4 @@
-# Try_Survive
+# Try Survive
 This is Try Survive, a text-based zombie survival game where you decide what happens. Experience the zombie apocalypse day by day as you struggle to find enough food, water and supplies while playing through the 23 events and 5 mission available. No two playthroughs will be the same as each event has several different endings to discover. But beware, some choices may have dire consequences!
 
 Tips for Surviving:
