@@ -1,6 +1,6 @@
 from functions import *
 
-def hospital_mission(zombies_killed, day):
+def hospital_mission(zombies_killed, day, total_armour):
     game = True
 
     print("There must have been a huge battle here recently, the hospital is in bad shape")
@@ -65,7 +65,7 @@ def hospital_mission(zombies_killed, day):
         print("But there's something else in here with you...")
         print("A Diseased Doctor snarls and jumps out from the shadows!")
 
-        fight_result = fight(1, "boss", "Diseased Doctor")
+        fight_result = fight(1, "boss", "Diseased Doctor", total_armour)
 
         if not fight_result:
             game = False

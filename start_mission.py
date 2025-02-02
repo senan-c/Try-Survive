@@ -6,7 +6,7 @@ from hospital_mission import *
 from trader_mission import *
 from radio_tower_mission import *
 
-def start_mission(location, temp_location, possible_locations, day, zombies_killed, water_drank, days_no_water):
+def start_mission(location, temp_location, possible_locations, day, zombies_killed, water_drank, days_no_water, total_armour):
     game = True
 
     kilometres = random.randint(20, 50)
@@ -237,7 +237,7 @@ def start_mission(location, temp_location, possible_locations, day, zombies_kill
 
                 elif human == "raider":
                     print("You've fallen into a Raider trap!")
-                    fight_result = fight(human_amount, "humans")
+                    fight_result = fight(human_amount, "humans", None, total_armour)
                     if not fight_result:
                         game = False
 
@@ -259,7 +259,7 @@ def start_mission(location, temp_location, possible_locations, day, zombies_kill
                     game = False
 
             elif location == "Military Base":
-                result = military_base_mission(zombies_killed, day)
+                result = military_base_mission(zombies_killed, day, total_armour)
 
                 if result[0] == False:
                     game = False
@@ -267,7 +267,7 @@ def start_mission(location, temp_location, possible_locations, day, zombies_kill
                 zombies_killed = result[1]
 
             elif location == "Hospital":
-                result = hospital_mission(zombies_killed, day)
+                result = hospital_mission(zombies_killed, day, total_armour)
 
                 if result[0] == False:
                     game = False
@@ -275,7 +275,7 @@ def start_mission(location, temp_location, possible_locations, day, zombies_kill
                 zombies_killed = result[1]
 
             elif location == "Fuel Depot":
-                result = fuel_depot_mission(location, zombies_killed, day)
+                result = fuel_depot_mission(location, zombies_killed, day, total_armour)
 
                 if result[0] == False:
                     game = False
@@ -283,7 +283,7 @@ def start_mission(location, temp_location, possible_locations, day, zombies_kill
                 zombies_killed = result[1]
 
             elif location == "Trader's Hideout":
-                result = trader_mission(location, character, day)
+                result = trader_mission(location, character, day, total_armour)
 
                 if result[0] == False:
                     game = False

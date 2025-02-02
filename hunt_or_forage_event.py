@@ -1,6 +1,6 @@
 from functions import *
 
-def hunt_or_forage_event(zombies_killed, character, day):
+def hunt_or_forage_event(zombies_killed, character, day, total_armour):
     game = True
 
     print("You decide to try scavenging out in the wild today, and leaving the road you were walking on, you head off into nature")
@@ -299,7 +299,7 @@ def hunt_or_forage_event(zombies_killed, character, day):
                     print("You briefly consider their offer, then drop your bag and draw your own weapon")
                     print("They snarl and the fight begins")
 
-                    result = fight(2, "humans")
+                    result = fight(2, "humans", None, total_armour)
 
                     if not result:
                         game = False

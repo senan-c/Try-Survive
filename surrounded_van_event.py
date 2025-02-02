@@ -1,6 +1,6 @@
 from functions import *
 
-def surrounded_van_event(area, zombies_killed, character, day):
+def surrounded_van_event(area, zombies_killed, character, day, total_armour):
     game = True
 
     print("As you're busy checking the streets of",area,"you hear a commotion nearby")
@@ -178,7 +178,7 @@ def surrounded_van_event(area, zombies_killed, character, day):
                                 print("He snarls, promising revenge for the death of his friend", enemy_name[1])
                             
                             print()
-                            fight_result = fight(1, "humans", enemy_name[0])
+                            fight_result = fight(1, "humans", enemy_name[0], total_armour)
 
                             if fight_result:
                                 print("With", enemy_name[0], "dead, you make your way back to the", character[7][0])
@@ -199,7 +199,7 @@ def surrounded_van_event(area, zombies_killed, character, day):
                         journal_entry(day, "Had my loot stolen from me by a horde")
 
                 elif chance == 2:
-                    print("You try and duck in quickly, but the horde spots you!")
+                    print("You try and duck in quickly, but the horde spots you!\n")
                     chance = random.randint(1,2)
                     if chance == 1:
                         print("You break into a sprint and manage to get away before it closes around you")

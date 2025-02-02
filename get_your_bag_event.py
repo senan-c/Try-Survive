@@ -1,6 +1,6 @@
 from functions import *
 
-def get_your_bag_event(area, character, day, raider_bag_items, raider_num):
+def get_your_bag_event(area, character, day, raider_bag_items, raider_num, total_armour):
     game = True
 
     print("You're heading towards", area, "when something catches your eye")
@@ -39,7 +39,7 @@ def get_your_bag_event(area, character, day, raider_bag_items, raider_num):
             else:
                 print("Looks like it's going to be a fair fight!\n")
 
-                result = fight(1, "humans")
+                result = fight(1, "humans", None, total_armour)
 
                 if not result:
                     game = False

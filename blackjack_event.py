@@ -60,7 +60,7 @@ def blackjack_event(area, character, day):
             your_item1 = select_random_item()
             survivor_item1 = survivor_pool[random.randint(0, len(survivor_pool) - 1)]
 
-        print("He wants to play you, your", your_item1, "for his", survivor_item1)
+        print("\nHe wants to play you, your", your_item1, "for his", survivor_item1)
         print("Will you:\n1. Challenge him to a game\n2. Back down")
         choice = make_choice()
 

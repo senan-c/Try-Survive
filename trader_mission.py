@@ -1,6 +1,6 @@
 from functions import *
 
-def trader_mission(location, character, day):
+def trader_mission(location, character, day, total_armour):
     game = True
     raider_hostage = False
 
@@ -41,7 +41,7 @@ def trader_mission(location, character, day):
                     if get_cals(character[3][choice - 1]) < raider_hunger:
                         print("But the Raider is starving and unsatisfied with this offer")
                         print("He'd prefer to have his choice from your corpse!")
-                        fight_result = fight(1, "humans")
+                        fight_result = fight(1, "humans", None, total_armour)
 
                         if not fight_result:
                             game  = False
@@ -61,7 +61,7 @@ def trader_mission(location, character, day):
                 elif choice == 2:
                     print("The Raider curses at you and his eyes narrow")
                     print("It looks like he'd rather fight you for your food anyway...")
-                    fight_result = fight(1, "humans")
+                    fight_result = fight(1, "humans", None, total_armour)
 
                     if not fight_result:
                         game = False
@@ -70,7 +70,7 @@ def trader_mission(location, character, day):
 
             elif choice == 2:
                 print("You don't negotiate with Raiders, time for him to die!")
-                fight_result = fight(1, "humans")
+                fight_result = fight(1, "humans", None, total_armour)
 
                 if not fight_result:
                     game = False
@@ -80,7 +80,7 @@ def trader_mission(location, character, day):
         else:
             print("This Raider can't be reasoned with...\n")
             print("You'll have to fight him instead")
-            fight_result = fight(1, "humans")
+            fight_result = fight(1, "humans", None, total_armour)
 
             if not fight_result:
                 game = False

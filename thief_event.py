@@ -1,6 +1,6 @@
 from functions import *
 
-def thief_event(area, zombies_killed, character, day, item_check):
+def thief_event(area, zombies_killed, character, day, item_check, total_armour):
     game = True
 
     loot_spot = ["burnt out police station", "destroyed military checkpoint", "looted pharmacy", "burnt down petrol station"]
@@ -176,7 +176,7 @@ def thief_event(area, zombies_killed, character, day, item_check):
                                             print("You threaten the Thief, but his eyes narrow")
                                             print("It seems like he'd rather die than give back the bag")
 
-                                            result = fight(1, "humans", "the Thief")
+                                            result = fight(1, "humans", "the Thief", total_armour)
 
                                             if result:
                                                 for i in bag_items:
@@ -219,7 +219,7 @@ def thief_event(area, zombies_killed, character, day, item_check):
                                     print("He goes to say something, but you stop him")
                                     print("There'll be no negotiations today")
 
-                                    result = fight(1, "humans", "the Thief")
+                                    result = fight(1, "humans", "the Thief", total_armour)
 
                                     if result:
                                         for i in bag_items:
@@ -309,7 +309,7 @@ def thief_event(area, zombies_killed, character, day, item_check):
                 if choice == 1:
                     print("That bag is yours, and you'll fight to the death for it")
 
-                    result = fight(raider_num, "humans")
+                    result = fight(raider_num, "humans", total_armour)
 
                     if result:
                         print("You grab your bag, then check the thief's body and find:")
@@ -353,13 +353,13 @@ def thief_event(area, zombies_killed, character, day, item_check):
                     print("\nOn your way back to the", character[7][0], "you find yourself hoping his end was swift...")
                     journal_entry(day, "A Thief stole my bag and injured his leg, I left him for dead")
 
-                    chance = random.randint(1, 2)
+                    chance = random.randint(1, 3)
 
                     if chance == 1:
                         zombie_survivor = ["the Thief"]
                         zombie_survivors.append(zombie_survivor)
 
-                    else:
+                    elif chance == 2:
                         enemy_group = ["the Thief"]
                         enemy_list.append(enemy_group)
 

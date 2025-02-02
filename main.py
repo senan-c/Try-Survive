@@ -285,7 +285,7 @@ while game:
                 print("You decide to explore the", location)
                 character[9][0] -= fuel_needed
 
-                result = start_mission(location, temp_location, possible_locations, day, zombies_killed, water_drank, days_no_water)
+                result = start_mission(location, temp_location, possible_locations, day, zombies_killed, water_drank, days_no_water, total_armour)
 
                 if result[0] == False:
                     game = False
@@ -314,7 +314,7 @@ while game:
                 latest_events.append(chance)
 
             if chance == 1:
-                result = supply_crate_event(area, zombies_killed, character, day)
+                result = supply_crate_event(area, zombies_killed, character, day, total_armour)
 
                 if result[0] == False:
                     game = False
@@ -346,7 +346,7 @@ while game:
                 zombies_killed = result[1]
 
             elif chance == 5:
-                result = surrounded_van_event(area, zombies_killed, character, day)
+                result = surrounded_van_event(area, zombies_killed, character, day, total_armour)
 
                 if result[0] == False:
                     game = False
@@ -357,7 +357,7 @@ while game:
                 blackjack_event(area, character, day)
 
             elif chance == 7:
-                result = locked_safe_event(area, zombies_killed, character, day)
+                result = locked_safe_event(area, zombies_killed, character, day, total_armour)
 
                 if result[0] == False:
                     game = False
@@ -365,7 +365,7 @@ while game:
                 zombies_killed = result[1]
 
             elif chance == 8:
-                result = survivor_footprints_event(area, zombies_killed, character, day)
+                result = survivor_footprints_event(area, zombies_killed, character, day, total_armour)
 
                 if result[0] == False:
                     game = False
@@ -373,13 +373,14 @@ while game:
                 zombies_killed = result[1]
 
             elif chance == 9:
-                result = workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_event_played)
+                result = workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_event_played, workshop_satchel, total_armour)
 
                 if result[0] == False:
                     game = False
                 
                 zombies_killed = result[1]
                 weapon_parts = result[2]
+                workshop_satchel = result[3]
 
             elif chance == 10:
                 result = save_survivors_event(area, zombies_killed, character, day, bag_items)
@@ -390,7 +391,7 @@ while game:
                 zombies_killed = result[1]
 
             elif chance == 11:
-                result = killer_within_event(area, zombies_killed, character, day, bag_items)
+                result = killer_within_event(area, zombies_killed, character, day, bag_items, total_armour)
 
                 if result[0] == False:
                     game = False
@@ -398,7 +399,7 @@ while game:
                 zombies_killed = result[1]
            
             elif chance == 12 and len(enemy_list) > 0:
-                result = enemy_survivor_event(area, day)
+                result = enemy_survivor_event(area, day, total_armour)
 
                 if result == False:
                     game = False
@@ -440,7 +441,7 @@ while game:
                     print("The weather is good today, and you decide to take a detour towards", area)
 
                 if choice == 1:
-                    result = hunt_or_forage_event(zombies_killed, character, day)
+                    result = hunt_or_forage_event(zombies_killed, character, day, total_armour)
 
                     if result[0] == False:
                         game = False
@@ -477,7 +478,7 @@ while game:
                 
                 if item_check and len(bag_items) == 0:
                     if len(raider_bag_items) == 0:
-                        result = thief_event(area, zombies_killed, character, day, item_check)
+                        result = thief_event(area, zombies_killed, character, day, item_check, total_armour)
 
                         if result[0] == False:
                             game = False
@@ -491,7 +492,7 @@ while game:
                             bag_items = []
 
                     else:
-                        result = get_your_bag_event(area, character, day, raider_bag_items, bag_raiders)
+                        result = get_your_bag_event(area, character, day, raider_bag_items, bag_raiders, total_armour)
 
                         if result[0] == False:
                             game = False

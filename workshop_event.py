@@ -1,6 +1,6 @@
 from functions import *
 
-def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_event_played):
+def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_event_played, workshop_satchel, total_armour):
     game = True
     noise = False
 
@@ -35,6 +35,7 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
                     
                     else:
                         print("The window shatters, but you've cut open your hand!")
+                        print("\nYou lost 20 HP")
                         status = add_affliction("cut on your hand", 20)
 
                         if not status:
@@ -193,7 +194,7 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
                         print("Both survivors look at you in shock, before", survivor, "drops his bag and kicks it over to", survivor2)
                         print("You won't be getting it without a fight!\n")
 
-                        result = fight(1, "humans", survivor)
+                        result = fight(1, "humans", survivor, total_armour)
 
                         if result:
                             print(survivor2 + " yells out as " + survivor + "'s body hits the ground")
@@ -289,7 +290,7 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
                     choice = make_choice()
 
                     if choice == 1:
-                        craft_item(weapon_parts) 
+                        workshop_satchel = craft_item(weapon_parts, workshop_satchel) 
                         print("Once you've finished at the workbench, you head home to the", character[7][0])
                         journal_entry(day, "Found a workbench in a DIY store")
 
@@ -297,4 +298,4 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
                         print("Deciding not to use the workbench, you head home to the", character[7][0])
                         journal_entry(day, "Found a workbench in a DIY store but decided not to use it")
 
-    return [game, zombies_killed, weapon_parts]
+    return [game, zombies_killed, weapon_parts, workshop_satchel]

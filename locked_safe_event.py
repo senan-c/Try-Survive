@@ -1,6 +1,6 @@
 from functions import *
 
-def locked_safe_event(area, zombies_killed, character, day):
+def locked_safe_event(area, zombies_killed, character, day, total_armour):
     game = True
 
     print("You're exploring", area, "when a small office building catches your eye")
@@ -74,7 +74,7 @@ def locked_safe_event(area, zombies_killed, character, day):
             else:
                 print("He doesn't appreciate your presence in his home and you'll have to fight")
                 describe_human("raider", 1)
-                fight_result = fight(1,"humans")
+                fight_result = fight(1,"humans", None, total_armour)
 
                 if not fight_result:
                     game = False

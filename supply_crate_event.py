@@ -1,6 +1,6 @@
 from functions import *
 
-def supply_crate_event(area, zombies_killed, character, day):
+def supply_crate_event(area, zombies_killed, character, day, total_armour):
     game = True
 
     zom_num = random.randint(1,5)
@@ -119,7 +119,7 @@ def supply_crate_event(area, zombies_killed, character, day):
                     print("You briefly consider their offer, then drop your bag and draw your own weapon")
                     print("They snarl and the fight begins")
 
-                    result = fight(2, "humans")
+                    result = fight(2, "humans", None, total_armour)
 
                     if not result:
                         game = False

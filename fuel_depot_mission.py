@@ -1,6 +1,6 @@
 from functions import *
 
-def fuel_depot_mission(location, zombies_killed, day):
+def fuel_depot_mission(location, zombies_killed, day, total_armour):
     game = True
 
     print("It looks like the", location, "has seen better days")
@@ -18,7 +18,7 @@ def fuel_depot_mission(location, zombies_killed, day):
         print("Suddenly a burning zombie clad in flame-proof gear rounds the corner!")
         print("If you want to scavenge at the", location, "you'll have to fight the Fuel Beast first...\n")
 
-        fight_result = fight(1, "boss", "Fuel Beast")
+        fight_result = fight(1, "boss", "Fuel Beast", total_armour)
 
         if not fight_result:
             game = False

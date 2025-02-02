@@ -11,9 +11,7 @@ def zombie_horde_event(area, zombies_killed, day):
     print("Will you:\n1. Sneak past\n2. Run past\n3. Wait for them to pass")
     choice = make_choice()
 
-    for i in range(1):
-        temp_item = item_list[random.randint(0, len(item_list) - 1)]
-        add_item(temp_item)
+    temp_item = item_list[random.randint(0, len(item_list) - 1)]
 
     if choice == 1:
         chance = random.randint(1, 2)

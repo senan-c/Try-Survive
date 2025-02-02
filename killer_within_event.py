@@ -1,6 +1,6 @@
 from functions import *
 
-def killer_within_event(area, zombies_killed, character, day, bag_items):
+def killer_within_event(area, zombies_killed, character, day, bag_items, total_armour):
     game = True
 
     print("You're walking towards", area, "when you pass by a large government building")
@@ -516,6 +516,8 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                 print(friend1, "is somber, and he tells you his friend was killed by zombies")
                                 print("They're on their way to regroup with", survivor2, "before they leave this place behind")
 
+                                dead_survivor = dead_friend
+
                             print("When you've all arrived at the conference room, the group decide what to do next\n")
 
                             if dead_survivor in event_friend_list:
@@ -781,7 +783,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                             print("You trust", survivor2, "more than you trust", survivor, "and the two of you decide to work together")
                                             print("Now that you're a team, you'll have to figure out what to do")
 
-                                            result = tunnel_exit(survivor, survivor2, killer, not_zombie_liar)
+                                            result = tunnel_exit(survivor, survivor2, killer, not_zombie_liar, total_armour)
 
                                             if not result:
                                                 game = False
@@ -839,7 +841,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                     print("He was the killer all along!")
                                                     print("You shout out " + survivor2 + "'s name, but " + killer + " tells you he's already dead\n")
 
-                                                    result = fight(1, "humans", killer)
+                                                    result = fight(1, "humans", killer, total_armour)
 
                                                     if result:
                                                         print(killer, "lies dead, but everyone else has shared his fate...")
@@ -867,7 +869,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                     choice = make_choice()
 
                                                     if choice == 1:
-                                                        result = window_exit(survivor, survivor2, killer)
+                                                        result = window_exit(survivor, survivor2, killer, total_armour)
 
                                                         if not result:
                                                             game = False
@@ -876,7 +878,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                         print("Something about this doesn't add up, and you decide to escape by yourself instead")
                                                         print("Without warning you sprint off down a hallway and up a flight of stairs, losing him...\n")
 
-                                                        result = result = fire_escape_exit(survivor, survivor2, killer, bag_items)
+                                                        result = result = fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour)
 
                                                         if result == 0:
                                                             result = -1
@@ -909,7 +911,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                         ally = survivor2
                                                         enemy = survivor
 
-                                                    result = fight_killer(enemy, ally, killer)
+                                                    result = fight_killer(enemy, ally, killer, total_armour)
 
                                                     if result:
                                                         weapon_search(killer)
@@ -933,7 +935,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                     
                                                     print("\nYou have no choice you'll have to fight him!")
 
-                                                    result = fight(1, "humans", killer)
+                                                    result = fight(1, "humans", killer, total_armour)
 
                                                     if result:
                                                         print(killer, "lies dead, on his body you find the key for the front door")
@@ -972,7 +974,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                 ally = survivor2
                                                 enemy = survivor
 
-                                            result = fight_killer(enemy, ally, killer)
+                                            result = fight_killer(enemy, ally, killer, total_armour)
 
                                             if result:
                                                 weapon_search(killer)
@@ -999,7 +1001,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                 choice = make_choice()
 
                                                 if choice == 1:
-                                                    result = window_exit(survivor, survivor2, killer)
+                                                    result = window_exit(survivor, survivor2, killer, total_armour)
 
                                                     if not result:
                                                         game = False
@@ -1028,7 +1030,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                         ally = survivor
                                                         enemy = survivor2
 
-                                                    result = fight_killer(enemy, ally, killer)
+                                                    result = fight_killer(enemy, ally, killer, total_armour)
 
                                                     if result:
                                                         weapon_search(killer)
@@ -1095,7 +1097,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                         print("Stepping out of the dark offices,", killer, "is waiting for you")
                                                         print("He's covered in blood and says you're the last one he needs to kill")
 
-                                                        result = fight(1, "humans", killer)
+                                                        result = fight(1, "humans", killer, total_armour)
 
                                                         if result:
                                                             print(killer, "lies dead, on his body you find the key for the front door")
@@ -1246,7 +1248,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                     print("You shout out " + survivor2 + "'s name, but " + killer + " tells you he's already dead\n")
                                     print("Looks like you'll be on your own in this fight...")
 
-                                    result = fight(1, "humans", killer)
+                                    result = fight(1, "humans",killer, total_armour)
 
                                     if result:
                                         print(killer, "lies dead, but everyone else has shared his fate...")
@@ -1267,7 +1269,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                     choice = make_choice()
 
                                     if choice == 1:
-                                        result = window_exit(survivor2, survivor, killer)
+                                        result = window_exit(survivor2, survivor, killer, total_armour)
 
                                         if not result:
                                             game = False
@@ -1276,7 +1278,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                         print("Something about this doesn't add up, and you decide to escape by yourself instead")
                                         print("Without warning you sprint off down a hallway and up a flight of stairs, losing him...\n")
 
-                                        result = result = fire_escape_exit(survivor, survivor2, killer, bag_items)
+                                        result = result = fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour)
 
                                         if result == 0:
                                             result = -1
@@ -1308,7 +1310,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                         ally = survivor2
                                         enemy = survivor
 
-                                    result = fight_killer(enemy, ally, killer)
+                                    result = fight_killer(enemy, ally, killer, total_armour)
 
                                     if result:
                                         weapon_search(killer)
@@ -1329,7 +1331,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                     
                                     print("\nYou have no choice you'll have to fight him!")
 
-                                    result = fight(1, "humans", killer)
+                                    result = fight(1, "humans",killer, total_armour)
 
                                     if result:
                                         print(killer, "lies dead, on his body you find the key for the front door")
@@ -1412,7 +1414,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                             print("He wanted to lure you into that room so he could kill you!")
                                             print("There'll be no escape now, you'll have to fight\n")
 
-                                            result = fight(1, "humans", survivor)
+                                            result = fight(1, "humans", survivor, total_armour)
 
                                             if result:
                                                 print(survivor + " lies dead, and when you check the room you find " + survivor2 + "'s body")
@@ -1428,7 +1430,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                             print(killer, "was the killer all along and now", survivor, "is dead!")
                                             print("You've got no choice, you'll have to fight him\n")
 
-                                            result = fight(1, "humans", killer)
+                                            result = fight(1, "humans",killer, total_armour)
 
                                             if result:
                                                 print(killer, "lies dead, but so does", survivor, "and though you wished you could have saved him, you're glad it wasn't you")
@@ -1456,7 +1458,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                         ally = survivor2
                                         enemy = survivor
 
-                                    result = fight_killer(enemy, ally, killer)
+                                    result = fight_killer(enemy, ally, killer, total_armour)
 
                                     if result:
                                         weapon_search(killer)
@@ -1519,13 +1521,13 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                         print("The stairs creak, and to your horror", survivor, "is walking down with a huge grin")
                                         print("He was up there looking for you, not", survivor2, "and now he's found you")
                                         print("There'll be no escape this time, you'll have to fight...\n")
-                                        result = fight(1, "humans", survivor)
+                                        result = fight(1, "humans", survivor, total_armour)
 
                                     else:
                                         print("But when you reach the floor below, you see", survivor, "in a pool of blood")
                                         print("It seems he was telling the truth after all...")
                                         print("You hear the floorboards creak, and turn around to see", survivor2, "standing right behind you!\n")
-                                        result = fight(1, "humans", survivor2)
+                                        result = fight(1, "humans", survivor2, total_armour)
 
                                     if result:
                                         print("You wipe the sweat off your brow, and realise it's only you left")
@@ -1568,7 +1570,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                             print("You trust", survivor2, "more than you trust", survivor, "and the two of you decide to work together")
                                             print("Now that you're a team, you'll have to figure out what to do")
 
-                                            result = tunnel_exit(survivor, survivor2, killer, not_zombie_liar)
+                                            result = tunnel_exit(survivor, survivor2, killer, not_zombie_liar, total_armour)
 
                                             if not result:
                                                 game = False
@@ -1577,7 +1579,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                             print("You don't quite buy " + survivor2 + "'s" + " story and decide to find a way out of here on your own")
                                             print("He protests against this decision, but all he can do is watch as you run off..\n")
 
-                                            result = result = fire_escape_exit(survivor, survivor2, killer, bag_items)
+                                            result = result = fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour)
 
                                             if result == 0:
                                                 result = -1
@@ -1617,7 +1619,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                 ally = survivor2
                                                 enemy = survivor
 
-                                            result = fight_killer(enemy, ally, killer)
+                                            result = fight_killer(enemy, ally, killer, total_armour)
 
                                             if result:
                                                 weapon_search(killer)
@@ -1641,7 +1643,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                             choice = make_choice()
 
                                             if choice == 1:
-                                                result = window_exit(survivor, survivor2, killer)
+                                                result = window_exit(survivor, survivor2, killer, total_armour)
 
                                                 if not result:
                                                     game = False
@@ -1650,7 +1652,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                                 print("Something about this doesn't add up, and you decide to escape by yourself instead")
                                                 print("Without warning you sprint off down a hallway and up a flight of stairs, losing him...\n")
 
-                                                result = fire_escape_exit(survivor, survivor2, killer, bag_items)
+                                                result = fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour)
 
                                                 if result == 0:
                                                     result = -1
@@ -1696,7 +1698,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                         enemy = survivor
 
                                     if choice == 1 or choice == 2:
-                                        result = fight_killer(enemy, ally, killer)
+                                        result = fight_killer(enemy, ally, killer, total_armour)
 
                                         if result:
                                             weapon_search(killer)
@@ -1722,7 +1724,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                     choice = make_choice()
 
                                     if choice == 1:
-                                        result = window_exit(survivor, survivor2, killer)
+                                        result = window_exit(survivor, survivor2, killer, total_armour)
 
                                         if not result:
                                             game = False
@@ -1751,7 +1753,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                             ally = survivor
                                             enemy = survivor2
 
-                                        result = fight_killer(enemy, ally, killer)
+                                        result = fight_killer(enemy, ally, killer, total_armour)
 
                                         if result:
                                             weapon_search(killer)
@@ -1832,7 +1834,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
                                             print()
                                             print(survivor, "looks up to see you jump over him, and the fight begins!\n")
 
-                                        result = fight(1, "humans", survivor2)
+                                        result = fight(1, "humans", survivor2, total_armour)
 
                                         if result:
                                             if survivor in dead_survivors:
@@ -1858,7 +1860,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items):
 
                                         if choice == 1:
                                             print(survivor, "looks up to see you jump over him, and the fight begins!\n")
-                                            result = fight(1, "humans", survivor2)
+                                            result = fight(1, "humans", survivor2, total_armour)
                                             print("You've saved", survivor, "and he owes you his life")
                                             print("He opens up his bag and gives you:")
                                             random_item(3, 6, "normal", "no rot")

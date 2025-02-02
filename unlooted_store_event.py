@@ -214,7 +214,7 @@ def unlooted_store_event(area, zombies_killed, character, day, bag_items):
                         game = False
 
                     if game:
-                        print("\nYou clutch your arm, unable to climb anymore, and head back to the",character[7][0])
+                        print("You clutch your arm, unable to climb anymore, and head back to the",character[7][0])
 
                         journal_entry(day, "Cut my arm open while climbing like an idiot, wasn't worth it")
 

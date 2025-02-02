@@ -79,9 +79,9 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
                 print("You run onto the street with the horde right in front of you")
                 print("The survivor is still alive!\n")
                 print("You spot a zombie sneaking up behind him as he retreats")
-                print("You jump fowards and take it out, joining his side")
+                print("You charge foward and take it out, joining his side")
 
-                input("Press 1 to continue: ")
+                input("\nPress 1 to continue: ")
                 print(line_break)
 
                 survivor_name = survivors_male_list[random.randint(0, len(survivors_male_list) - 1)]
@@ -132,8 +132,10 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
                 print("They see this and cheer, you'll be fighting out of this together")
                 print("The horde has almost surrounded you, but you point towards a weak spot and they make a run for it")
 
-                print("\nBut while the survivors make their escape, you'll have to defend their backs")
-                zom_num = random.randint(4,8)
+                input("\nPress 1 to continue: ")
+                print(line_break)
+                print("But while the survivors make their escape, you'll have to defend their backs")
+                zom_num = random.randint(3,8)
                 fight_result = fight(zom_num, "zombies")
 
                 if fight_result:
@@ -187,6 +189,9 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
                             log = "Made a new friend named " + survivor1_name + " but something wasn't right"
                             journal_entry(day, log)
 
+                else:
+                    game = False
+
     else:
         print("You decide not to help the", survivor, "escape, and instead watch as the horde closes in")
         survivor1_name = survivors_male_list[random.randint(0, len(survivors_male_list) - 1)]
@@ -214,8 +219,11 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
             print("But", survivor1_name, "suddenly turns around and locks eyes with you, he's seen you but it's too late")
             print("You lose sight of both of them in the mass of zombies, wondering if you could have saved them")
 
-            survivor_group = [survivor2_name, survivor1_name]
-            zombie_survivors.append(survivor_group)
+            chance = random.randint(1, 2)
+
+            if chance == 1:
+                survivor_group = [survivor2_name, survivor1_name]
+                zombie_survivors.append(survivor_group)
 
             log = "Spotted two survivors running from a horde, I didn't help but one of them named " + survivor1_name + " spotted me"
             journal_entry(day, log)

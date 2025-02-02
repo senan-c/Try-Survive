@@ -1,6 +1,6 @@
 from functions import *
 
-def survivor_footprints_event(area, zombies_killed, character, day):
+def survivor_footprints_event(area, zombies_killed, character, day, total_armour):
     game = True
 
     print("As you walk through", area, "you begin to notice the signs of another survivor")
@@ -94,7 +94,7 @@ def survivor_footprints_event(area, zombies_killed, character, day):
                     else:
                         print("He snarls and glares at you")
                         print("Looks like there'll be no negotiations here...\n")
-                        result = fight(1, "humans")
+                        result = fight(1, "humans", None, total_armour)
 
                         if result:
                             print("With this fight over, you're free to take a look around the", survivor_hideout)
@@ -393,7 +393,7 @@ def survivor_footprints_event(area, zombies_killed, character, day):
                         print("He's a Raider, and Raiders are always ready to fight!\n")
                         journal_entry(day, "Had to fight a Raider to the death")
 
-                    result = fight(1, "humans")
+                    result = fight(1, "humans", None, total_armour)
 
                     if result:
                         if human == "survivor":
@@ -444,7 +444,6 @@ def survivor_footprints_event(area, zombies_killed, character, day):
                         random_item(0, 1, "special")
                         random_item(2, 3, "normal")
                         random_item(1, 3, "crafting")
-                        print()
 
                         journal_entry(day, "Fought a recently deceased survivor and his friends")
 

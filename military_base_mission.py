@@ -1,6 +1,6 @@
 from functions import *
 
-def military_base_mission(zombies_killed, day):
+def military_base_mission(zombies_killed, day, total_armour):
     game = True
 
     print("\nYou walk by deserted barracks and empty offices, but something doesn't feel right")
@@ -14,7 +14,7 @@ def military_base_mission(zombies_killed, day):
         print("As you struggle to open it you hear a roar and the door flies open!")
 
         enemy = "Infected Commander"
-        fight_result = fight(1, "boss", enemy)
+        fight_result = fight(1, "boss", enemy, total_armour)
         if not fight_result:
             game = False
 
