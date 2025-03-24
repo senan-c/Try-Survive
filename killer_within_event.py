@@ -548,7 +548,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
 
                             input("\nPress 1 to continue: ")
                             print(line_break)
-                            food_search(len(taken_names) + 1, taken_names, dead_survivors[0])
+                            food_search(len(taken_names) + 1, day, taken_names, dead_survivors[0])
 
                         else:
                             if not missing_friends:
@@ -566,7 +566,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                     print("It's", friend1, "and he looks scared\n")
                                     print("Himself and", friend2, "were searching when they found the body of", dead_survivors[0])
                                     print("A zombie didn't kill him, his throat was slit")
-                                    if missing_survivors:
+                                    if missing_survivors and survivor1 not in dead_survivors:
                                         print("He tells you not to trust", survivor1)
                                         if not zombies_found:
                                             print("He thinks", survivor1, "was lying about the zombies")
@@ -847,7 +847,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                                         print(killer, "lies dead, but everyone else has shared his fate...")
 
                                                         print("\nThe old building is quiet now, and you decide to take another look around before you go")
-                                                        weapon_search(killer)
+                                                        weapon_search(killer, day)
 
                                                     else:
                                                         game = False
@@ -914,7 +914,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                                     result = fight_killer(enemy, ally, killer, total_armour)
 
                                                     if result:
-                                                        weapon_search(killer)
+                                                        weapon_search(killer, day)
 
                                                     else:
                                                         game = False
@@ -941,7 +941,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                                         print(killer, "lies dead, on his body you find the key for the front door")
 
                                                         print("\nBut the old building is quiet now, and you decide to take another look around before you go")
-                                                        weapon_search(killer)
+                                                        weapon_search(killer, day)
 
                                                     else:
                                                         game = False
@@ -977,7 +977,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                             result = fight_killer(enemy, ally, killer, total_armour)
 
                                             if result:
-                                                weapon_search(killer)
+                                                weapon_search(killer, day)
 
                                             else:
                                                 game = False
@@ -1033,7 +1033,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                                     result = fight_killer(enemy, ally, killer, total_armour)
 
                                                     if result:
-                                                        weapon_search(killer)
+                                                        weapon_search(killer, day)
 
                                                     else:
                                                         game = False
@@ -1103,7 +1103,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                                             print(killer, "lies dead, on his body you find the key for the front door")
 
                                                             print("\nThe old building is quiet now, and you decide to take another look around before you go")
-                                                            weapon_search(killer)
+                                                            weapon_search(killer, day)
 
                                                         else:
                                                             game = False
@@ -1254,7 +1254,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                         print(killer, "lies dead, but everyone else has shared his fate...")
 
                                         print("\nThe old building is quiet now, and you decide to take another look around before you go")
-                                        weapon_search(killer)
+                                        weapon_search(killer, day)
 
                                     else:
                                         game = False
@@ -1313,7 +1313,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                     result = fight_killer(enemy, ally, killer, total_armour)
 
                                     if result:
-                                        weapon_search(killer)
+                                        weapon_search(killer, day)
 
                                 elif chance == 2:
                                     print("He hasn't seen you yet, but keeps searching")
@@ -1337,7 +1337,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                         print(killer, "lies dead, on his body you find the key for the front door")
 
                                         print("\nThe old building is quiet now, and you decide to take another look around before you go")
-                                        weapon_search(killer)
+                                        weapon_search(killer, day)
 
                                     else:
                                         game = False
@@ -1407,7 +1407,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
 
                                             input("Press 1 to continue: ")
                                             print(line_break)
-                                            weapon_search(killer)
+                                            weapon_search(killer, day)
                                     else:
                                         if survivor == killer:
                                             print("His eyes narrow and he pulls his weapon")
@@ -1436,7 +1436,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                                 print(killer, "lies dead, but so does", survivor, "and though you wished you could have saved him, you're glad it wasn't you")
 
                                                 print("\nBut the old building is quiet now, and you decide to take another look around before you go")
-                                                weapon_search(killer)
+                                                weapon_search(killer, day)
 
                                             else:
                                                 game = False    
@@ -1461,7 +1461,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                     result = fight_killer(enemy, ally, killer, total_armour)
 
                                     if result:
-                                        weapon_search(killer)
+                                        weapon_search(killer, day)
 
                                     else:
                                         game = False
@@ -1622,7 +1622,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                             result = fight_killer(enemy, ally, killer, total_armour)
 
                                             if result:
-                                                weapon_search(killer)
+                                                weapon_search(killer, day)
 
                                             else:
                                                 game = False
@@ -1701,7 +1701,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                         result = fight_killer(enemy, ally, killer, total_armour)
 
                                         if result:
-                                            weapon_search(killer)
+                                            weapon_search(killer, day)
 
                                         else:
                                             game = False
@@ -1756,7 +1756,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                         result = fight_killer(enemy, ally, killer, total_armour)
 
                                         if result:
-                                            weapon_search(killer)
+                                            weapon_search(killer, day)
 
                                         else:
                                             game = False
@@ -1916,7 +1916,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
 
                         input("\nPress 1 to continue: ")
                         print(line_break)
-                        food_search(len(taken_names) + 1, taken_names, dead_survivors[0])
+                        food_search(len(taken_names) + 1, day, taken_names, dead_survivors[0])
 
             else:
                 print("Though the thought of looting some guns is enticing, you won't risk it today")

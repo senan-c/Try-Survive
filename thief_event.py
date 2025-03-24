@@ -309,7 +309,7 @@ def thief_event(area, zombies_killed, character, day, item_check, total_armour):
                 if choice == 1:
                     print("That bag is yours, and you'll fight to the death for it")
 
-                    result = fight(raider_num, "humans", total_armour)
+                    result = fight(raider_num, "humans", None, total_armour)
 
                     if result:
                         print("You grab your bag, then check the thief's body and find:")

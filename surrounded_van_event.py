@@ -175,6 +175,7 @@ def surrounded_van_event(area, zombies_killed, character, day, total_armour):
                                     print("He glowers at you, and promises to punish you for what you did")
 
                             else:
+                                print("It's", enemy_name[0], "back for revenge!")
                                 print("He snarls, promising revenge for the death of his friend", enemy_name[1])
                             
                             print()

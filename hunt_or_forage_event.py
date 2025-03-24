@@ -128,7 +128,7 @@ def hunt_or_forage_event(zombies_killed, character, day, total_armour):
         elif animal_chance == 2:
             print("There's a deer just a few metres away!")
             print("Will you:\n1. Hunt the deer\n2. Leave it alone")
-            choice = make_choice
+            choice = make_choice()
 
             if choice == 1:
                 if len(character[4]) > 1:

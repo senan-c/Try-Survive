@@ -22,36 +22,19 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
             key_zombies = ["Police Officer", "Nurse", "Pharmacist","Pharmacist", "Doctor", "Civilian", "Civilian"]
             print("Deciding to check the nearby zombies, you spot a few nearby:")
 
-            key_set = False
-            key_num = 6
+            key_num = random.randint(0, 5)
             keys = []
             present_zombies = []
 
-            for i in range(key_num):
+            for i in range(6):
                 key_zombie = key_zombies[random.randint(0, len(key_zombies) - 1)]
                 present_zombies.append(key_zombie)
 
-                if key_set == False:
-                    if key_num > 1:
-                        key_chance = random.randint(1, key_num)
-
-                    else:
-                        key_set = True
-                        keys.append(1)
-
-                    if key_chance == 1 and key_num > 1:
-                        key_set = True
-                        keys.append(1)
-
-                    elif key_num != 1:
-                        keys.append(0)
+                if i == key_num:
+                    keys.append(1)
 
                 else:
                     keys.append(0)
-
-                key_num -= 1
-
-            random.shuffle(keys)
 
             no_key = True
             give_up = False
@@ -120,9 +103,9 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                     print("The alarm deactivates and you breathe a sigh of relief")
                     print("Now you can take a look around\n")
 
-                    chance = random.randint(1, 3)
+                    chance = random.randint(1, 4)
 
-                    if chance == 1 or chance == 2:
+                    if chance != 1:
                         pharmacy_loot = ["(meds) bandages", "(meds) painkillers", "(meds) first aid kit"]
                         loot_taken = []
 

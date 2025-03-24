@@ -173,7 +173,12 @@ def add_item(x):
 
     elif x[0:2] == "(f":
         if x != "(food) rotten food":
-            character[3].append(x[7:])
+            if x == "(food) carton of eggs":
+                for i in range(6):
+                    character[3].append("egg")
+
+            else:
+                character[3].append(x[7:])
 
     elif x[0:2] == "(w":
         weapon = x[9:]
@@ -297,8 +302,8 @@ def random_item(num1, num2, rarity, vers=None):
 cal_list_100 = ["apple", "banana", "carrots", "mushrooms", "strawberries", "spring onions"]
 cal_list_200 = ["egg", "can of sardines"]
 cal_list_300 = ["bag of peach rings", "popcorn", "cereal", "instant noodles"]
-cal_list_400 = ["protein bar", "bread", "flapjack", "honey", "tomato sauce", "granola bar", "pastry"]
-cal_list_600 = ["can of soup", "can of peaches", "can of beans", "can of tuna", "biscuits", "sausages", "oats", "bag of marshmallows", "bag of rice"]
+cal_list_400 = ["protein bar", "bread", "flapjack", "honey", "tomato sauce", "granola bar", "pastry", "yoghurt"]
+cal_list_600 = ["can of soup", "can of peaches", "can of beans", "can of tuna", "biscuits", "sausages", "oats", "bag of marshmallows", "bag of rice", "butter"]
 cal_list_800 = ["chicken", "pasta", "beef jerky", "box of chocolates", "can of whipped cream", "cake"]
 cal_list_1000 = ["pre-made meal", "venison"]
 cal_list_1500 = ["condensed milk"]
@@ -375,11 +380,14 @@ def get_cals(x):
         elif x == "smores":
             cals = 2000 // 4
 
+        elif x == "omelette":
+            cals = 1200
+
         if character[7][0] == "restaurant":
             cals += round(cals * 0.25)
 
         else:
-            cals += round(cals * 0.15)
+            cals += round(cals * 0.10)
 
         return cals
 
@@ -1419,7 +1427,8 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
                         human_enemy.dodge()
 
         if (miss_chance != 1 or result[1] == False) and not skip_turn:
-            print("His armour blocked", human_enemy.armour_val, "damage")
+            if human_enemy.armour_val > 0:
+                print("His armour blocked", human_enemy.armour_val, "damage")
 
             if human_enemy.armour_val < damage and human_enemy.armour_val > 0:
                     damage -= human_enemy.armour_val
@@ -1455,7 +1464,7 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
                         enemy_damage = random.randint(20, 80)
 
                     else:
-                        enemy_damage = random.randint(20, 60)
+                        enemy_damage = random.randint(20, 50)
 
                 else:
                     enemy_damage = character[0][0]
@@ -2332,7 +2341,7 @@ def cook_food():
         cook_check = True
         cook_list.append("peaches and cream")
 
-    if "cereal" in ingredients and "bag of marshmallows" in ingredients:
+    if "cereal" in ingredients and "bag of marshmallows" in ingredients and "butter" in ingredients:
         cook_check = True
         cook_list.append("cereal treats")
 
@@ -2368,6 +2377,15 @@ def cook_food():
         cook_check = True
         cook_list.append("smores")
 
+    if "egg" in ingredients and "butter" in ingredients:
+        egg_count = 0
+        for i in ingredients:
+            if i == "egg":
+                egg_count += 1
+
+        if egg_count >= 3:
+            cook_list.append("omelette")
+
     if cook_check == True:
         print("It looks like you have enough ingredients to do some cooking:\n1. Cook\n2. Don't cook")
         choice = make_choice()
@@ -2388,6 +2406,10 @@ def cook_food():
                 if recipe == "chicken and pasta":
                     remove_list = ["chicken", "pasta", "tomato sauce"]
                     portion = 2
+
+                elif recipe == "omelette":
+                    remove_list = ["egg", "egg", "egg", "butter"]
+                    portion = 1
 
                 elif recipe == "sausage and pasta":
                     remove_list = ["sausages", "pasta", "tomato sauce"]
@@ -2421,7 +2443,7 @@ def cook_food():
                     portion = 2
 
                 elif recipe == "cereal treats":
-                    remove_list = ["cereal", "bag of marshmallows"]
+                    remove_list = ["cereal", "bag of marshmallows", "butter"]
                     portion = 2
 
                 elif recipe == "chicken stir-fry":
@@ -2463,10 +2485,10 @@ def cook_food():
                     character[3].append(recipe)
 
                 if portion == 1:
-                    print("Nice, you cooked up", recipe)
+                    print("Nice, you cooked up '" + recipe + "'")
 
                 else:
-                    print("Nice, you cooked", portion, "portions of", recipe)
+                    print("Nice, you cooked " + portion + " portions of '" + recipe + "'")
 
                 if character[7][0] == "restaurant":
                     print("Since you're cooking at the restaurant, your food is a little better than expected\n")
@@ -2805,7 +2827,7 @@ def fight_killer(enemy, ally, killer, total_armour):
             return True
 
 
-def food_search(group_num, group=None, victim=None):
+def food_search(group_num, day, group=None, victim=None):
     canteen_loot = ["(food) can of soup", "(food) condensed milk", "(food) can of peaches", "(food) can of beans", "(food) can of tuna", "(food) instant noodles"]
     if group_num == 1:
         print("Opening the door, you find yourself in what looks to be supply for the canteen")
@@ -2826,7 +2848,7 @@ def food_search(group_num, group=None, victim=None):
         print("Checking some of the neighbouring offices,", survivor, "finds a key\n")
         print("Opening the door, you find yourselves in what looks to be supply for the canteen")
         print("You split the food evenly, and end up with:")
-        loot_amount = random.randint(3, 4)
+        loot_amount = random.randint(4, 6)
 
         for i in range(loot_amount):
             food = canteen_loot[random.randint(0, len(canteen_loot) - 1)]
@@ -2836,7 +2858,7 @@ def food_search(group_num, group=None, victim=None):
         print("\nAfter packing the food in your bag, you say goodbye and head home")
         journal_entry(day, "Looted an old government building with a group and found some food")
 
-def weapon_search(killer):
+def weapon_search(killer, day):
     input("\nPress 1 to continue: ")
     print(line_break)
     print("It's just you left in the building, and you decide to take a look around")
@@ -2847,7 +2869,7 @@ def weapon_search(killer):
     chance = random.randint(1, 3)
 
     if chance == 1:
-        food_search(1)
+        food_search(1, day)
 
     elif chance == 2:
         print("Opening the door, you find yourself in what looks to be storage for medical supplies")
@@ -2963,7 +2985,7 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour):
 
                     log = "Had to escape a killer through a horde of zombies, but made a new friend named " + last_survivor
                     killer_return(killer)
-                    journal_entry(log)
+                    journal_entry(day, log)
 
                 else:
                     print("But you're not fast enough, and the zombies begin to close around you!")
@@ -3000,7 +3022,7 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour):
 
                             log = "Had to fight through a horde of zombies to escape a killer, but made a new friend named " + last_survivor
                             killer_return(killer)
-                            journal_entry(log)
+                            journal_entry(day, log)
 
                         else:
                             return False
@@ -3101,7 +3123,7 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour):
 
                     log = "While escaping a killer I came face to face with the undead corpse of " + named_zombie
                     killer_return(killer)
-                    journal_entry(log)
+                    journal_entry(day, log)
 
                     print("Heading home, you count yourself lucky for escaping unharmed")
 
@@ -3374,18 +3396,17 @@ def repair_weapon(weapon_parts):
     repair_list = []
     count = 0
     weapons_repaired = 0
+    repair_list = list(character[4][1:])
 
-    for i in range(len(character[4])):
-        if character[4][i - 1] != "hands":
-            if i != "*pistol*" and i != "**assault rifle**":
-                if weapon_durability[count] < max_weapon_durability[count]:
-                    repair_list.append(character[4][count + 1])
-            
-            count += 1
+    remove_list = []
+
+    for i in repair_list:
+        if i == "*pistol*" or i == "**assault rifle**":
+            repair_list.remove(i)
 
     repair_loop = True
     all_repaired = False
-    temp_repair_list = list(repair_list)
+    temp_repair_list = []
 
     while repair_loop:
         save_counts = []
@@ -3398,6 +3419,7 @@ def repair_weapon(weapon_parts):
                     print(str(weapon_count) + ". " + i + " - condition: " + str(weapon_durability[count - 1]) + "/" + str(max_weapon_durability[count - 1]))
                     save_counts.append(count -1)
                     weapon_count += 1
+                    temp_repair_list.append(i)
                 count += 1
             print(str(weapon_count) + ". " + "Exit")
             weapon_choice = make_choice()

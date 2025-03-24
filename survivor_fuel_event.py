@@ -64,54 +64,61 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
 
             for i in range(3):
                 if character[9][0] == 1:
-                    trade_list.append(item_list[random.randint(0,len(item_list) -1)])
+                    item = item_list[random.randint(0,len(item_list) -1)]
                     fuel_costs.append(1)
 
                 elif character[9][0] == 2:
                     chance = random.randint(1, 10)
 
                     if chance == 1:
-                        trade_list.append(special_item_list[random.randint(0,len(special_item_list) -1)])
+                        item = special_item_list[random.randint(0,len(special_item_list) -1)]
                         fuel_costs.append(2)
 
                     elif chance <= 5:
-                        trade_list.append(item_list[random.randint(0,len(item_list) -1)])
+                        item = item_list[random.randint(0,len(item_list) -1)]
                         fuel_costs.append(2)
 
                     else:
-                        trade_list.append(item_list[random.randint(0,len(item_list) -1)])
+                        item = item_list[random.randint(0,len(item_list) -1)]
                         fuel_costs.append(1)
 
                 else:
                     chance = random.randint(1, 5)
 
                     if chance == 1:
-                        trade_list.append(special_item_list[random.randint(0,len(special_item_list) -1)])
+                        item = special_item_list[random.randint(0,len(special_item_list) -1)]
                         fuel_costs.append(3)
 
                     elif chance == 2:
-                        trade_list.append(item_list[random.randint(0,len(item_list) -1)])
+                        item = item_list[random.randint(0,len(item_list) -1)]
                         fuel_costs.append(2)
 
                     else:
-                        trade_list.append(item_list[random.randint(0,len(item_list) -1)])
+                        item = item_list[random.randint(0,len(item_list) -1)]
                         fuel_costs.append(1)
+
+                while "rotten food" in item or "fuel" in item:
+                    item = item_list[random.randint(0,len(item_list) -1)]
+
+                trade_list.append(item)
 
             print("\nHis trades are:")
             for i in range(3):
-                if fuel_costs[i - 1] > 1:
-                    print(str(i + 1) + ". " + str(fuel_costs[i - 1]) + " litres of fuel for 1x " + trade_list[i - 1])
+                if fuel_costs[i] > 1:
+                    print(str(i + 1) + ". " + str(fuel_costs[i]) + " litres of fuel for 1x " + trade_list[i])
 
                 else:
-                    print(str(i + 1) + ". 1 litre of fuel for 1x " + trade_list[i - 1])
+                    print(str(i + 1) + ". 1 litre of fuel for 1x " + trade_list[i])
 
             print("4. Reject all")
-            choice = make_choice()
+            trade_choice = make_choice()
+            if trade_choice != 4:
+                fuel_traded = fuel_costs[trade_choice - 1]
+                add_item(trade_list[trade_choice - 1])
+                print("You traded " + str(fuel_traded) + " litres of fuel for " + survivor + "'s " + trade_list[trade_choice - 1])
 
-            if choice != 4:
-                fuel_traded = fuel_costs[choice - 1]
-                add_item(trade_list[choice - 1])
-                print("You traded " + str(fuel_traded) + " litres of fuel for " + survivor + "'s " + trade_list[choice - 1])
+                print("\nHe shakes your hand and", survivor2, "helps him fill the car before they say their goodbyes")
+                print("After watching them speed off you throw the", trade_list[trade_choice - 1], "in your bag and head home")
 
             else:
                 print("You chose not to trade with", survivor, "and he looks at you in dismay")
@@ -216,7 +223,7 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
                     if chance == 1:
                         print("With the interior searched, the two of you head outside to check on", survivor2)
                         print("You emerge to find him holding a jerrycan full of fuel with a grin on his face")
-                        print("This will be more than enough for them, and he reaches in his bag to give you something in return")
+                        print("This will be more than enough for them, and he reaches in his bag to give you something in return\n")
                         print(survivor2, "gave you:")
                         random_item(2, 4, "normal", "no rot")
                         random_item(0, 1, "special")
@@ -330,13 +337,23 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
 
             elif choice == 2:
                 print("You apologise, but you're not interested")
-                print("They look at you disappointed and you wish them luck before heading home")
+                print("They look at you disappointed and you wish them luck before heading home\n")
 
                 if character[9][0] == 0:
                     print("On your way back to the", character[7][0], "you wonder what will become of them...")
 
                 else:
                     print("On your way back to the", character[7][0], "you find yourself wishing you checked what they had for trade")
+
+                journal_entry(day, "Some survivors needed fuel but I chose not to help them")
+
+        elif choice == 2 and character[9][0] == 0:
+            print("You apologise, but you're not interested")
+            print("They look at you disappointed and you wish them luck before heading home")
+
+            print("\nOn your way back to the", character[7][0], "you wonder what will become of them...")
+
+            journal_entry(day, "Some survivors needed fuel but I chose not to help them")
 
     return[game, zombies_killed, fuel_traded]
             

@@ -37,10 +37,10 @@ def unlooted_store_event(area, zombies_killed, character, day, bag_items):
                 chance = random.randint(1, 2)
                 if chance == 1:
                     print("Luckily you're quick on your feet and manage to turn around and make a quick getaway")
-                    if len(character[4]) > 2:
+                    if len(character[4]) > 1:
                         lost_weapon = character[4][random.randint(1, len(character[4]) - 1)]
                         print("But in the process you lose your",lost_weapon)
-                        character[4].remove(lost_weapon)
+                        remove_item(lost_weapon)
                     print("When you get home to the",character[7][0],"you're just happy you're alive")
 
                     journal_entry(day, "Tried to loot a store and barely escaped a horde")

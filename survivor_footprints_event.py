@@ -148,6 +148,7 @@ def survivor_footprints_event(area, zombies_killed, character, day, total_armour
                                 print("\nBut he looks at you strangely, the", chosen_meds, "may not be able to heal him")
                                 print("Suddenly he collapses to the ground in front of you and lays still")
                                 print("\nWill you:\n1. Check if he's ok\n2. Back away")
+                                choice = make_choice()
 
                                 if choice == 1:
                                     print("You kneel beside", survivor_name, "and check his pulse")
@@ -155,7 +156,7 @@ def survivor_footprints_event(area, zombies_killed, character, day, total_armour
                                     print("You look at him solemnly and wish you had gotten here earlier\n")
                                     print("But as you get up off the floor, something catches your eye")
                                     print(survivor_name + "'s", "eyes are wide open and staring at you!")
-                                    print("He dives and tackles you, he must have been infected!")
+                                    print("He dives and tackles you, he must have been infected!\n")
 
                                     if len(character[4][0]) > 1:
                                         chance = random.randint(1,4)

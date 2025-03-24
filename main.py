@@ -64,14 +64,17 @@ while game:
         item_list.remove("(food) banana")
         item_list.remove("(food) strawberries")
         item_list.remove("(food) pre-made meal")
+        item_list.remove("(food) carton of eggs")
+        item_list.remove("(food) butter")
+        item_list.remove("(food) mushrooms")
 
-        for i in range(8):
+        for i in range(10):
             item_list.append("(food) rotten food")
 
     calories_used = 0
     day += 1
     print(line_break)
-    print("Day",str(day))
+    print("Days Survived:",str(day - 1))
     print(line_break)
     if day == 1:
         print("You're driving home from work when the radio is interrupted by an emergency broadcast")
@@ -88,7 +91,7 @@ while game:
 
             print("You have a glass of water and then get to work")
             print("You do a quick sweep of your house and find:")
-            random_item(3, 5, "normal")
+            random_item(3, 5, "normal", "no fuel")
 
         elif choice == 2:
             character[7].append("restaurant")
@@ -97,7 +100,7 @@ while game:
             print("You hurry inside but it seems everyone else has left, you wonder if you'll ever see them again...\n")
 
             print("You do a quick sweep of the restaurant and find:")
-            random_item(3, 5, "normal")
+            random_item(3, 5, "normal", "no fuel")
 
         elif choice == 3:
             character[7].append("campground clearing")
@@ -107,7 +110,7 @@ while game:
 
             print("You find a spring nearby and have some water")
             print("You do a quick sweep of the campground and find:")
-            random_item(1, 3, "normal")
+            random_item(2, 3, "normal", "no fuel")
 
         print()
         eat_food()
@@ -171,9 +174,14 @@ while game:
         print("You feel", character[1][0])
 
         if len(character[6]) > 0:
-            item_chance = random.randint(1,7)
+            chances = len(character[6])
+            chance_list = []
 
-            if item_chance == 1:
+            for i in range(chances):
+                item_chance = random.randint(1,7)
+                chance_list.append(item_chance)
+
+            if 1 in chance_list:
                 friend = character[6][random.randint(0, len(character[6]) - 1)]
                 if len(friend) == 1:
                     friend_grammar = "friend"
@@ -310,7 +318,7 @@ while game:
                 chance = random.randint(1, 23)
                 count -= 1
 
-            if chance < 17:
+            if chance < 19:
                 latest_events.append(chance)
 
             if chance == 1:

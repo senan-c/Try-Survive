@@ -5,11 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4cdb6a3e-d156-4bc8-83f5-be4f07ec819c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Try_Survive.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Try_Survive.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crumbling_bridge_event.py" beforeDir="false" afterPath="$PROJECT_DIR$/crumbling_bridge_event.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/enemy_survivor_event.py" beforeDir="false" afterPath="$PROJECT_DIR$/enemy_survivor_event.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hunt_or_forage_event.py" beforeDir="false" afterPath="$PROJECT_DIR$/hunt_or_forage_event.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/items/items.txt" beforeDir="false" afterPath="$PROJECT_DIR$/items/items.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/killer_within_event.py" beforeDir="false" afterPath="$PROJECT_DIR$/killer_within_event.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scores.csv" beforeDir="false" afterPath="$PROJECT_DIR$/scores.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/survivor_footprints_event.py" beforeDir="false" afterPath="$PROJECT_DIR$/survivor_footprints_event.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/survivor_fuel_event.py" beforeDir="false" afterPath="$PROJECT_DIR$/survivor_fuel_event.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thief_event.py" beforeDir="false" afterPath="$PROJECT_DIR$/thief_event.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unlooted_pharmacy_event.py" beforeDir="false" afterPath="$PROJECT_DIR$/unlooted_pharmacy_event.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unlooted_store_event.py" beforeDir="false" afterPath="$PROJECT_DIR$/unlooted_store_event.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,12 +32,12 @@
     &quot;assignee&quot;: &quot;senan-c&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/senan-c/Try_Survive.git&quot;,
-    &quot;accountId&quot;: &quot;d8825a3c-8ab3-454a-bb65-71612a5ed954&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/senan-c/Try-Survive.git",
+    "accountId": "d8825a3c-8ab3-454a-bb65-71612a5ed954"
   }
-}</component>
+}]]></component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/main.py" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -52,19 +59,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Friends-and-Foes&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/senan/OneDrive/Desktop/Try_Survive&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Python.main.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "More-Events",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/senan/OneDrive/Desktop/Try_Survive",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Try_Survive" />

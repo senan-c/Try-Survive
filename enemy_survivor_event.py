@@ -20,7 +20,7 @@ def enemy_survivor_event(area, day, total_armour):
 
     else:
         print("It's", enemy_name[0], "back for revenge!")
-        print("\nHe snarls, promising revenge for the death of his friend " + enemy_name[1] + "\n")
+        print("\nHe snarls, promising revenge for the death of his friend " + enemy_name[1])
 
     print()
     fight_result = fight(1, "humans", enemy_name[0], total_armour)
