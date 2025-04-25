@@ -280,8 +280,15 @@ def random_item(num1, num2, rarity, vers=None):
                 while temp_item[1:5] == "fuel":
                     temp_item = item_list[random.randint(0, len(item_list) - 1)]
 
+                    if temp_item == "(weapon) crowbar" and "crowbar" in character[4]:
+                        temp_item = item_list[random.randint(0, len(item_list) - 1)]
+
             elif vers == "no rot":
                 while temp_item == "(food) rotten food" or temp_item[1:5] == "fuel" or temp_item[1:5] == "weap":
+                    temp_item = item_list[random.randint(0, len(item_list) - 1)]
+
+            else:
+                while temp_item == "(weapon) crowbar" and "crowbar" in character[4]:
                     temp_item = item_list[random.randint(0, len(item_list) - 1)]
 
         elif rarity == "special":
@@ -423,9 +430,11 @@ def choose_weapon():
     for i in character[4]:
         if i == "*pistol*":
             print(str(count) + ". " + i + " - ammo:", character[10][0])
+            durability_count += 1
 
         elif i == "**assault rifle**":
             print(str(count) + ". " + i + " - ammo:", character[10][1])
+            durability_count += 1
 
         else:
             if i != "hands":
@@ -569,7 +578,7 @@ def ranged_attack(weapon, enemy, health, armour=0):
     if weapon == "*pistol*":
         weapon = "pistol"
         ammo = character[10][0]
-        chance = random.randint(1,4)
+        chance = random.randint(1, 4)
 
     elif weapon == "**assault rifle**":
         weapon = "assault rifle"
@@ -658,13 +667,10 @@ def ranged_attack(weapon, enemy, health, armour=0):
 
                         damage = random.randint(int(min_dam), health)
 
-                    if damage < 50 and health > 50 and (damage + 30) < health:
-                        damage += 30
-
-                    elif damage < 50 and health > 50 and (damage + 20) < health:
+                    if damage < 65 and health > 65 and (damage + 20) < health:
                         damage += 20
 
-                    elif damage < 50 and health > 50 and (damage + 10) < health:
+                    elif damage < 65 and health > 65 and (damage + 10) < health:
                         damage += 10
 
                 if weapon == "**assault rifle**":
@@ -1487,22 +1493,23 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
                 else:
                     print(human_enemy.name,"hit you for", enemy_damage, "damage")
 
-                if armour < enemy_damage and armour > 0:
-                    print("Your armour blocked", armour, "damage")
-                    enemy_damage -= armour
-                    armour = 0
-                    character[0][0] -= enemy_damage
-                    if character[0][0] < 0:
-                        character[0][0] = 0
+                if armour != 0:
+                    if armour < enemy_damage and armour > 0:
+                        print("\nYour armour blocked", armour, "damage")
+                        enemy_damage -= armour
+                        armour = 0
+                        character[0][0] -= enemy_damage
+                        if character[0][0] < 0:
+                            character[0][0] = 0
 
-                    print("You have", armour, "armour left")
+                        print("You have", armour, "armour left")
 
-                elif armour > enemy_damage and armour > 0:
-                    og_armour = armour
-                    armour -= enemy_damage
+                    elif armour > enemy_damage and armour > 0:
+                        og_armour = armour
+                        armour -= enemy_damage
 
-                    print("Your armour blocked",og_armour - armour, "damage")
-                    print("\nYou have", armour, "armour left")
+                        print("\nYour armour blocked",og_armour - armour, "damage")
+                        print("You have", armour, "armour left")
 
                 else:
                     character[0][0] -= enemy_damage
@@ -1646,11 +1653,19 @@ def fight(num, battle, boss=None, total_armour=None):
             if boss == "the Thief":
                 fight_prompt = "Looks like you'll be fighting the Thief"
 
+            elif "and" in boss:
+                boss_list = boss.split(" and ")
+                boss1 = boss_list[0]
+                opp_list.append(boss1)
+                boss2 = boss_list[1]
+                opp_list.append(boss2)
+
+                fight_prompt = "Looks like you'll be fighting 2 humans, named " + boss
+                opp_list.append(boss)
+
             else:
                 fight_prompt = "Looks like you'll be fighting 1 human, named " + boss
-
-            opp_list.append(boss)
-
+                opp_list.append(boss)
 
     elif battle == "boss":
         fight_prompt = "You're going to be fighting the " + boss
@@ -1713,7 +1728,7 @@ def fight(num, battle, boss=None, total_armour=None):
                 return False
 
     elif battle == "military zombies":
-        loot = item_list[random.randint(1, len(item_list))]
+        loot = item_list[random.randint(0, len(item_list) - 1)]
         count = 1
         while num > 0:
             print("Zombie #", count)
@@ -2488,7 +2503,7 @@ def cook_food():
                     print("Nice, you cooked up '" + recipe + "'")
 
                 else:
-                    print("Nice, you cooked " + portion + " portions of '" + recipe + "'")
+                    print("Nice, you cooked " + str(portion) + " portions of '" + recipe + "'")
 
                 if character[7][0] == "restaurant":
                     print("Since you're cooking at the restaurant, your food is a little better than expected\n")
@@ -3095,6 +3110,8 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour):
                 enemy_group = [named_zombie2, named_zombie]
                 enemy_list.append(enemy_group)
 
+                print("But his friend", named_zombie2, "is nowhere to be seen...")
+
             print("He snarls and shambles towards you, alerting the rest")
             zom_num = random.randint(2, 4)
             print("Turning to run, you find yourself facing", str(zom_num + 1), "zombies\n")
@@ -3119,7 +3136,7 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour):
                             bag_items.remove(i)
 
                     else:
-                        print("You look down at", named_zombie, "then break into a sprint, leaving the zombies in the dust")
+                        print("You look back down at", named_zombie, "then break into a sprint, leaving the zombies in the dust")
 
                     log = "While escaping a killer I came face to face with the undead corpse of " + named_zombie
                     killer_return(killer)
@@ -3694,3 +3711,51 @@ def craft_item(weapon_parts, workshop_satchel):
         print("There is nothing you can craft")
 
     return workshop_satchel
+
+def combat_heal():
+    if character[0][0] <= 75 and len(character[5]) > 0:
+        print("\nBut it seems you've been injured in the fight")
+        print("Will you:\n1. Use some meds\n2. Keep moving")
+        choice = make_choice()
+
+        if choice == 1:
+            print("What item will you use?")
+            count = 0
+            for i in character[5]:
+                count += 1
+                if i == "bandages":
+                    hp_healed = 50
+
+                elif i == "first aid kit":
+                    hp_healed = 100
+
+                elif i == "painkillers":
+                    hp_healed = 25
+                print(str(count) + ". " + i + " - HP healed: " + str(hp_healed))
+
+            choice = make_choice()
+
+            if character[5][choice-1] == "bandages":
+                print("You have used some bandages")
+                hp_healed = 50
+
+            elif character[5][choice-1] == "first aid kit":
+                print("You have used a first aid kit")
+                hp_healed = 100
+
+            elif character[5][choice-1] == "painkillers":
+                print("You have taken some painkillers")
+                hp_healed = 25
+
+            character[0][0] += hp_healed
+            if character[0][0] > 100:
+                character[0][0] = 100
+                print("You gained", hp_healed, "HP")
+
+            print("You now have " + str(character[0][0]) + "/100 HP")
+            character[5].remove(character[5][choice -1])
+
+        else:
+            print("Deciding you can handle it, you keep moving")
+
+    print()

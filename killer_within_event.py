@@ -372,7 +372,7 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                     print("This gets even worse when he looks over your should and sees the body")
                                     print("\nHe looks at you in shock and goes to defend himself")
                                     print("But there's no blood on your hands, and you wouldn't have had time to wash it off")
-                                    print("He realises this and tells you he's lost his friend, and now he believes", survivor1, "might have killed him")
+                                    print("He realises this and tells you he's lost his friend, and now he believes he's in danger")
                                     print("\nBefore you can stop him, he runs off to search for his friend")
                                     
                                 elif friend_split:

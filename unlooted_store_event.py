@@ -40,7 +40,7 @@ def unlooted_store_event(area, zombies_killed, character, day, bag_items):
                     if len(character[4]) > 1:
                         lost_weapon = character[4][random.randint(1, len(character[4]) - 1)]
                         print("But in the process you lose your",lost_weapon)
-                        remove_item(lost_weapon)
+                        remove_item("(weapon) " + lost_weapon)
                     print("When you get home to the",character[7][0],"you're just happy you're alive")
 
                     journal_entry(day, "Tried to loot a store and barely escaped a horde")
@@ -98,7 +98,7 @@ def unlooted_store_event(area, zombies_killed, character, day, bag_items):
                     game = False
 
                 if game:
-                    print("\nYour head is pounding when you reach the",character[7][0],"but it's a reminder you're alive")
+                    print("Your head is pounding when you reach the",character[7][0],"but it's a reminder you're alive")
 
                     journal_entry(day, "Made a mess of a scavenging trip and split my head open on a door frame")
 

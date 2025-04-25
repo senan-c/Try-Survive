@@ -25,6 +25,7 @@ from get_your_bag_event import *
 from zombie_patrol_event import *
 from survivor_fuel_event import *
 from crumbling_bridge_event import *
+
 from start_mission import *
 
 username_list = []
@@ -71,10 +72,16 @@ while game:
         for i in range(10):
             item_list.append("(food) rotten food")
 
+    if "crowbar" in character[4]:
+        item_list.remove("(weapon) crowbar")
+
+    else:
+        item_list.append("(weapon) crowbar")
+
     calories_used = 0
-    day += 1
     print(line_break)
-    print("Days Survived:",str(day - 1))
+    print("Days Survived:",str(day))
+    day += 1
     print(line_break)
     if day == 1:
         print("You're driving home from work when the radio is interrupted by an emergency broadcast")
@@ -308,14 +315,19 @@ while game:
         if choice == 1 and len(afflictions) == 0:
             area = areas[random.randint(0,len(areas)-1)]
             print("You decide to go scavenge in",area,"today\n")
-            chance = random.randint(1, 23)
 
-            if len(latest_events) >= 7:
+            if day >= 14:
+                chance = random.randint(1, 21)
+
+            else:
+                chance = random.randint(1, 20)
+
+            if len(latest_events) >= 10:
                 latest_events.remove(latest_events[0])
 
-            count = 20
+            count = 50
             while chance in latest_events and count > 0:
-                chance = random.randint(1, 23)
+                chance = random.randint(1, 21)
                 count -= 1
 
             if chance < 19:
@@ -372,7 +384,7 @@ while game:
                 
                 zombies_killed = result[1]
 
-            elif chance == 8:
+            elif chance == 8 and day >= 7:
                 result = survivor_footprints_event(area, zombies_killed, character, day, total_armour)
 
                 if result[0] == False:
@@ -390,7 +402,7 @@ while game:
                 weapon_parts = result[2]
                 workshop_satchel = result[3]
 
-            elif chance == 10:
+            elif chance == 10 and day >= 7:
                 result = save_survivors_event(area, zombies_killed, character, day, bag_items)
 
                 if result[0] == False:
@@ -398,8 +410,20 @@ while game:
         
                 zombies_killed = result[1]
 
-            elif chance == 11:
-                result = killer_within_event(area, zombies_killed, character, day, bag_items, total_armour)
+            elif chance == 11 and day >= 14:
+                event_chance = random.randint(1, 2)
+
+                if event_chance == 1:
+                    result = killer_within_event(area, zombies_killed, character, day, bag_items, total_armour)
+
+                elif event_chance == 2:
+                    event_chance = random.randint(1, 4)
+
+                    if event_chance == 1:
+                        result = zombie_patrol_event(area, character, zombies_killed, day)
+
+                    else:
+                        result = crumbling_bridge_event(area, character, zombies_killed, total_armour, day)
 
                 if result[0] == False:
                     game = False
