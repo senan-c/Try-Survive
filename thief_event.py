@@ -1,6 +1,6 @@
 from functions import *
 
-def thief_event(area, zombies_killed, character, day, item_check, total_armour):
+def thief_event(area, zombies_killed, character, day, item_check, total_armour, character_type):
     game = True
 
     loot_spot = ["burnt out police station", "destroyed military checkpoint", "looted pharmacy", "burnt down petrol station"]
@@ -11,9 +11,16 @@ def thief_event(area, zombies_killed, character, day, item_check, total_armour):
     print("You've arrived at", area, "and are taking a look around when you spot a", event_location)
     print("It looks to be in bad shape, but the area is deserted and you decide to take a look anyway")
     print("You set your bag down and begin to look around")
+
+    input("Press 1 to continue: ")
+    print(line_break)
+
     print("But after a few minutes of searching, you've found nothing and decide to look somewhere else")
-    print("\nYou turn to leave, but a stranger has walked in and picked up your bag!")
-    print("You run towards the Thief, but he bolts out the door before you can catch up")
+    print("Turning to leave, you see a stranger has walked in and picked up your bag!")
+
+    if character_type == "Police Officer":
+        print("Your eyes widen as you recognise the illusive Thief from your time in the police force!\n")
+    print("Running towards the Thief, he bolts out the door before you can catch up")
 
     bag_items = []
 
@@ -288,7 +295,10 @@ def thief_event(area, zombies_killed, character, day, item_check, total_armour):
             chance = random.randint(1, 2)
 
             if chance == 1:
-                print("\nYou turn the corner and he's right in front of you")
+                print("\nYou turn the corner and he's right in front of you\n")
+
+                input("Press 1 to continue: ")
+                print(line_break)
 
                 if raider_num == 1:
                     print("But so is a Raider!")

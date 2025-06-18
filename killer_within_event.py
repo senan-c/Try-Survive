@@ -1,6 +1,6 @@
 from functions import *
 
-def killer_within_event(area, zombies_killed, character, day, bag_items, total_armour):
+def killer_within_event(area, zombies_killed, character, day, bag_items, total_armour, character_type):
     game = True
 
     print("You're walking towards", area, "when you pass by a large government building")
@@ -776,6 +776,12 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                                     killer = survivor2
 
                                         print("He looks away and recovers himself before asking if you want to team up")
+
+                                        if character_type == "Police Officer":
+                                            lie_chance = random.randint(1, 3)
+
+                                            if survivor2 == killer or lie_chance == 1:
+                                                print("\nBut you worked as a police officer for a long time, and you're pretty confident he's lying...")
                                         print("Will you:\n1. Team up with " + survivor2 + "\n2. Try and find " + survivor + " instead")
                                         choice = make_choice()
 
@@ -878,17 +884,10 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
                                                         print("Something about this doesn't add up, and you decide to escape by yourself instead")
                                                         print("Without warning you sprint off down a hallway and up a flight of stairs, losing him...\n")
 
-                                                        result = result = fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour)
-
-                                                        if result == 0:
-                                                            result = -1
+                                                        result = fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour)
 
                                                         if not result:
                                                             game = False
-
-                                                        else:
-                                                            if result > 0:
-                                                                zombies_killed += result
 
                                             else:
                                                 print("You choose to remain hidden in the shadows and watch")
@@ -1708,7 +1707,8 @@ def killer_within_event(area, zombies_killed, character, day, bag_items, total_a
 
                                 else:
                                     for i in dead_survivors:
-                                        taken_names.remove(i)
+                                        if i in taken_names:
+                                            taken_names.remove(i)
 
                                     survivor = taken_names[random.randint(0, len(taken_names) - 1)]
                                     taken_names.remove(survivor)

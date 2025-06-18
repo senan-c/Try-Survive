@@ -24,10 +24,11 @@ def hunt_or_forage_event(zombies_killed, character, day, total_armour):
             choice = make_choice()
 
             if choice == 1:
-                print("\nYou reach in your bag for a weapon:")
+                print("You reach in your bag for a weapon:")
                 if len(character[4]) == 1:
                     print("But there's nothing there, you'll have to use your fists")
-                weapon = choose_weapon()
+                weapon_choice = choose_weapon()
+                weapon = weapon_choice[0]
 
                 print("You break from cover and charge towards them")
 
@@ -61,7 +62,7 @@ def hunt_or_forage_event(zombies_killed, character, day, total_armour):
 
                 else:
                     chance = random.randint(1, 2)
-                    print("You chase after the chickens, swinging your", weapon, "with deadly intent")
+                    print("Chasing after the chickens, you swing your", weapon, "with deadly intent")
 
                     chickens = random.randint(2, 3)
 
@@ -83,7 +84,10 @@ def hunt_or_forage_event(zombies_killed, character, day, total_armour):
                             hunt_items.append("(food) chicken")
 
                     else:
-                        print("You stop to catch your breath, putting away your", weapon, "and checking your score")
+                        print("You stop to catch your breath, putting away your", weapon, "and checking your score\n")
+
+                        input("Press 1 to continue: ")
+                        print(line_break)
                         print("After harvesting the slain chickens, you end up with:")
                         for i in range(chickens):
                             print("(food) chicken")
@@ -132,13 +136,15 @@ def hunt_or_forage_event(zombies_killed, character, day, total_armour):
 
             if choice == 1:
                 if len(character[4]) > 1:
-                    print("\nYou reach in your bag for a weapon:")
-                    weapon = choose_weapon()
+                    print("You reach in your bag for a weapon:")
+                    weapon_choice = choose_weapon()
+                    weapon = weapon_choice[0]
 
                     while weapon == "hands":
-                        print("\nYou reach in your bag for a weapon:")
+                        print("You reach in your bag for a weapon:")
                         print("You can't use your hands to catch a deer...")
-                        weapon = choose_weapon()
+                        weapon_choice = choose_weapon()
+                        weapon = weapon_choice[0]
 
                     if weapon == "**assault rifle**":
                         chance = random.randint(1, 2)
@@ -191,7 +197,10 @@ def hunt_or_forage_event(zombies_killed, character, day, total_armour):
                                 hunt_items.append("(food) venison")
 
                         else:
-                            print("You stop to catch your breath, putting away your", weapon, "and checking your score")
+                            print("You stop to catch your breath, putting away your", weapon, "and checking your score\n")
+
+                            input("Press 1 to continue: ")
+                            print(line_break)
                             print("It wasn't a clean kill but you should be able to harvest some meat")
                             for i in range(deer):
                                 print("(food) venison")

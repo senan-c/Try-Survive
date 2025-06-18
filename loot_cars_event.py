@@ -1,6 +1,6 @@
 from functions import *
 
-def loot_cars_event(zombies_killed, character, day):
+def loot_cars_event(zombies_killed, character, day, character_type):
     game = True
 
     print("This isn't your usual path and when you enter onto the highway, it appears to be deserted")
@@ -200,10 +200,17 @@ def loot_cars_event(zombies_killed, character, day):
                         if choice == 1:
                             chance = random.randint(1, 2)
 
-                            print("You check around for any zombies, before smashing the driver's window")
+                            if chosen_car == "Police Cruiser" and character_type == "Police Officer":
+                                print("But this is the same model as your own Police Cruiser, and you know a few tricks")
+                                print("With a bit of work you manage to get the door open")
+                                chance = 1
+
+                            else:
+                                print("You check around for any zombies, before smashing the driver's window")
 
                             if chance == 1:
-                                print("Luckily the sound didn't alert any zombies, and you're free to loot the car\n")
+                                print("Luckily you haven't alerted any zombies, and you're free to loot the", chosen_car)
+                                print()
 
                             else:
                                 zom_num = random.randint(2, 3)

@@ -28,6 +28,9 @@ def surrounded_van_event(area, zombies_killed, character, day, total_armour):
             print("The horde of zombies lift their heads as one, and trundle towards the sound")
 
             print("\nWith them out of the way, you're free to check out the",van)
+
+            input("\nPress 1 to continue: ")
+            print(line_break)
             chance = random.randint(1,3)
             if chance != 1:
                 print("The",van,"seems completely intact!\n")
@@ -85,7 +88,11 @@ def surrounded_van_event(area, zombies_killed, character, day, total_armour):
                 chance = random.randint(1,2)
                 print("You make a dash for the side street to your left, and through the hordes")
                 if chance == 1:
-                    print("The zombies at the front of both hordes reach out for you...")
+                    print("The zombies at the front of both hordes reach out for you...\n")
+
+                    input("Press 1 to continue: ")
+                    print(line_break)
+                    
                     print("But you somehow make it through the gap")
                     print("After this close call you decide to head home to the",character[7][0])
 
@@ -93,7 +100,7 @@ def surrounded_van_event(area, zombies_killed, character, day, total_armour):
 
                 elif chance == 2:
                     print("You've almost made it through when a zombie gets hold of your bag")
-                    print("It yanks you back, and your head lashes back with it")
+                    print("It yanks you back, and your head lashes back with it\n")
                     print("With adrenaline rushing through you, you manage to wrestle free and escape")
                     item_lost = ""
                     if len(character[3]) > 1:
@@ -127,6 +134,9 @@ def surrounded_van_event(area, zombies_killed, character, day, total_armour):
                 if chance == 1:
                     print("You were quick enough that the horde hasn't noticed and they trod straight past")
                     print("You make your way back and find the",van,"now deserted\n")
+
+                    input("Press 1 to continue: ")
+                    print(line_break)
                     chance = random.randint(1,3)
 
                     if chance != 1:
@@ -223,6 +233,9 @@ def surrounded_van_event(area, zombies_killed, character, day, total_armour):
                 if chance == 1:
                     print("The horde passes by, oblivious to your hiding spot and you make your way back to the",van)
                     print("It looks like you managed to lure the whole horde, the",van,"is now abandoned\n")
+
+                    input("Press 1 to continue: ")
+                    print(line_break)
                     chance = random.randint(1, 2)
                     if chance == 1:
                         print("It looks like it hasn't been looted!\n")

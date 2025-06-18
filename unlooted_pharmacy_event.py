@@ -1,6 +1,6 @@
 from functions import *
 
-def unlooted_pharmacy_event(area, zombies_killed, character, day):
+def unlooted_pharmacy_event(area, zombies_killed, character, day, character_type):
     game = True
 
     print("You sneak through the zombie infested streets of", area, "before something catches your eye")
@@ -19,16 +19,17 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
         choice = make_choice()
 
         if choice == 1:
-            key_zombies = ["Police Officer", "Nurse", "Pharmacist","Pharmacist", "Doctor", "Civilian", "Civilian"]
-            print("Deciding to check the nearby zombies, you spot a few nearby:")
+            key_zombies = ["Police Officer", "Nurse", "Pharmacist", "Doctor", "Civilian", "Patient"]
+            print("Deciding to check the nearby zombies, you spot a few nearby")
 
-            key_num = random.randint(0, 5)
+            key_num = random.randint(0, 4)
             keys = []
             present_zombies = []
 
-            for i in range(6):
-                key_zombie = key_zombies[random.randint(0, len(key_zombies) - 1)]
-                present_zombies.append(key_zombie)
+            for i in range(5):
+                zombie = key_zombies[random.randint(0, len(key_zombies) - 1)]
+                key_zombies.remove(zombie)
+                present_zombies.append(zombie)
 
                 if i == key_num:
                     keys.append(1)
@@ -38,6 +39,26 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
 
             no_key = True
             give_up = False
+
+            if character_type == "Paramedic":
+                print("Doing a double take, you recognise a pair of zombies from when you worked as a paramedic")
+
+                chance = random.randint(1, 2)
+
+                if chance == 1:
+                    zom1 = present_zombies[keys.index(1)]
+                    present_zombies.remove(zom1)
+                    zom2 = present_zombies[random.randint(0, len(present_zombies) - 1)]
+                    present_zombies.append(zom1)
+
+                else:
+                    zom2 = present_zombies[keys.index(1)]
+                    present_zombies.remove(zom2)
+                    zom1 = present_zombies[random.randint(0, len(present_zombies) - 1)]
+                    present_zombies.append(zom2)
+
+                print("If anyone has the key, it's either the", zom1, "or the", zom2)
+                print()
 
             while no_key and game:
                 print("Choose a zombie:")
@@ -56,6 +77,10 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                     result = fight(1, "zombies")
 
                     if result:
+                        if character_type == "Paramedic":
+                            if zom1 not in present_zombies and zom2 not in present_zombies:
+                                keys[choice - 1] = 1
+
                         zombies_killed += 1
                         if keys[choice - 1] == 1:
                             print("You check the pockets of the", chosen_zombie, "and this one has a key!")
@@ -72,6 +97,10 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                         
                         else:
                             print("You check its pockets, but there's no key to be found\n")
+                            keys.remove(keys[choice - 1])
+
+                        if len(keys) == 1:
+                            keys[0] = 1
 
                     else:
                         game = False
@@ -103,7 +132,7 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                     print("The alarm deactivates and you breathe a sigh of relief")
                     print("Now you can take a look around\n")
 
-                    chance = random.randint(1, 4)
+                    chance = random.randint(1, 5)
 
                     if chance != 1:
                         pharmacy_loot = ["(meds) bandages", "(meds) painkillers", "(meds) first aid kit"]
@@ -148,7 +177,7 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                                         input("Press 1 to continue: ")
                                         print(line_break)
 
-                                        loot_amount = random.randint(2, 4)
+                                        loot_amount = random.randint(2, 3)
 
                                         for i in range(loot_amount):
                                             loot_taken.append(pharmacy_loot[random.randint(0, len(pharmacy_loot) - 1)])
@@ -172,6 +201,9 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
 
                         else:
                             print("It looks like it's only you, and you seize the opportunity to loot the cupboards in the back")
+
+                            input("Press 1 to continue: ")
+                            print(line_break)
                             loot_amount = random.randint(2, 3)
 
                             for i in range(loot_amount):
@@ -193,8 +225,11 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                         print("But there's a reason this pharmacy was left alone")
                         print("It was used as a morgue, and now the dead are waking back up!")
                         print("All around you, the undead rise in the darkness and lurch towards you\n")
+
+                        input("Press 1 to continue: ")
+                        print(line_break)
                         chance = random.randint(1, 2)
-                        zom_num = random.randint(3, 5)
+                        zom_num = random.randint(3, 4)
 
                         if chance == 1:
                             print("You run for the door, but your path is blocked by", zom_num, "zombies!")
@@ -222,17 +257,37 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day):
                             else:
                                 print("But you've shut the door too hard and the alarm blares!")
 
-                                print("You run up the street, but", zom_num, "zombies stumble out in front of you")
-                                print("There's no other way out of this, you'll have to fight!")
+                                print("You run up the street, but", zom_num, "zombies stumble out in front of you\n")
+                                print("There's no other way out of this, you'll have to fight!\n")
                                 result = fight(zom_num, "zombies")
 
                                 if result:
                                     zombies_killed += zom_num
-                                    print("The zombies lie dead, and you make a run for it before the others can catch up")
+                                    print("The zombies lie dead, and you make a run for it before the others can catch up\n")
                                     print("You have to take a detour, but you arrive at the", character[7][0], "before dark")
                                     journal_entry(day, "Tried to loot a morgue by mistake and nearly died")
+
+                                else:
+                                    game = False
                             
                             print("That was a close call...")
+
+                else:
+                    print("But you've entered it in wrong and the alarm blares!")
+                    zom_num = random.randint(3, 5)
+
+                    print("You run up the street, but", zom_num, "zombies stumble out in front of you")
+                    print("There's no other way out of this, you'll have to fight!")
+                    result = fight(zom_num, "zombies")
+
+                    if result:
+                        zombies_killed += zom_num
+                        print("The zombies lie dead, and you make a run for it before the others can catch up")
+                        print("You have to take a detour, but you arrive at the", character[7][0], "before dark")
+                        journal_entry(day, "Tried to loot a pharmacy and nearly died")
+
+                    else:
+                        game = False
 
         else:
             print("But you can't risk it just on the hope of finding a key")

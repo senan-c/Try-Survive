@@ -1,6 +1,6 @@
 from functions import *
 
-def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
+def survivor_fuel_event(area, character, day, rot_day, zombies_killed, character_type):
     game = True
     fuel_traded = 0
 
@@ -136,7 +136,7 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
             if chance == 1:
                 zom_group = random.randint(8, 12)
 
-                print("Right as you spot the petrol station, a group of", zom_group, "zombies spills out in front of you!")
+                print("Right as you spot the petrol station, a group of", zom_group, "zombies spills out in front of you!\n")
                 print("Looks like it's you and the pair of survivors against the undead\n")
 
                 zom_num = random.randint(3, round(zom_group * 0.5))
@@ -165,14 +165,14 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
                 print("The interior is a mess with shelves knocked over and broken glass littering the floor")
                 print("The pair of you get to work, searching for anything left intact while", survivor2, "is busy outside\n")
 
-                if day >= rot_day:
+                if day >= rot_day or character_type == "Patient":
                     print("Checking a pallet hidden underneath a collapsed shelf, you find only rotten food")
                 
                 else:
                     produce_list = ["(food) carrots", "(food) banana", "(food) strawberries", "(food) mushrooms", "(food) apple", "(food) spring onions"]
                     food_amount = random.randint(3, 5)
 
-                    print("You spot a pallet hidden underneath a collapsed shelf, and spot some produce that seems edible")
+                    print("You spot a pallet hidden underneath a collapsed shelf, and grab some produce that seems edible")
                     print("You found:")
 
                     for i in range(food_amount):
@@ -183,7 +183,10 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
                 chance = random.randint(1, 2)
 
                 if chance == 1:
-                    print("\nAs you pick your bag back up to continue searching, you hear glass crunch behind you")
+                    print("\nAs you pick your bag back up to continue searching, you hear glass crunch behind you\n")
+
+                    input("Press 1 to continue: ")
+                    print(line_break)
 
                     zom_num = random.randint(1, 2)
 
@@ -244,6 +247,10 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
                         print("\nSomehow he hasn't been bitten yet, and he's swinging his", survivor_weapon, "around wildly")
                         print("Time is running out, but", survivor, "shouts at you to help him save his friend")
 
+                        if character_type == "Firefighter":
+                            print("\nBut your experience with fires throughout your life alerts you to a possible danger")
+                            print("If there's still fuel in those pumps, a single spark could cause a devastating explosion...")
+
                         explosion_chance = random.randint(1, 2)
 
                         print("Will you:\n1. Help him save his friend\n2. Make a run for it")
@@ -258,13 +265,19 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
                                 print("It looks like he was able to scrounge up a jerrycan of fuel before he was ambushed by the zombies")
 
                             if explosion_chance == 1:
-                                print(survivor, "rushes ahead of you and knocks a zombie to the ground, giving his friend enough space to fight")
+                                print(survivor, "rushes ahead of you and knocks a zombie to the ground, giving his friend enough space to fight\n")
                                 print("But as", survivor2, "takes a swing at a zombie he slips on the spilled fuel, his", survivor_weapon, "sparking on the ground")
-                                print("The group of zombies surrounding him are instantly alight in flames, and to your horror one stumbles straight into the fuel pumps")
+                                print("The group of zombies surrounding him are instantly alight in flames, and to your horror one stumbles straight into the fuel pumps!\n")
 
-                                print("\nThe explosion is deafening, throwing you backwards and off your feet")
+                                input("Press 1 to continue: ")
+                                print(line_break)
+
+                                print("The explosion is deafening, throwing you backwards and off your feet")
 
                                 injury_chance = random.randint(1, 2)
+
+                                if character_type == "Firefighter":
+                                    injury_chance = random.randint(1, 3)
 
                                 if injury_chance == 1:
                                     print("Feeling a searing pain in your arm, you look down and see you're on fire!")
@@ -277,7 +290,7 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed):
                                         game = False
 
                                     if game:
-                                        print("You're burnt badly but alive")
+                                        print("You're burnt badly but alive\n")
                                 
                                 else:
                                     print("You land hard, but you've somehow emerged unscathed")

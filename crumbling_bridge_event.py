@@ -1,12 +1,16 @@
 from functions import *
 
-def crumbling_bridge_event(area, character, zombies_killed, total_armour, day):
+def crumbling_bridge_event(area, character, zombies_killed, total_armour, day, character_type):
     game = True
     soldier_name = None
 
     print("You're on your way towards", area, "when something catches your eye")
     print("Directly ahead of you is smoke rising into the air")
     print("\nIf there's a fire you won't be able to reach", area, "today, but it could be worth checking out...")
+
+    if character_type == "Firefighter":
+        print("\nTaking another look at the smoke, your experience tells you it must be coming from a fuel-rich fire")
+        print("Looks like there's at least one vehicle burning")
 
     print("Will you:\n1. Investigate the smoke\n2. Head home")
     choice = make_choice()
@@ -1327,7 +1331,6 @@ def crumbling_bridge_event(area, character, zombies_killed, total_armour, day):
                                                                 crowbar_found = True
 
                                                     crowbar_current = weapon_durability[character[4].index("crowbar") - no_health]
-                                                    crowbar_max = max_weapon_durability[character[4].index("crowbar") - no_health]
 
                                                     if crowbar_current > 0:
                                                         print("Utilising your crowbar, you manage to pry the locker open")
@@ -1350,7 +1353,7 @@ def crumbling_bridge_event(area, character, zombies_killed, total_armour, day):
 
                                                         print("\nInside you find:")
                                                         random_item(2, 3, "special")
-                                                        chance = random.randint(1, 3)
+                                                        chance = random.randint(1, 5)
 
                                                         if chance == 1:
                                                             item = ultra_special_item_list[random.randint(0, len(ultra_special_item_list) - 1)]

@@ -33,8 +33,11 @@ def unlooted_store_event(area, zombies_killed, character, day, bag_items):
 
             print("You run to the",direction)
             if chance == 1:
-                print("And straight into a mass of zombies!")
-                chance = random.randint(1, 2)
+                print("And straight into a mass of zombies!\n")
+
+                input("Press 1 to continue:")
+                print(line_break)
+                chance = random.randint(1, 3)
                 if chance == 1:
                     print("Luckily you're quick on your feet and manage to turn around and make a quick getaway")
                     if len(character[4]) > 1:
@@ -67,12 +70,27 @@ def unlooted_store_event(area, zombies_killed, character, day, bag_items):
 
                         else:
                             print("You slip and arms reach out and grab you, but suddenly you're pulled back away from the horde")
-                            print("It's", (friend1 + "!"), "he's rescued you!")
+                            print("It's" + friend1 + "! he's rescued you!")
                             print("The two of you escape the horde, and he reminds you of the favor he owed you")
                             print("\nYou thank him profusely and say goodbye, returning home to the",character[7][0])
 
                             log = "Almost died while looting but I was saved by my friend " + friend1
                             journal_entry(day, log)
+
+                elif chance == 3:
+                    zom_num = random.randint(6, 8)
+                    print("But you won't go down easily!\n")
+
+                    result = fight(zom_num, "zombies")
+
+                    if result:
+                        print("Somehow you've managed to fight your way through!")
+                        print("You run all the way back to the", character[7][0], "with your heart hammering in your chest...")
+
+                        journal_entry(day, "Somehow fought my way out of a swarm of zombies while looting")
+
+                    else:
+                        game = False
 
             else:
                 print("You know you made the right choice by running to the",direction,"as you see a horde swarm through the street behind you")

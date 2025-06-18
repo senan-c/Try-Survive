@@ -58,7 +58,7 @@ def zombie_horde_event(area, zombies_killed, day):
 
         elif chance == 2:
             print("You sneak past the horde, skirting on the edge of the street and almost out of sight")
-            print("Suddenly a zombie lunges out in front of you, you'll have to fight it!")
+            print("Suddenly a zombie lunges out in front of you, you'll have to fight it!\n")
 
             fight_result= fight(1,"zombies")
 

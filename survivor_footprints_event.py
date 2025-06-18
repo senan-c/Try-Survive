@@ -1,6 +1,6 @@
 from functions import *
 
-def survivor_footprints_event(area, zombies_killed, character, day, total_armour):
+def survivor_footprints_event(area, zombies_killed, character, day, total_armour, character_type):
     game = True
 
     print("As you walk through", area, "you begin to notice the signs of another survivor")
@@ -30,6 +30,13 @@ def survivor_footprints_event(area, zombies_killed, character, day, total_armour
 
             print("As your eyes adjust, you notice there's someone inside!")
             print(describe_human(human, 1))
+
+            if character_type == "Police Officer" and human == "raider":
+                chance = random.randint(1, 3)
+
+                if chance == 1:
+                    print("\nBut as they turn around, you recognise them...")
+                    print("It's a dangerous criminal you knew from working as a police officer!")
             print("\nWill you:\n1. Approach them\n2. Attack them")
             choice = make_choice()
 
@@ -117,7 +124,11 @@ def survivor_footprints_event(area, zombies_killed, character, day, total_armour
                     print("He shakes your hand and introduces himself as", survivor_name)
 
                     if infected_survivor == 1:
-                        print("But he looks ill and it seems like he's injured")
+                        if character_type == "Paramedic":
+                            print("But he's injured and he's displaying symptoms of an infection...")
+
+                        else:
+                            print("But he looks ill and it seems like he's injured")
 
                     else:
                         print("But it seems like he's injured")
@@ -155,6 +166,9 @@ def survivor_footprints_event(area, zombies_killed, character, day, total_armour
                                     print("Your heart drops, he's dead!")
                                     print("You look at him solemnly and wish you had gotten here earlier\n")
                                     print("But as you get up off the floor, something catches your eye")
+
+                                    input("Press 1 to continue: ")
+                                    print(line_break)
                                     print(survivor_name + "'s", "eyes are wide open and staring at you!")
                                     print("He dives and tackles you, he must have been infected!\n")
 
@@ -232,6 +246,9 @@ def survivor_footprints_event(area, zombies_killed, character, day, total_armour
                         if infected_survivor == 1:
                             print("He mutters something about a fall while scavenging for food")
                             print("He seems feverish and could use some medical help")
+
+                            if character_type == "Police Officer":
+                                print("But your experience as a police officer tells you he's lying about the fall")
 
                             print("\nWill you:\n1. Check your bag for medical supplies\n2. Reach for a weapon")
                             choice = make_choice()

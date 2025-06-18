@@ -248,6 +248,8 @@ def start_mission(location, temp_location, possible_locations, day, zombies_kill
                         else:
                             journal_entry(day, "Had to fight a Raider while exploring, I barely survived")
 
+                        combat_heal()
+
         elif chance == 2:
             print("You tread lightly through the", location, "but it looks like there's nobody else here")
 

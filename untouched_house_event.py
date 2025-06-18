@@ -1,6 +1,6 @@
 from functions import *
 
-def untouched_house_event(area, zombies_killed, character, day):
+def untouched_house_event(area, zombies_killed, character, day, character_type):
     game = True
 
     horde_time = random.randint(5, 40)
@@ -28,6 +28,10 @@ def untouched_house_event(area, zombies_killed, character, day):
 
         print("You try the front door on one of the houses, and it's open")
         print("Luckily there's no alarm and you can make your way inside")
+
+        if character_type == "Police Officer":
+            print("After all your time spent as a police officer, you never would've imagined you'd be burglarising people's houses")
+            print("But this is a new world, and one you want to survive in...\n")
         print("You're in the hallway and can start looting")
 
         room_num = 1
@@ -101,7 +105,7 @@ def untouched_house_event(area, zombies_killed, character, day):
                         print("There's a gun case under the desk!\n")
                         print("Inside it you find:")
                         print("(gun) *pistol*")
-                        print("(ammo) *5 pistol bullets*\n")
+                        print("(ammo) *5 pistol bullets*")
 
                         add_item("(gun) *pistol*")
                         add_item("(ammo) *5 pistol bullets*")
@@ -305,7 +309,7 @@ def untouched_house_event(area, zombies_killed, character, day):
                     game = False
 
             elif horde_time < 10:
-                print("You leave the house and check down the street, the horde is close but they won't reach you")
+                print("You leave the house and check down the street, the horde is close but they won't reach you\n")
 
                 chance = random.randint(1, 3)
 

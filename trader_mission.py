@@ -96,10 +96,10 @@ def trader_mission(location, character, day, total_armour):
         print(line_break)
 
         trader_pool = []
-        for i in range(12):
+        for i in range(10):
             trader_pool.append(item_list[random.randint(0,len(item_list) -1)])
 
-        for i in range(5):
+        for i in range(7):
             trader_pool.append(special_item_list[random.randint(0, len(special_item_list) - 1)])
 
         for i in range(1):

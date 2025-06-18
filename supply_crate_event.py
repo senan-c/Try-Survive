@@ -44,7 +44,7 @@ def supply_crate_event(area, zombies_killed, character, day, total_armour):
             zombies_killed += zom_num
 
             supplies_before = character
-            print("After the battle, you go up and check the crate to see what's inside")
+            print("After the battle, you go up and check the crate to see what's inside\n")
 
             print("You crack open the crate and find:")
             random_item(2,4,"normal")

@@ -42,19 +42,67 @@ for i in range(len(username_list)):
 
 username = input("Enter your Username: ")
 
-while username.upper() in username_list:
-    print("That username is already taken\n")
+while len(username) > 10:
+    print("That Username is too long\n")
     username = input("Enter your Username: ")
 
+while username.upper() in username_list:
+    print("That Username is already taken\n")
+    username = input("Enter your Username: ")
+
+    while len(username) >= 10:
+        print("That Username is too long\n")
+        username = input("Enter your Username: ")
+
 print("\nThis game is played with the number keys corresponding to each choice\n")
-print("Are you ready to Try Survive?")
 play = input("Click 1 to Play: ")
+print(line_break)
 
 while play != "1":
     play = input("Click 1 to Play: ")
+    print(line_break)
+
+print("Choose your character:")
+print("1. Survivor - Difficulty: Medium")
+print("2. First Responder - Difficulty: Easy")
+print("3. Patient - Difficulty: Hard")
+choice = make_choice()
+
+if choice == 1:
+    character_type = "Survivor"
+
+elif choice == 2:
+    chance = random.randint(1, 3)
+
+    if chance == 1:
+        character_type = "Police Officer"
+
+    elif chance == 2:
+        character_type = "Firefighter"
+
+    else:
+        character_type = "Paramedic"
+
+else:
+    character_type = "Patient"
+
+print("Welcome " + username + ", it looks like you're a " + character_type)
+
+if character_type != "Patient":
+    print("\nWould you like to skip the intro?\n1. Yes\n2. No")
+    skip_choice = make_choice()
+
+    if skip_choice == 1:
+        print("Intro has been skipped")
+
+    else:
+        print("Your story begins...")
+
+else:
+    skip_choice = 2
 
 while game:
-    if day == rot_day:
+    if (day == rot_day or character_type == "Patient") and rotten_food == False:
         rotten_food = True
 
         item_list.remove("(food) apple")
@@ -72,10 +120,10 @@ while game:
         for i in range(10):
             item_list.append("(food) rotten food")
 
-    if "crowbar" in character[4]:
+    if "crowbar" in character[4] and "(weapon) crowbar" in item_list:
         item_list.remove("(weapon) crowbar")
 
-    else:
+    elif "(weapon) crowbar" not in item_list:
         item_list.append("(weapon) crowbar")
 
     calories_used = 0
@@ -84,54 +132,296 @@ while game:
     day += 1
     print(line_break)
     if day == 1:
-        print("You're driving home from work when the radio is interrupted by an emergency broadcast")
-        print("The government is warning of a disease which makes the dead come back to life and attack the living\n")
-        print("You realise you need to find shelter")
-        print("Will you:\n1. Make your way home - Heal faster from injuries\n2. Get back to the restaurant you work at - Bonus calories when cooking\n3. Drive to the forest nearby and camp out in your car - Unlimited water from the spring")
-        choice = make_choice()
+        if skip_choice == 2:
+            if character_type != "Patient":
+                print("The Quarantine Zones have fallen and now you find yourself in the middle of a city in chaos\n")
+            if character_type == "Survivor":
+                print("Your lungs burning, you risk a glance over your shoulder and your eyes widen in horror")
+                print("Swarms of zombies pour into the street behind you, completely overwhelming everyone in their path")
+                print("You parked your car nearby, but there's no telling if it's still there")
+                print("If it's not, you'll surely die here, or worse...\n")
+                input("Press 1 to continue: ")
+                print(line_break)
+                print("But thankfully you find it unscathed and you hop in before formulating a plan")
+                print("You have a few options for where to go, but you'll need to make your decision quickly")
+                print("Will you:\n1. Make your way home - Heal faster from injuries\n2. Get back to the restaurant you work at - Bonus calories when cooking\n3. Drive to the forest nearby and camp out in your car - Unlimited water from the spring")
+                home_choice = make_choice()
+                print("Pulling out of the car park, you narrowly avoid a group of zombies before speeding off towards your destination\n")
 
-        if choice == 1:
-            character[7].append("house")
+            elif character_type == "Police Officer":
+                print("You fire your *pistol* indiscriminately into the crowd of zombies, but it's no use")
+                print("A horde this big can't be stopped, all you can do is run")
+                print("Looking around you see your fellow officers scatter and flee alongside you, there's no hope left for the city...\n")
 
-            print("The city is in chaos but you manage to get back to your house in one piece")
-            print("You hurry inside, but it seems the fighting hasn't reached this area, yet...\n")
+                input("Press 1 to continue: ")
+                print(line_break)
 
-            print("You have a glass of water and then get to work")
-            print("You do a quick sweep of your house and find:")
-            random_item(3, 5, "normal", "no fuel")
+                print("But as you turn back around, you run right into a fireman running the other way")
+                print("You're knocked to the ground and your *pistol* flies out of your hand and skitters under a van")
+                print("He apologises and helps you up, before a swarm of zombies rounds the corner and you both run for your lives\n")
 
-        elif choice == 2:
-            character[7].append("restaurant")
+                print("The fireman disappears down a neighbouring street, and you make a run for your Police Cruiser parked nearby\n")
 
-            print("The city is in chaos but you manage to get back to the restaurant in one piece")
-            print("You hurry inside but it seems everyone else has left, you wonder if you'll ever see them again...\n")
+                input("Press 1 to continue: ")
+                print(line_break)
 
-            print("You do a quick sweep of the restaurant and find:")
-            random_item(3, 5, "normal", "no fuel")
+                print("Thankfully you find it unscathed and you hop in before formulating a plan")
+                print("You have a few options for where to go, but you'll need to make your decision quickly")
+                print("Will you:\n1. Make your way home - Heal faster from injuries\n2. Head for your local restaurant - Bonus calories when cooking\n3. Drive to the forest nearby and camp out in your Police Cruiser - Unlimited water from the spring")
+                home_choice = make_choice()
+                print("Tyres screeching, you narrowly avoid a group of zombies before speeding off towards your destination\n")
 
-        elif choice == 3:
-            character[7].append("campground clearing")
+            elif character_type == "Firefighter":
+                print("You pull desperately on your captain's arm, but it's no use")
+                print("Watching in horror, he's pulled into the crowd of zombies and all you can do is run")
+                print("A zombie lunges out to grab you, but you knock it back with your fire axe and keep moving\n")
 
-            print("You drive out into the forest and it seems everyone else is still in the city")
-            print("You pull up to a campground in a clearing, this will do nicely...\n")
+                input("Press 1 to continue: ")
+                print(line_break)
 
-            print("You find a spring nearby and have some water")
-            print("You do a quick sweep of the campground and find:")
-            random_item(2, 3, "normal", "no fuel")
+                print("Hearing gunshots ahead, you watch as police officers scatter and run from the undead army")
+                print("Not paying attention, you run straight into an officer and both of you tumble to the ground")
+                print("His *pistol* goes flying, but you help him up and the two of you run for your lives\n")
 
-        print()
-        eat_food()
+                print("He races off down the street, but the horde is coming and you decide to head in the opposite direction\n")
 
-        print("You close your eyes and go to sleep")
-    
-        log = "I survived my first day at the " + character[7][0]
-        journal_entry(day, log)
+                input("Press 1 to continue: ")
+                print(line_break)
 
-        input("\nPress 1 to continue to Day "  + str((day + 1)) + ": ")
-        days_no_water = 0
+                print("Spotting a car in the street ahead, you run towards it only to see the owner dragged out by a dozen zombies")
+                print("He screams in pain, but there's nothing you can do as you hop inside the car and slide into the driver's seat")
+                print("Undead hands claw at the windows, but you slam on the accelerator and take off down the street\n")
+                print("Will you:\n1. Make your way home - Heal faster from injuries\n2. Head for your local restaurant - Bonus calories when cooking\n3. Drive to the forest nearby and camp out in the car - Unlimited water from the spring")
+                home_choice = make_choice()
+
+            elif character_type == "Paramedic":
+                print("The hospital is has been overrun, and screams echo through the hallways as you make your escape")
+                print("Doctors and patients alike run down the corridors, followed closely by hordes of undead")
+                print("You won't be able to help anyone here, all you can do is run\n")
+
+                input("Press 1 to continue: ")
+                print(line_break)
+
+                print("You're cut off from the ambulance bay, but your car should still be parked outside")
+                print("With more zombies on the way, it's your only hope of survival")
+                print("Stopping to pack some medical supplies into your bag, you make a run for it\n")
+
+                input("Press 1 to continue: ")
+                print(line_break)
+
+                print("You burst out the hospital doors and spot half a dozen zombies in the parking lot")
+                print("Somehow you manage to hop in the car and stamp on the accelerator before they can reach you\n")
+                print("You have a few options for where to go, but you'll need to make your decision quickly")
+                print("Will you:\n1. Make your way home - Heal faster from injuries\n2. Head for your local restaurant - Bonus calories when cooking\n3. Drive to the forest nearby and camp out in your car - Unlimited water from the spring")
+                home_choice = make_choice()
+                print("Pulling out of the car park, you narrowly avoid the group of zombies before speeding off towards your destination\n")
+
+            elif character_type == "Patient":
+                character[0][0] = 75
+                character[1][0] = "Parched"
+                character[2][0] = 0
+
+                print("Blinking your eyes open, the first thing you notice is how dry your throat is")
+                print("You've woken up in a hospital bed and light pours in from the window, illuminating the dusty air")
+                print("The next thing you notice is how quiet the hospital is...\n")
+
+                input("Press 1 to continue: ")
+                print(line_break)
+
+                print("Sitting up and pushing yourself out of bed, you almost collapse as your legs give way")
+                print("It seems you've been asleep for quite a while...")
+                print("After a few minutes you manage to get to your feet and make your way to the door")
+                print("But a pool of dried blood on the floor catches your eye, and as the door creaks open, you see the hospital is in ruins\n")
+
+                input("Press 1 to continue: ")
+                print(line_break)
+
+                print("Exit signs still flicker green, and they guide your way through the carnage of the dusty hallways")
+                print("You're shocked to see bodies strewn about, with some showing sign of having been mauled and eaten...")
+                print("Reaching the front doors the sun almost blinds you, and through squinted eyes you see a figure staggering towards you...\n")
+
+                input("Press 1 to continue: ")
+                print(line_break)
+
+                print("With the sun still in your eyes, you can't make out their face, but something's not right")
+                print("As they get closer their rotting face comes into view, and you jump back in horror")
+                print("It's a person, but their skin is grey and rotting away, and their eyes are glazed over\n")
+
+                input("Press 1 to continue: ")
+                print(line_break)
+
+                print("There's no other answer, it has to be a zombie!")
+                print("You've got no other choice, if you want to survive you'll have to kill it...\n")
+
+                result = fight(1, "zombies")
+
+                if result:
+                    print("Panting heavily, your hands shake as you look down at the corpse")
+                    print("It's still now, and you take some respite from putting it out of its misery\n")
+                    print("Checking its pockets, you find car keys which sure enough open a car parked outside")
+                    print("Getting in, it looks like you have just enough fuel to get back to your house\n")
+                    home_choice = 1
+
+                else:
+                    day -= 1
+                    game = False
+
+        else:
+            if character_type != "Survivor":
+                print("Where will you go after the fall of the Quarantine Zones?\n1. Make your way home - Heal faster from injuries\n2. Get back to the restaurant you work at - Bonus calories when cooking\n3. Drive to the forest nearby and camp out in your car - Unlimited water from the spring")
+
+            else:
+                print("Will you:\n1. Make your way home - Heal faster from injuries\n2. Head for your local restaurant - Bonus calories when cooking\n3. Drive to the forest nearby and camp out in your car - Unlimited water from the spring")
+            home_choice = make_choice()
+
+        if game:
+            if home_choice == 1:
+                character[7].append("house")
+
+            elif home_choice == 2:
+                character[7].append("restaurant")
+
+            else:
+                character[7].append("campground clearing")
+
+            if home_choice == 1:
+                if character_type != "Patient":
+                    print("The city streets are in chaos, but you have just enough fuel to get back to your house")
+
+                    print("With zombies everywhere, you hurry inside managing to avoid being seen")
+                    print("With the door locked behind you, you feel at least a little bit safer\n")
+
+                    print("Checking the cupboards, you pour yourself a glass of water before taking a look around")
+                    print("You'll need to get used to searching for useful supplies, this is your new life...\n")
+
+                    input("Press 1 to continue: ")
+                    print(line_break)
+
+                    print("After doing a sweep of your house, you've found:")
+                    random_item(3, 5, "normal", "no fuel")
+
+                    if character_type == "Police Officer":
+                        print("\nGrabbing your bag from the Police Cruiser, you check inside and find:")
+                        add_nightstick()
+
+                        print("(clothing) *police vest*")
+                        add_item("(clothing) *police vest*")
+
+                else:
+                    input("Press 1 to continue: ")
+                    print(line_break)
+
+                    print("Your neighbourhood is nothing like you remember, littered with bodies and burnt-out cars")
+                    print("A couple houses on your street are burnt down completely, and in the distance more staggering figures can be seen...\n")
+                    print("Parking the car and walking up to your house, you find the spare key under the mat")
+                    print("Taking one last look around, it doesn't seem like you were followed")
+                    print("After stepping inside you feel a little bit safer, but still on edge in this new world\n")
+
+                    input("Press 1 to continue: ")
+                    print(line_break)
+
+                    print("You go to fill a glass of water, but the water's stopped and there's no electricity")
+                    print("Checking through cabinets and cupboards, you try scrounge up what you can\n")
+                    print("After checking the house you found:")
+                    random_item(2, 3, "normal", "no fuel")
+
+            elif home_choice == 2:
+                print("The city streets are in chaos, but you have just enough fuel to get to the restaurant")
+                print("Thankfully the area seems deserted, so you park your car and take a look\n")
+
+                if character_type == "Survivor":
+                    print("The door is unlocked, but the building seems to be empty as well")
+                    print("It seems both customers and your coworkers alike fled to the quarantine zones")
+                    print("After what you saw today, it seems unlikely any of them survived...")
+
+                else:
+                    print("Pushing the door, you're surprised to find it unlocked")
+                    print("But the interior is a sharp contrast to what you remember from your visits before the apocalypse")
+                    print("The once bustling and vibrant restaurant is still and quiet now, but it'll have to do...")
+
+                input("\nPress 1 to continue: ")
+                print(line_break)
+
+                print("Now that you've escaped the fallen quarantine zone, you'll have to set up here\n")
+                print("After grabbing a glass of water, you search the shelves and cabinets and find:")
+                random_item(3, 5, "normal", "no fuel")
+
+                if character_type == "Police Officer":
+                    print("\nGrabbing your bag from the Police Cruiser, you check inside and find:")
+                    add_nightstick()
+
+                    print("(clothing) *police vest*")
+                    add_item("(clothing) *police vest*")
+
+            elif home_choice == 3:
+                print("Deciding to head into the nearby forest, you keep driving until you enter a small clearing")
+                print("It seems you've stumbled across a small campground you'll be able to stay at")
+                print("With its isolated location and proximity to the city, it could be perfect...")
+
+                input("\nPress 1 to continue: ")
+                print(line_break)
+
+                print("After parking your car you find a nearby spring to drink from, and begin taking a look around")
+                print("Looks like whoever was here before you must have left in a hurry...\n")
+
+                print("You do a quick sweep of the campground and find:")
+                random_item(2, 3, "normal", "no fuel")
+
+                if character_type == "Police Officer":
+                    print("\nGrabbing your bag from the Police Cruiser, you check inside and find:")
+                    add_nightstick()
+
+
+                    print("(clothing) *police vest*")
+                    add_item("(clothing) *police vest*")
+
+            if character_type == "Firefighter":
+                print("\nGrabbing your bag from the car, you check inside and find:")
+                print("(weapon) *fire axe*")
+                add_item("(weapon) *fire axe*")
+
+            elif character_type == "Paramedic":
+                print("\nGrabbing your bag from your car, you check inside and find:")
+                random_item(2, 3, "normal", "meds")
+
+            input("\nPress 1 to continue: ")
+            print(line_break)
+
+            check = open_inventory(rifle_supp, pistol_supp, total_armour)
+
+            if check[0] == True:
+                rifle_supp = True
+
+            elif check[1] == True:
+                pistol_supp = True
+            
+            total_armour = check[2]
+
+            if character[0][0] < 100:
+                heal(character_type)
+
+            eat_food()
+
+            print("You close your eyes and go to sleep")
+            
+            if character[7][0] != "house":
+                log = "I survived my first day and set up at the " + character[7][0]
+
+            else:
+                log = "I survived my first day and set up at my " + character[7][0]
+            journal_entry(day, log)
+
+            input("\nPress 1 to continue to Day "  + str((day + 1)) + ": ")
+
+            if character_type != "Patient":
+                days_no_water = 0
+
+            else:
+                days_no_water = 3
 
     elif day > 1:
         count = 0
+        character_rested = False
         card_list = []
         for i in range(4):
             suit = suits[count]
@@ -160,7 +450,7 @@ while game:
             print("You take a drink from the nearby spring")
             water_drank = True
 
-        elif day == 2 and character[7][0] != "campground clearing":
+        elif day == 2 and character[7][0] != "campground clearing" and character_type != "Patient":
             print("It looks like the electricity went out during the night, and the water's stopped too")
 
         if days_no_water == 0:
@@ -185,7 +475,7 @@ while game:
             chance_list = []
 
             for i in range(chances):
-                item_chance = random.randint(1,7)
+                item_chance = random.randint(1, 10)
                 chance_list.append(item_chance)
 
             if 1 in chance_list:
@@ -200,11 +490,38 @@ while game:
                     print("\nIt looks like " + friend[0] + " and " + friend[1] + " visited while you were asleep!")
                     print("They left you:")
 
-                rarity_chance = random.randint(1,8)
-                random_item(2,3, "normal", "no rot")
+                ranks = ["Corporal", "Sergeant", "Lieutenant", "Captain"]
+                soldier = False
 
-                if rarity_chance == 1:
-                    random_item(1,2, "special")
+                for i in ranks:
+                    if i in friend:
+                        soldier = True
+
+                if not soldier:
+                    rarity_chance = random.randint(1,4)
+                    random_item(2,3, "normal", "no rot")
+
+                    if rarity_chance == 1:
+                        random_item(0,1, "special")
+
+                else:
+                    bag_loot_normal = ["(ammo) *5 pistol bullets*", "(ammo) *3 pistol bullets*", "(meds) first aid kit"]
+                    bag_loot_weapon = ["(weapon) quality machete", "(gun) *pistol*", "(weapon) *sledgehammer*", "(ammo) **15 rifle bullets**"]
+                    bag_loot_armour = ["(clothing) *army helmet*", "(clothing) *combat pants*", "(clothing) *body armour*"]
+
+                    chance = random.randint(1, 3)
+
+                    if chance == 1:
+                        item = bag_loot_normal[random.randint(0, len(bag_loot_normal) - 1)]
+
+                    elif chance == 2:
+                        item = bag_loot_weapon[random.randint(0, len(bag_loot_weapon) - 1)]
+
+                    else:
+                        item = bag_loot_armour[random.randint(0, len(bag_loot_armour) - 1)]
+
+                    print(item)
+                    add_item(item)
 
                 if len(enemy_list) > 0:
                     print("\nBut it looks like someone else was here too")
@@ -319,15 +636,25 @@ while game:
             if day >= 14:
                 chance = random.randint(1, 21)
 
-            else:
-                chance = random.randint(1, 20)
+            elif day >= 7:
+                chance = random.randint(1, 19)
 
-            if len(latest_events) >= 10:
+            else:
+                chance = random.randint(1, 16)
+
+            if len(latest_events) >= 14:
                 latest_events.remove(latest_events[0])
 
             count = 50
             while chance in latest_events and count > 0:
-                chance = random.randint(1, 21)
+                if day >= 14:
+                    chance = random.randint(1, 21)
+
+                elif day >= 7:
+                    chance = random.randint(1, 19)
+
+                else:
+                    chance = random.randint(1, 16)
                 count -= 1
 
             if chance < 19:
@@ -375,6 +702,7 @@ while game:
 
             elif chance == 6:
                 blackjack_event(area, character, day)
+                water_drank = True
 
             elif chance == 7:
                 result = locked_safe_event(area, zombies_killed, character, day, total_armour)
@@ -385,7 +713,7 @@ while game:
                 zombies_killed = result[1]
 
             elif chance == 8 and day >= 7:
-                result = survivor_footprints_event(area, zombies_killed, character, day, total_armour)
+                result = survivor_footprints_event(area, zombies_killed, character, day, total_armour, character_type)
 
                 if result[0] == False:
                     game = False
@@ -414,7 +742,7 @@ while game:
                 event_chance = random.randint(1, 2)
 
                 if event_chance == 1:
-                    result = killer_within_event(area, zombies_killed, character, day, bag_items, total_armour)
+                    result = killer_within_event(area, zombies_killed, character, day, bag_items, total_armour, character_type)
 
                 elif event_chance == 2:
                     event_chance = random.randint(1, 4)
@@ -423,7 +751,7 @@ while game:
                         result = zombie_patrol_event(area, character, zombies_killed, day)
 
                     else:
-                        result = crumbling_bridge_event(area, character, zombies_killed, total_armour, day)
+                        result = crumbling_bridge_event(area, character, zombies_killed, total_armour, day, character_type)
 
                 if result[0] == False:
                     game = False
@@ -437,15 +765,15 @@ while game:
                     game = False
 
             elif chance == 13:
-                result = untouched_house_event(area, zombies_killed, character, day)
+                result = untouched_house_event(area, zombies_killed, character, day, character_type)
 
                 if result[0] == False:
                     game = False
         
                 zombies_killed = result[1]
 
-            elif chance == 14:
-                if day >= rot_day:
+            elif chance == 14 and day >= 7:
+                if rotten_food:
                     if first_hunt == True:
                         print("It's been", day, "days since the outbreak, and foods like chicken, apples and bread have rotted away")
                         print("If you want a solid supply of food, you'll have to go find it in the wild...\n")
@@ -484,7 +812,7 @@ while game:
                     chance = random.randint(1, 2)
 
                     if chance == 1:
-                        result = loot_cars_event(zombies_killed, character, day)
+                        result = loot_cars_event(zombies_killed, character, day, character_type)
 
                         if result[0] == False:
                             game = False
@@ -497,7 +825,7 @@ while game:
             
                         zombies_killed = result[1]
 
-            elif chance == 15:
+            elif chance == 15 and day >= 7:
                 item_check = False
                 if len(character[3]) > 0:
                     item_check = True
@@ -510,7 +838,7 @@ while game:
                 
                 if item_check and len(bag_items) == 0:
                     if len(raider_bag_items) == 0:
-                        result = thief_event(area, zombies_killed, character, day, item_check, total_armour)
+                        result = thief_event(area, zombies_killed, character, day, item_check, total_armour, character_type)
 
                         if result[0] == False:
                             game = False
@@ -535,15 +863,15 @@ while game:
                     free_supplies_event(area, day)
 
             elif chance == 16:
-                result = unlooted_pharmacy_event(area, zombies_killed, character, day)
+                result = unlooted_pharmacy_event(area, zombies_killed, character, day, character_type)
 
                 if result[0] == False:
                     game = False
         
                 zombies_killed = result[1]
 
-            elif chance == 17:
-                result = survivor_fuel_event(area, character, day, rot_day, zombies_killed)
+            elif chance == 17 and day >= 7:
+                result = survivor_fuel_event(area, character, day, rot_day, zombies_killed, character_type)
 
                 if result[0] == False:
                     game = False
@@ -794,6 +1122,7 @@ while game:
 
                     count += 1
             take_rest(medical_prompt)
+            character_rested = True
 
         elif len(afflictions) > 0:
             count = 0
@@ -815,6 +1144,7 @@ while game:
             choice = make_choice()
 
             take_rest(medical_prompt)
+            character_rested = True
 
         if game:
             print(line_break)
@@ -839,115 +1169,7 @@ while game:
                 if medical_prompt != "":
                     print(medical_prompt)
 
-                if character[0][0] < 100 or len(afflictions) > 0:
-                    print("You have", character[0][0], "HP")
-                print("Would you like to heal your wounds?\n1. Yes\n2. No")
-                choice = make_choice()
-
-                if choice == 1:
-                    if len(character[5]) > 0:
-                        print("What do you need to heal?")
-                        count= 1
-                        for i in afflictions:
-                            print(str(count) + ". " + i)
-                            count += 1
-                        if character[0][0] < 100:
-                            print(str(count) + ". " + "HP at " + str(character[0][0]))
-
-                        print(str(count + 1) + ". Don't heal anything")
-
-                        heal_choice = make_choice()
-
-                        if heal_choice != count + 1:
-                            print("What item will you use?")
-                            if heal_choice!= count or character[0][0] == 100:
-                                count= 1
-                                for i in character[5]:
-                                    if i == "bandages":
-                                        heal_chance= "75%"
-
-                                    elif i == "first aid kit":
-                                        heal_chance= "100%"
-
-                                    elif i == "painkillers":
-                                        heal_chance= "25%"
-                                    print(str(count) + ". " + i + " - chance of healing " + heal_chance)
-                                    count += 1
-
-                                choice = make_choice()
-
-                                if character[5][choice - 1] == "bandages":
-                                    chance = random.randint(1, 4)
-                                    print("Your", afflictions[heal_choice - 1], "has been bandaged")
-
-                                    if chance != 1:
-                                        print("Your",afflictions[heal_choice-1],"has been healed")
-                                        afflictions.remove(afflictions[heal_choice - 1])
-
-                                    else:
-                                        print("Your", afflictions[heal_choice - 1], "hasn't healed")
-
-                                elif character[5][choice - 1] == "painkillers":
-                                    chance = random.randint(1, 4)
-                                    print("You have taken some painkillers")
-
-                                    if chance == 1:
-                                        print("Your", afflictions[heal_choice - 1], "has been healed")
-                                        afflictions.remove(afflictions[heal_choice - 1])
-
-                                    else:
-                                        print("Your", afflictions[heal_choice - 1], "hasn't healed")
-
-                                elif character[5][choice - 1] == "first aid kit":
-                                    print("Your", afflictions[heal_choice - 1], "has been treated with a first aid kit")
-
-                                    print("Your", afflictions[heal_choice - 1], "has been healed")
-                                    afflictions.remove(afflictions[heal_choice - 1])
-
-                                character[5].remove(character[5][choice - 1])
-
-                            else:
-                                count = 0
-                                for i in character[5]:
-                                    count += 1
-                                    if i == "bandages":
-                                        hp_healed = 50
-
-                                    elif i == "first aid kit":
-                                        hp_healed = 100
-
-                                    elif i == "painkillers":
-                                        hp_healed = 25
-                                    print(str(count) + ". " + i + " - HP healed: " + str(hp_healed))
-
-                                choice = make_choice()
-
-                                if character[5][choice-1] == "bandages":
-                                    print("You have used some bandages")
-                                    hp_healed = 50
-
-                                elif character[5][choice-1] == "first aid kit":
-                                    print("You have used a first aid kit")
-                                    hp_healed = 100
-
-                                elif character[5][choice-1] == "painkillers":
-                                    print("You have taken some painkillers")
-                                    hp_healed = 25
-
-                                character[0][0] += hp_healed
-                                if character[0][0] > 100:
-                                    character[0][0] = 100
-                                    print("You gained", hp_healed, "HP")
-
-                                print("You now have " + str(character[0][0]) + "/100 HP")
-                                character[5].remove(character[5][choice -1])
-                            print()
-
-                        else:
-                            print("You chose not to heal anything\n")
-
-                    else:
-                        print("You don't have any medicine\n")
+                heal(character_type)
 
             damaged_weapon = False
             for i in range(len(weapon_durability)):
@@ -1002,93 +1224,21 @@ while game:
 
                                         weapon_parts = result           
 
-            if len(character[8]) > 0:
-                print("Would you like to open your inventory?\n1. Yes\n2. No")
-                choice = make_choice()
-                if choice == 1:
-                    loop = True
-                    while loop:
-                        if len(character[8]) > 0:
-                            print("Click the corresponding number to select an item")
-                            print("You have:")
-                            count = 1
-                            for i in character[8]:
-                                print(str(count) + ". " + i)
-                                count += 1
-                            print(str(count) + ". " + "Exit")
-                            choice = make_choice()
+            check = open_inventory(rifle_supp, pistol_supp, total_armour)
 
-                            if choice != count:
-                                item_chosen = character[8][choice - 1]
-                                if item_chosen[0:2] == "(c":
-                                    total_armour = equip_armour(item_chosen[11:],total_armour)
+            if check[0] == True:
+                rifle_supp = True
 
-                                elif item_chosen == "journal":
-                                    print("Important Events:")
-                                    if len(journal) > 0:
-                                        for entry in journal:
-                                            print(entry)
+            elif check[1] == True:
+                pistol_supp = True
 
-                                    else:
-                                        print("You haven't written anything in your journal yet")
+            total_armour = check[2]
+            
+            if character_rested:
+                eat_food(True)
 
-                                elif item_chosen == "crafting recipes":
-                                    crafting_recipes()
-
-                                elif item_chosen == "material satchel":
-                                    material_check = False
-                                    for i in workshop_satchel:
-                                        if i > 0:
-                                            material_check = True
-
-                                    if material_check:
-                                        print("You check your satchel and see the following:")
-                                        print("(material) nails x" + str(workshop_satchel[0]))
-                                        print("(material) rope x" + str(workshop_satchel[1]))
-                                        print("(material) leather x" + str(workshop_satchel[2]))
-                                        print("(material) wooden poles x" + str(workshop_satchel[3]))
-
-                                    else:
-                                        print("Your satchel is empty")
-
-                                elif item_chosen == "(mod) **suppressor**":
-                                    mod_options = []
-
-                                    for weapon in character[4]:
-                                        if weapon[0:3] == "**a" or weapon[0:3] == "*pi":
-                                            mod_options.append(weapon)
-
-                                    if len(mod_options) == 0:
-                                        print("No guns in your inventory")
-
-                                    else:
-                                        print("Choose a weapon to add the suppressor to:")
-                                        count = 1
-                                        for i in mod_options:
-                                            print(str(count) + ". " + i)
-                                            count += 1
-                                        print(str(count) + ". " + "Exit")
-                                        choice = make_choice()
-
-                                        if mod_options[choice -1] == "**assault rifle**":
-                                            rifle_supp = True
-                                            print("Your **assault rifle** is now suppressed")
-                                        
-                                        else:
-                                            pistol_supp = True
-                                            print("Your *pistol* is now suppressed")
-
-                                        character[9].remove("(mod) **suppressor**")
-
-                                print(line_break)
-
-                            elif choice == count:
-                                loop = False
-
-                        else:
-                            loop = False
-
-            eat_food()
+            else:
+                eat_food()
 
             if character[2][0] == 0:
                 print("You are now starving")
@@ -1119,10 +1269,11 @@ while game:
             input("\nPress 1 to continue to Day "  + str((day + 1)) + ": ")
 
             if character[0][0] == 0:
+                print(line_break)
                 print("Your body couldn't take it any more and in your sleep...\nYOU DIED")
                 game= False
 
-            elif character[2][0] > 2000:
+            elif character[2][0] >= 2000:
                 if character[0][0] < 100:
                     hp_healed = random.randint(5, 20)
 
@@ -1131,7 +1282,10 @@ while game:
 
                     print(line_break)
                     print("Overnight you heal", hp_healed, "HP")
-                    print("You now have", character[0][0] + hp_healed, "/100 HP")
+                    character[0][0] = character[0][0] + hp_healed
+                    if character[0][0] > 100:
+                        character[0][0] = 100
+                    print("You now have", character[0][0], "/100 HP")
 
             if not water_drank:
                 days_no_water += 1
@@ -1143,8 +1297,17 @@ while game:
 
 record = []
 scoreboard = []
+journal_list = []
 
 record.append(username)
+record.append(character_type)
+
+if day < 1:
+    day = 1
+
+if day == 0:
+    day = 1
+
 record.append(day - 1)
 record.append(zombies_killed)
 
@@ -1152,18 +1315,34 @@ with open("scores.csv", "a", newline = "") as score:
     add_score = csv.writer(score)
     add_score.writerow(record)
 
+with open("journals.csv", "a", newline = "") as past_journal:
+    add_past_journal = csv.writer(past_journal)
+
+    if len(journal) == 0:
+        journal.append("This journal is empty, nothing to read here...")
+    add_past_journal.writerow(journal)
+
 with open("scores.csv", "r") as prev_scores:
     read_scores = csv.reader(prev_scores)
     for row in read_scores:
         scoreboard.append(row)
 
+with open("journals.csv", "r") as prev_journals:
+    read_journals = csv.reader(prev_journals)
+    count = 0
+    for row in read_journals:
+        if count != 0:
+            journal_list.append(row)
+        count += 1
+
 scoreboard = scoreboard[1:]
+scoreboard_unsorted = scoreboard.copy()
 
 for i in range(1, len(scoreboard)):
     key = scoreboard[i]
     count = i - 1
 
-    while count >= 0 and int(key[1]) > int(scoreboard[count][1]):
+    while count >= 0 and int(key[2]) > int(scoreboard[count][2]):
         scoreboard[count + 1] = scoreboard[count]
         count -= 1
 
@@ -1172,18 +1351,64 @@ for i in range(1, len(scoreboard)):
 scoreboard = scoreboard[:11]
 
 print()
-print("{:-^46}".format("HIGH SCORES"))
-print("{0:15}".format("Player:"), ("Days Survived:"), ("Zombies Killed:"))
+print("{:-^63}".format("HIGH SCORES"))
+print("{0:15} {1:15} {2:15} {3:15}".format("Player:", "Character:", "Days Survived:", "Zombies Killed:"))
 for index, player in enumerate(scoreboard):
-    print("{0:15}".format(player[0]), "{0:14}".format(player[1]), player[2])
-print("-" * 46)
+    print("{0:15} {1:15} {2:15} {3:15}".format(player[0], player[1], player[2], player[3]))
+print("-" * 63)
 
-print("\nClear the Scoreboard?\n1. Yes\n2. No")
+print("Read a Past Journal?\n1. Yes\n2. No")
+choice = make_choice()
+
+if choice == 1:
+    journal_loop = True
+
+    while journal_loop:
+        chosen_journal = input("Enter a player's name to read their journal: ")
+        chosen_journal = chosen_journal.upper()
+
+        found = False
+
+        journal_num = 0
+        for i in scoreboard_unsorted:
+            if i[0].upper() == chosen_journal:
+                found = True
+                break
+            else:
+                journal_num += 1
+
+        if not found:
+            print("No journal found for that player...")
+
+        else:
+            journal = journal_list[journal_num]
+
+            print(line_break)
+            print(scoreboard_unsorted[journal_num][0] + "'s Journal:")
+
+            for entry in journal:
+                print(entry)
+
+            if journal[0] != "This journal is empty, nothing to read here...":
+                print("\n" + scoreboard_unsorted[journal_num][0] + " died on day " + str(int(scoreboard_unsorted[journal_num][2]) + 1) + " and the journal ends here...")
+            print(line_break)
+
+        print("Would you like to read another journal?\n1. Yes\n2. No")
+        choice = make_choice()
+
+        if choice == 2:
+            journal_loop = False
+
+print("Clear the Scoreboard?\n1. Yes\n2. No")
 choice = make_choice()
 
 if choice == 1:
     with open("scores.csv", "w", newline = "") as score:
         clear_score = csv.writer(score)
         clear_score.writerow(" ")
+
+    with open("journals.csv", "w", newline = "") as prev_journals:
+        clear_journals = csv.writer(prev_journals)
+        clear_journals.writerow(" ")
 
     print("Scoreboard cleared")

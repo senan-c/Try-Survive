@@ -135,7 +135,7 @@ leg_armour = ["*combat pants*"]
 foot_armour = ["*work boots*", "*handmade boots*"]
 hand_armour = ["***flame gloves***","*leather gloves*"]
 
-bladed_weapons = ["machete", "knife", "*katana*", "*butterfly knife*", "basic spear", "heavy spear", "*tri-blade spear*"]
+bladed_weapons = ["machete", "knife", "*katana*", "*butterfly knife*", "basic spear", "heavy spear", "*tri-blade spear*", "*fire axe*", "(weapon) ***flaming hand-axe***", "(weapon) ***diseased scalpel***"]
 
 fight_list = []
 
@@ -193,7 +193,7 @@ def add_item(x):
             weapon_durability.append(30)
             max_weapon_durability.append(30)
 
-        elif weapon == "hammer" or weapon == "heavy spear" or weapon == "*spiked baseball bat*" or weapon == "*tri-blade spear*":
+        elif weapon == "hammer" or weapon == "heavy spear" or weapon == "*spiked baseball bat*" or weapon == "*tri-blade spear*" or weapon == "nightstick":
             weapon_durability.append(40)
             max_weapon_durability.append(40)
 
@@ -205,9 +205,13 @@ def add_item(x):
             weapon_durability.append(50)
             max_weapon_durability.append(50)
 
-        elif weapon == "heavy hammer":
+        elif weapon == "heavy hammer" or weapon == "safe cracker":
             weapon_durability.append(55)
             max_weapon_durability.append(55)
+
+        elif weapon == "*fire axe*":
+            weapon_durability.append(60)
+            max_weapon_durability.append(60)
 
         elif weapon == "*sledgehammer*" or weapon == "***flaming hand-axe***":
             weapon_durability.append(70)
@@ -302,8 +306,19 @@ def random_item(num1, num2, rarity, vers=None):
 
         temp_items.append(temp_item)
         add_item(temp_item)
-    for i in temp_items:
-        print(i)
+
+        if "weapon" not in temp_item:
+            print(temp_item)
+
+        else:
+            chance = random.randint(1, 3)
+
+            if chance == 1 or "*" in temp_item:
+                print(temp_item)
+
+            else:
+                weapon_durability[-1] = random.randint((round(max_weapon_durability[-1] * 0.7)), weapon_durability[-1] - 1)
+                print(temp_item + " - condition: " + str(weapon_durability[-1]) + "/" + str(max_weapon_durability[-1]))
 
 
 cal_list_100 = ["apple", "banana", "carrots", "mushrooms", "strawberries", "spring onions"]
@@ -351,10 +366,7 @@ def get_cals(x):
         elif x == "sausage and pasta":
             cals = 1500 // 2
 
-        elif x == "chicken and beef sandwiches":
-            cals = 2000 // 4
-
-        elif x == "fruit and cream" or x == "tuna sandwiches":
+        elif x == "fruit and cream":
             cals = 1000 // 2
 
         elif x == "mega MRE":
@@ -366,7 +378,7 @@ def get_cals(x):
         elif x == "cereal treats":
             cals = 900 // 2
 
-        elif x == "chicken stir-fry":
+        elif x == "chicken stir-fry" or x == "tuna sandwiches":
             cals = 1600 // 2
 
         elif x == "chicken casserole" or x == "venison stew":
@@ -375,7 +387,7 @@ def get_cals(x):
         elif x == "venison casserole":
             cals = 2700 // 2
 
-        elif x == "overnight oats":
+        elif x == "overnight oats" or "chicken and beef sandwiches":
             cals = 2600 // 4
 
         elif x == "rice pudding":
@@ -389,6 +401,9 @@ def get_cals(x):
 
         elif x == "omelette":
             cals = 1200
+
+        elif x == "noodle bowl":
+            cals = 1800
 
         if character[7][0] == "restaurant":
             cals += round(cals * 0.25)
@@ -414,7 +429,7 @@ def make_choice():
 def add_affliction(injury, health):
     character[0][0] -= health
     afflictions.append(injury)
-    print("You now have", character[0][0], "HP\n")
+    print("You now have", character[0][0], "HP")
 
     if character[0][0] <= 0:
         print("\nYOU DIED")
@@ -587,7 +602,13 @@ def ranged_attack(weapon, enemy, health, armour=0):
 
     while (weapon == "pistol" and ammo > 0) or (weapon == "assault rifle" and ammo > 3):
         if weapon == "pistol":
-            shots_fired = random.randint(1, 3)
+            chance = random.randint(1, 3)
+
+            if chance == 1:
+                shots_fired = random.randint(2, 3)
+
+            else:
+                shots_fired = 1
 
             while shots_fired > character[10][0]:
                 shots_fired = random.randint(1, 3)
@@ -1402,6 +1423,8 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
                             elif weapon_choice == "*tri-blade spear*":
                                 print("You slice your *tri-blade spear* across his face in a swift arc, before lunging forward and driving all three blades into his chest with lethal precision")
 
+                            elif weapon_choice == "*fire axe":
+                                print("Bringing your *fire axe* crashing down, it splits " + human_enemy.name + "'s skull with a wet thud and he falls lifeless to the ground")
 
                             weapon_durability[weapon_val - 1] = weapon_durability[weapon_val - 1] - 1
 
@@ -1434,7 +1457,13 @@ def fight_human(human_enemy, weapon_choice, bonus_dam, armour, weapon_val):
 
         if (miss_chance != 1 or result[1] == False) and not skip_turn:
             if human_enemy.armour_val > 0:
-                print("His armour blocked", human_enemy.armour_val, "damage")
+                if human_enemy.armour_val > damage:
+                    damage_blocked = damage
+
+                else:
+                    damage_blocked = human_enemy.armour_val
+                    
+                print("His armour blocked", damage_blocked, "damage")
 
             if human_enemy.armour_val < damage and human_enemy.armour_val > 0:
                     damage -= human_enemy.armour_val
@@ -1692,9 +1721,9 @@ def fight(num, battle, boss=None, total_armour=None):
 
     if battle == "zombies":
         descriptor = zom_description_list[random.randint(0,len(zom_description_list)-1)]
-        loot = item_list[random.randint(0,len(item_list) - 1)]
         count = 1
         while num > 0:
+            loot = item_list[random.randint(0,len(item_list) - 1)]
             print("Zombie #",count)
             zombie = fight_list[0]
             if zombie == "a weak zombie":
@@ -1716,7 +1745,7 @@ def fight(num, battle, boss=None, total_armour=None):
 
             else:
                 if boss not in killer_list and boss != "the Thief":
-                    print("Before you attack, you apologise to", boss, "wishing you had saved him...")
+                    print("Before you attack, you think about how he ended up here...\n")
 
             result= fight_zombie(zombie, weapon_choice, bonus_dam, weapon_val)
             fight_list.remove(fight_list[0])
@@ -1728,9 +1757,9 @@ def fight(num, battle, boss=None, total_armour=None):
                 return False
 
     elif battle == "military zombies":
-        loot = item_list[random.randint(0, len(item_list) - 1)]
         count = 1
         while num > 0:
+            loot = item_list[random.randint(0, len(item_list) - 1)]
             print("Zombie #", count)
             zombie = "military zombie"
             descriptor = military_description_list[random.randint(0, len(military_description_list) - 1)]
@@ -1801,7 +1830,12 @@ def fight(num, battle, boss=None, total_armour=None):
             else:
                 return False
         for i in range(5 * loot_counter):
-            loot_list.append(item_list[random.randint(0, len(item_list) -1)])
+            item = item_list[random.randint(0, len(item_list) - 1)]
+
+            while item == "(weapon) crowbar" and item in loot_list:
+                item = item_list[random.randint(0, len(item_list) - 1)]
+
+            loot_list.append(item)
 
         if loot_counter > 1:
             print("It looks like they had some loot:")
@@ -2336,15 +2370,19 @@ def cook_food():
         cook_check = True
         cook_list.append("sausage and pasta")
 
+    if "chicken" in ingredients and "instant noodles" in ingredients and "spring onions" in ingredients and "butter" in ingredients:
+        cook_check = True
+        cook_list.append("noodle bowl")
+
     if "strawberries" in ingredients and ("banana" in ingredients or "apple" in ingredients) and "can of whipped cream" in ingredients:
         cook_check = True
         cook_list.append("fruit and cream")
 
-    if "can of tuna" in ingredients and "bread" in ingredients:
+    if "can of tuna" in ingredients and "bread" in ingredients and "butter" in ingredients:
         cook_check = True
         cook_list.append("tuna sandwiches")
 
-    if "chicken" in ingredients and "beef jerky" in ingredients and "bread" in ingredients:
+    if "chicken" in ingredients and "beef jerky" in ingredients and "bread" in ingredients and "butter" in ingredients:
         cook_check = True
         cook_list.append("chicken and beef sandwiches")
 
@@ -2400,6 +2438,7 @@ def cook_food():
 
         if egg_count >= 3:
             cook_list.append("omelette")
+            cook_check = True
 
     if cook_check == True:
         print("It looks like you have enough ingredients to do some cooking:\n1. Cook\n2. Don't cook")
@@ -2442,11 +2481,15 @@ def cook_food():
                     portion = 2
 
                 elif recipe == "tuna sandwiches":
-                    remove_list = ["can of tuna", "bread"]
+                    remove_list = ["can of tuna", "bread", "butter"]
                     portion = 2
 
+                elif recipe == "noodle bowl":
+                    portion = 2
+                    remove_list = ["chicken", "instant noodles", "butter", "spring onions"]
+
                 elif recipe == "chicken and beef sandwiches":
-                    remove_list = ["chicken", "beef jerky", "bread"]
+                    remove_list = ["chicken", "beef jerky", "bread", "butter"]
                     portion = 4
 
                 elif recipe == "deluxe MRE":
@@ -2557,12 +2600,19 @@ def journal_entry(day, info):
     journal.append(journal_entry)
 
 
-def eat_food():
-    calories_used = random.randint(1400,2000)
+def eat_food(rested=None):
+    if rested is None:
+        calories_used = random.randint(1400,2000)
+        print("Today you used", calories_used, "calories")
+
+
+    else:
+        calories_used = random.randint(1000, 1500)
+        print("Today you rested and only used", calories_used, "calories")
+
     character[2][0] = character[2][0] - calories_used
     if character[2][0] < 0:
         character[2][0] = 0
-    print("Today you used", calories_used, "calories")
     print("You have", character[2][0], "calories left\n")
 
     cook_food()
@@ -3010,7 +3060,10 @@ def fire_escape_exit(survivor, survivor2, killer, bag_items, total_armour):
                         print("An undead hand grabs you and pulls you back, but", last_survivor, "hacks it off and helps you up")
                         print("The two of you are surrounded now and as you prepare for a last stand,", last_survivor, "nods at you and wishes you good luck\n")
                         print("Before you can say anything he charges into the group of zombies and they pool around him")
-                        print("A gap opens up in the wall of zombies and you punch through, thanking him for his sacrifice\n")
+
+                        input("Press 1 to continue: ")
+                        print(line_break)
+                        print("A gap opens up in the wall of zombies and you punch through, thanking him for his sacrifice")
                         print("You get away unscathed, and on your way back home your mourn today's victims...")
 
                         journal_entry(day, "A survivor sacrificed himself so I could escape a horde of zombies")
@@ -3589,7 +3642,10 @@ def crafting_recipes():
     print("Requires 8 pieces of leather and 2 pieces of rope\n")
 
     print("handmade boots:")
-    print("Requires 2 pieces of leather and 1 piece of rope")
+    print("Requires 2 pieces of leather and 1 piece of rope\n")
+
+    print("safe cracker:")
+    print("Requires a crowbar, 3 nails, 2 pieces of rope, and 2 weapon parts")
 
 def craft_list(weapon_parts, workshop_satchel):
     craft_list = []
@@ -3597,6 +3653,9 @@ def craft_list(weapon_parts, workshop_satchel):
     rope = workshop_satchel[1]
     leather = workshop_satchel[2]
     wood = workshop_satchel[3]
+
+    if "crowbar" in character[4] and nails >= 3 and rope >= 2 and weapon_parts >= 2:
+        craft_list.append("safe cracker")
 
     if "knife" in character[4] and wood >= 1 and rope >= 1:
         craft_list.append("basic spear")
@@ -3654,6 +3713,13 @@ def craft_item(weapon_parts, workshop_satchel):
                         remove_item("(weapon) knife")
                         workshop_satchel[1] = workshop_satchel[1] - 1
                         workshop_satchel[3] = workshop_satchel[3] - 1
+
+                    elif item_chosen == "safe cracker":
+                        add_item("(weapon) safe cracker")
+                        remove_item("(weapon) crowbar")
+                        workshop_satchel[0] = workshop_satchel[0] - 3
+                        workshop_satchel[1] = workshop_satchel[1] - 2
+                        weapon_parts -= 2
 
                     elif item_chosen == "heavy spear":
                         add_item("(weapon) heavy spear")
@@ -3759,3 +3825,249 @@ def combat_heal():
             print("Deciding you can handle it, you keep moving")
 
     print()
+
+
+def open_inventory(rifle_supp, pistol_supp, total_armour):
+    if len(character[8]) > 0:
+        print("Would you like to open your inventory?\n1. Yes\n2. No")
+        choice = make_choice()
+        if choice == 1:
+            loop = True
+            while loop:
+                if len(character[8]) > 0:
+                    print("Click the corresponding number to select an item")
+                    print("You have:")
+                    count = 1
+                    for i in character[8]:
+                        print(str(count) + ". " + i)
+                        count += 1
+                    print(str(count) + ". " + "Exit")
+                    choice = make_choice()
+
+                    if choice != count:
+                        item_chosen = character[8][choice - 1]
+                        if item_chosen[0:2] == "(c":
+                            total_armour = equip_armour(item_chosen[11:], total_armour)
+
+                        elif item_chosen == "journal":
+                            print("Important Events:")
+                            if len(journal) > 0:
+                                for entry in journal:
+                                    print(entry)
+
+                            else:
+                                print("You haven't written anything in your journal yet")
+
+                        elif item_chosen == "book of crafting recipes":
+                            crafting_recipes()
+
+                        elif item_chosen == "material satchel":
+                            material_check = False
+                            for i in workshop_satchel:
+                                if i > 0:
+                                    material_check = True
+
+                            if material_check:
+                                print("You check your satchel and see the following:")
+                                print("(material) nails x" + str(workshop_satchel[0]))
+                                print("(material) rope x" + str(workshop_satchel[1]))
+                                print("(material) leather x" + str(workshop_satchel[2]))
+                                print("(material) wooden poles x" + str(workshop_satchel[3]))
+
+                            else:
+                                print("Your satchel is empty")
+
+                        elif item_chosen == "(mod) **suppressor**":
+                            mod_options = []
+
+                            for weapon in character[4]:
+                                if weapon[0:3] == "**a" or weapon[0:3] == "*pi":
+                                    mod_options.append(weapon)
+
+                            if len(mod_options) == 0:
+                                print("No guns in your inventory")
+
+                            else:
+                                print("Choose a weapon to add the suppressor to:")
+                                count = 1
+                                for i in mod_options:
+                                    print(str(count) + ". " + i)
+                                    count += 1
+                                print(str(count) + ". " + "Exit")
+                                choice = make_choice()
+
+                                if mod_options[choice -1] == "**assault rifle**":
+                                    rifle_supp = True
+                                    print("Your **assault rifle** is now suppressed")
+                                
+                                else:
+                                    pistol_supp = True
+                                    print("Your *pistol* is now suppressed")
+
+                                character[9].remove("(mod) **suppressor**")
+
+                        print(line_break)
+
+                    elif choice == count:
+                        loop = False
+
+                else:
+                    loop = False
+
+    return [rifle_supp, pistol_supp, total_armour]
+
+def add_nightstick():
+    durability = random.randint(15, 30)
+    print("(weapon) nightstick - condition: " + str(durability) + "/40")
+    add_item("(weapon) nightstick")
+    weapon_durability[-1] = durability
+
+def heal(character_type):
+    if character[0][0] < 100:
+        print("You have", character[0][0], "HP")
+    print("Would you like to heal your wounds?\n1. Yes\n2. No")
+    choice = make_choice()
+
+    if choice == 1:
+        if len(character[5]) > 0:
+            if character_type == "Paramedic":
+                print("With your experience as a paramedic, you'll be more efficient with your meds")
+            print("What do you need to heal?")
+            count= 1
+            for i in afflictions:
+                print(str(count) + ". " + i)
+                count += 1
+            if character[0][0] < 100:
+                print(str(count) + ". " + "HP at " + str(character[0][0]))
+
+            print(str(count + 1) + ". Don't heal anything")
+
+            heal_choice = make_choice()
+
+            if heal_choice != count + 1:
+                print("What item will you use?")
+                if heal_choice!= count or character[0][0] == 100:
+                    count = 1
+                    for i in character[5]:
+                        if i == "bandages":
+                            if character_type == "Paramedic":
+                                heal_chance= "85%"
+
+                            else:
+                                heal_chance= "75%"
+
+                        elif i == "first aid kit":
+                            heal_chance= "100%"
+
+                        elif i == "painkillers":
+                            if character_type == "Paramedic":
+                                heal_chance= "35%"
+
+                            else:
+                                heal_chance= "25%"
+                        print(str(count) + ". " + i + " - chance of healing: " + heal_chance)
+                        count += 1
+
+                    choice = make_choice()
+
+                    if character[5][choice - 1] == "bandages":
+                        print("Your", afflictions[heal_choice - 1], "has been bandaged")
+                        if character_type != "Paramedic":
+                            chance = random.randint(1, 4)
+
+                            if chance != 1:
+                                print("Your",afflictions[heal_choice-1],"has been healed")
+                                afflictions.remove(afflictions[heal_choice - 1])
+
+                            else:
+                                print("Your", afflictions[heal_choice - 1], "hasn't healed")
+
+                        else:
+                            chance = random.randint(1, 100)
+
+                            if chance < 86:
+                                print("Your",afflictions[heal_choice-1],"has been healed")
+                                afflictions.remove(afflictions[heal_choice - 1])
+
+                            else:
+                                print("Your", afflictions[heal_choice - 1], "hasn't healed")
+
+
+                    elif character[5][choice - 1] == "painkillers":
+                        print("You have taken some painkillers")
+
+                        if character_type != "Paramedic":
+                            chance = random.randint(1, 4)
+
+                            if chance == 1:
+                                print("Your", afflictions[heal_choice - 1], "has been healed")
+                                afflictions.remove(afflictions[heal_choice - 1])
+
+                            else:
+                                print("Your", afflictions[heal_choice - 1], "hasn't healed")
+
+                        else:
+                            chance = random.randint(1, 100)
+
+                            if chance <= 35:
+                                print("Your", afflictions[heal_choice - 1], "has been healed")
+                                afflictions.remove(afflictions[heal_choice - 1])
+
+                            else:
+                                print("Your", afflictions[heal_choice - 1], "hasn't healed")
+
+                    elif character[5][choice - 1] == "first aid kit":
+                        print("Your", afflictions[heal_choice - 1], "has been treated with a first aid kit")
+
+                        print("Your", afflictions[heal_choice - 1], "has been healed")
+                        afflictions.remove(afflictions[heal_choice - 1])
+
+                    character[5].remove(character[5][choice - 1])
+
+                else:
+                    count = 0
+                    bonus = 0
+                    if character_type == "Paramedic":
+                        bonus = 10
+
+                    for i in character[5]:
+                        count += 1
+                        if i == "bandages":
+                            hp_healed = 50 + bonus
+
+                        elif i == "first aid kit":
+                            hp_healed = 100
+
+                        elif i == "painkillers":
+                            hp_healed = 25 + bonus
+                        print(str(count) + ". " + i + " - HP healed: " + str(hp_healed))
+
+                    choice = make_choice()
+
+                    if character[5][choice-1] == "bandages":
+                        print("You have used some bandages")
+                        hp_healed = 50 + bonus
+
+                    elif character[5][choice-1] == "first aid kit":
+                        print("You have used a first aid kit")
+                        hp_healed = 100
+
+                    elif character[5][choice-1] == "painkillers":
+                        print("You have taken some painkillers")
+                        hp_healed = 25 + bonus
+
+                    character[0][0] += hp_healed
+                    if character[0][0] > 100:
+                        character[0][0] = 100
+                    
+                    print("You gained", hp_healed, "HP")
+
+                    print("You now have " + str(character[0][0]) + "/100 HP")
+                    character[5].remove(character[5][choice -1])
+                print()
+
+            else:
+                print("You chose not to heal anything\n")
+
+        else:
+            print("You don't have any medicine\n")

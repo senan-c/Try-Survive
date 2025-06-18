@@ -70,6 +70,9 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
                     print("You look at", named_zombie, "for the last time, but it's time to go")
                     print("You've still got a job to do")
 
+            else:
+                game = False
+
         else:
             fight_result = fight(1, "zombies")
 
@@ -90,7 +93,7 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
                 print("You nod at eachother, then each make a dash for weakspots in the wall of zombies!")
                 print("This is going to be a tough fight!\n")
 
-                zom_num = random.randint(3, 7)
+                zom_num = random.randint(3, 5)
                 fight_result = fight(zom_num, "zombies")
 
                 if fight_result:
@@ -135,7 +138,7 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
                 input("\nPress 1 to continue: ")
                 print(line_break)
                 print("But while the survivors make their escape, you'll have to defend their backs")
-                zom_num = random.randint(3,8)
+                zom_num = random.randint(3,6)
                 fight_result = fight(zom_num, "zombies")
 
                 if fight_result:
@@ -150,7 +153,10 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
                         print("It looks like the two survivors were successful as well, there's a path out of here!")
                         print("You sprint after them, catching up with them as they round a corner")
                         print("Once you've made sure you're clear of the horde, they introduce themselves as",survivor1_name, "and", survivor2_name)
-                        print("\nThey're grateful for your rescue, knowing they wouldn't have made it without you")
+
+                        input("\nPress 1 to continue: ")
+                        print(line_break)
+                        print("They're grateful for your rescue, knowing they wouldn't have made it without you")
                         print("Before they go, they promise to repay you for this good deed someday")
                         survivor_group = [survivor1_name, survivor2_name]
                         character[6].append(survivor_group)
@@ -165,12 +171,16 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
                         print("As you run past the swarms of zombies, you search for the two survivors")
                         print("You can't see them only the zombies milling like ants in the middle of the road")
                         print("They're too busy to notice you, and you sneak away")
-                        print("\nRounding the corner onto the next street, you spot one of the survivors!")
+
+                        input("\nPress 1 to continue: ")
+                        print(line_break)
+                        print("You round the corner and see one of the survivors limping towards you")
+                        print("Rounding the corner onto the next street, you spot one of the survivors!")
                         print("He introduces himself as", survivor1_name, "but explains his friend", survivor2_name, "didn't make it")
                         print("You offer your sympathy, and he thanks you for saving his life and trying to help his friend")
-                        print("Before he goes, he promises to repay his debt someday")
+                        print("Before he goes, he promises to repay his debt someday\n")
                         survivor_group = [survivor1_name]
-                        print(survivor1_name, "is now your Friend\n")
+                        print(survivor1_name, "is now your Friend")
 
                         chance = random.randint(1,2)
 
@@ -192,6 +202,9 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
                 else:
                     game = False
 
+        else:
+            game = False
+
     else:
         print("You decide not to help the", survivor, "escape, and instead watch as the horde closes in")
         survivor1_name = survivors_male_list[random.randint(0, len(survivors_male_list) - 1)]
@@ -201,7 +214,7 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
             print("The survivor spins in circles, looking for a way out over and over")
             print("\nHe tries desperately to fight his way towards a nearby building, but it's no use")
             print("There's a shift in the horde and a gap appears, and he makes a run for a sidestreet")
-            print("But he suddenly turns around and locks eyes with you, he's seen you but it's too late")
+            print("But he suddenly turns around and locks eyes with you, he's seen you but it's too late\n")
             print("You lose sight of him in the mass of zombies, wondering if you could have saved him")
             print("But something about that look tells you you'll see him again...")
 
@@ -215,11 +228,11 @@ def save_survivors_event(area, zombies_killed, character, day, bag_items):
             print("The survivors spin in circles, shouting each other's names")
             print("It seems like their names are", survivor1_name, "and", survivor2_name)
             print("\nThey try desperately to fight their way towards eachother, but it's no use")
-            print(survivor2_name, "runs back into the building and", survivor1_name, "makes a run for a sidestreet")
+            print(survivor2_name, "runs back into the building and", survivor1_name, "makes a run for a sidestreet\n")
             print("But", survivor1_name, "suddenly turns around and locks eyes with you, he's seen you but it's too late")
             print("You lose sight of both of them in the mass of zombies, wondering if you could have saved them")
 
-            chance = random.randint(1, 2)
+            chance = random.randint(1, 3)
 
             if chance == 1:
                 survivor_group = [survivor2_name, survivor1_name]

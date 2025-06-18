@@ -168,7 +168,9 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
                         print(item)
                         add_item(item)
 
-                    print("\nYou've made some new friends, and now it's time to loot the building")
+                    input("\nPress 1 to continue: ")
+                    print(line_break)
+                    print("You've made some new friends, and now it's time to loot the building")
 
                 elif choice == 1 and len(character[5]) == 0:
                     print("But you tell him you don't have any medicine, and his face drops")
@@ -217,6 +219,9 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
                         print("You thank him and his eyes narrow, but he doesn't attack")
                         print("Instead he turns to help his friend up before the two of them leave\n")
 
+                        input("Press 1 to continue: ")
+                        print(line_break)
+
                         print("Once they're gone, you search the bag and find:")
                         for i in survivor_bag:
                                 print(i)
@@ -228,7 +233,10 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
                         print(line_break)
 
             if game:
-                print("After searching around for a couple of minutes, you find yourself in front of a room labeled 'Workshop'")
+                print("After searching around for a couple of minutes, you find yourself in front of a room labeled 'Workshop'\n")
+
+                input("Press 1 to continue: ")
+                print(line_break)
                 
                 zom_chance = 0
                 if survivor_chance == 2 or len(afflictions) > 0:
@@ -243,7 +251,7 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
 
                 if zom_chance == 1:
                     zom_num = random.randint(2, 4)
-                    print("\nYou push open the doors, but there are", zom_num, "zombies inside!\n")
+                    print("You push open the doors, but there are", zom_num, "zombies inside!\n")
 
                     result = fight(zom_num, "zombies")
 
@@ -259,10 +267,13 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
 
                 if game:
                     print("The light is dim, but in the center of the room you spot a workbench you might be able to use")
-                    print("\nChecking the surface of the table you find:")
+
+                    input("\nPress 1 to continue: ")
+                    print(line_break)
+                    print("Checking the surface of the table you find:")
                     if not workshop_event_played:
                         print("(book) crafting recipes")
-                        character[9].append("crafting recipes")
+                        character[8].append("book of crafting recipes")
                     
                     chance = random.randint(1, 2)
                     if chance == 1:
