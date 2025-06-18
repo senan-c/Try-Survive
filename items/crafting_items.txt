@@ -1,0 +1,1 @@
+(material) 1 wooden pole,(material) 3 nails,(material) 5 nails,(material) 1 piece of leather,(material) 3 pieces of leather,(material) 1 piece of rope
