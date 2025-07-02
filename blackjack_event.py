@@ -258,6 +258,10 @@ def blackjack_event(area, character, day):
         print("\nHe offers to play you if you bet some items")
         print("But you explain to him you don't really have enough to bet right now")
         charity_item = item_list[random.randint(0, len(item_list) - 1)]
+
+        while charity_item == "(food) rotten food":
+            charity_item = item_list[random.randint(0, len(item_list) - 1)]
+            
         print("He nods understandingly and gives you a", charity_item, "in a gesture of charity")
         print("You thank him and head home to the", character[7][0])
         add_item(charity_item)

@@ -172,7 +172,7 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day, character_type
                                         zombies_killed += zom_num
                                         print("That seems to be all of them, and you're free to loot behind the counters at the back")
                                         print("Grabbing everything you can find from the prescriptions section, you wonder if the owners will ever come looking for it")
-                                        print("Hopefully some of it will be of use to you")
+                                        print("Hopefully some of it will be of use to you\n")
 
                                         input("Press 1 to continue: ")
                                         print(line_break)
@@ -182,7 +182,7 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day, character_type
                                         for i in range(loot_amount):
                                             loot_taken.append(pharmacy_loot[random.randint(0, len(pharmacy_loot) - 1)])
 
-                                        print("\nOnce you're happy you've looted everything, you head outside to check what you've got")
+                                        print("Once you're happy you've looted everything, you head outside to check what you've got")
                                         print("You lay out the items and sort through them for anything useful")
 
                                     else:
@@ -193,7 +193,10 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day, character_type
                                     print("Sneaking past them, you make your way to the shelves at the back")
                                     print("It's too dark to see what you're picking up, but you fill your bag anyway")
                                     print("\nSpotting a gap in the zombies and your way out, you sneak back outside to check what you've got")
-                                    print("You lock the door behind you and lay out the items to check for anything useful")
+                                    print("You lock the door behind you and lay out the items to check for anything useful\n")
+
+                                    input("Press 1 to continue: ")
+                                    print(line_break)
 
                             else:
                                 print("You're not about to risk fighting some zombies in the dark and head back outside, locking the door behind you")
@@ -213,7 +216,7 @@ def unlooted_pharmacy_event(area, zombies_killed, character, day, character_type
                             print("It seems the coast is clear and you can check the items you grabbed")
                         
                         if game:
-                                print("\nWhen you're finished you're left with:")
+                                print("When you're finished you're left with:")
                                 for i in loot_taken:
                                     print(i)
                                     add_item(i)

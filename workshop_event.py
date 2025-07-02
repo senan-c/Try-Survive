@@ -216,7 +216,7 @@ def workshop_event(area, zombies_killed, character, day, weapon_parts, workshop_
 
                     else:
                         print("The two survivors look at you in shock, then", survivor, "looks at", survivor2, "and sighs before handing his bag over")
-                        print("You thank him and his eyes narrow, but he doesn't attack")
+                        print("You thank him and his eyes narrow, but he doesn't attack\n")
                         print("Instead he turns to help his friend up before the two of them leave\n")
 
                         input("Press 1 to continue: ")

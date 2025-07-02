@@ -8,7 +8,7 @@ def surrounded_van_event(area, zombies_killed, character, day, total_armour):
     if event == 1:
         van = "Survivor's Van"
 
-    elif event == 2 or event == 3:
+    elif event < 5:
         van = "Ambulance"
 
     else:

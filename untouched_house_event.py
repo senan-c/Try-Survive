@@ -294,7 +294,7 @@ def untouched_house_event(area, zombies_killed, character, day, character_type):
             if horde_time <= 3:
                 print("But when you leave the house, the horde is right in front of you!")
                 print("They've spotted you and you'll have to make a run for it\n")
-                print("You get to the end of the street but a some zombies have cut you off")
+                print("You get to the end of the street but some zombies have cut you off")
 
                 zom_num = random.randint(3, 6)
 

@@ -348,6 +348,9 @@ def crumbling_bridge_event(area, character, zombies_killed, total_armour, day, c
                         chance = random.randint(1, 4)
 
                         if chance == 1 or chance == 2:
+                            car_types = ["Sedan", "Hatchback", "Van", "Truck", "Convertible"]
+                            car_colours = ["Red", "Blue", "Yellow", "White", "Black", "Silver", "Grey", "Green", "Navy","Brown"]
+
                             chance = random.randint(1, 2)
 
                             car1 = car_colours[random.randint(0, len(car_colours) - 1)] + " " + car_types[random.randint(0, len(car_types) - 1)]

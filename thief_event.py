@@ -292,7 +292,7 @@ def thief_event(area, zombies_killed, character, day, item_check, total_armour, 
                 zombie_survivors.append(zombie_survivor)
 
         elif chance == 2:
-            chance = random.randint(1, 2)
+            chance = random.randint(1, 3)
 
             if chance == 1:
                 print("\nYou turn the corner and he's right in front of you\n")
@@ -348,7 +348,7 @@ def thief_event(area, zombies_killed, character, day, item_check, total_armour, 
 
                     print("On your way home, you try not to think about what you left behind")
 
-            elif chance == 2:
+            else:
                 print("\nThe bag is weighing the Thief down, and you've almost caught up with him")
                 print("He tries to hop over a burnt out car but catches his foot and lands on his face")
                 print("It looks like he's badly hurt his leg and can't run anymore!\n")

@@ -2667,6 +2667,11 @@ def eat_food(rested=None):
                 print(str(count) + ". " + "Consume all")
 
             choice = make_choice()
+
+            while choice > len(food_list) + 1:
+                print("Invalid choice, please try again")
+                choice = make_choice()
+                
             if choice == count:
                 total_cals = 0
 
@@ -3566,6 +3571,16 @@ def scrap_weapon():
     choice = make_choice()
 
     if choice != weapon_count:
+        temp_weapons = []
+        for i in character[4]:
+            if i == "*pistol*":
+                temp_weapons.append("*pistol*")
+                character[4].remove("*pistol*")
+
+            elif i == "**assault rifle**":
+                temp_weapons.append("**assault rifle**")
+                character[4].remove("**assault rifle**")
+
         weapon_chosen = character[4][choice]
         print("You have chosen to scrap your", weapon_chosen)
 
@@ -3610,6 +3625,9 @@ def scrap_weapon():
 
         print(line_break)
         remove_item("(weapon) " + weapon_chosen)
+
+        for i in temp_weapons:
+            character[4].append(i)
         return [True, parts_found]
 
     else:

@@ -475,7 +475,7 @@ while game:
             chance_list = []
 
             for i in range(chances):
-                item_chance = random.randint(1, 10)
+                item_chance = random.randint(1, 21)
                 chance_list.append(item_chance)
 
             if 1 in chance_list:
@@ -494,7 +494,7 @@ while game:
                 soldier = False
 
                 for i in ranks:
-                    if i in friend:
+                    if i in friend[0]:
                         soldier = True
 
                 if not soldier:
@@ -636,11 +636,8 @@ while game:
             if day >= 14:
                 chance = random.randint(1, 21)
 
-            elif day >= 7:
-                chance = random.randint(1, 19)
-
             else:
-                chance = random.randint(1, 16)
+                chance = random.randint(1, 18)
 
             if len(latest_events) >= 14:
                 latest_events.remove(latest_events[0])
@@ -650,14 +647,12 @@ while game:
                 if day >= 14:
                     chance = random.randint(1, 21)
 
-                elif day >= 7:
-                    chance = random.randint(1, 19)
-
                 else:
-                    chance = random.randint(1, 16)
+                    chance = random.randint(1, 18)
+
                 count -= 1
 
-            if chance < 19:
+            if chance <= 17 and day > 3:
                 latest_events.append(chance)
 
             if chance == 1:
@@ -1250,7 +1245,7 @@ while game:
 
             if not water_drank:
                 if character[1][0] == "Dehydrated":
-                    print("\nYou are now dehydrated")
+                    print("You are now dehydrated")
                     print("You have lost 10 HP, find some water soon...")
                     character[0][0] -= 10
                     if character[0][0] < 0:
@@ -1258,7 +1253,7 @@ while game:
                     print("\nYou now have " + str(character[0][0]) + "/100 HP")
 
                 elif character[1][0] == "Severely Dehydrated":
-                    print("\nYou are now severely dehydrated")
+                    print("You are now severely dehydrated")
                     print("You have lost 20 HP, find some water URGENTLY...")
                     character[0][0] -= 20
                     if character[0][0] < 0:
@@ -1378,7 +1373,8 @@ if choice == 1:
                 journal_num += 1
 
         if not found:
-            print("No journal found for that player...")
+            print("\nNo journal found for that player...")
+            print(line_break)
 
         else:
             journal = journal_list[journal_num]

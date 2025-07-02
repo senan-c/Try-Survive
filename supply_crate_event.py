@@ -79,7 +79,7 @@ def supply_crate_event(area, zombies_killed, character, day, total_armour):
 
                         if chance == 1:
                             print("He shakes your hand vigorously and stuffs the food in his bag")
-                            print("Thanking you for his kindness, he promises to help you in the future")
+                            print("Thanking you for his kindness, he promises to help you in the future\n")
                             survivor_group = [survivor_name]
                             character[6].append(survivor_group)
                             print(survivor_name, "is now your Friend")

@@ -309,12 +309,11 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed, character
                                         journal_entry(day, "Tried to help some survivors grab some fuel but it went terribly wrong")
 
                             else:
-                                zom_group = random.randint(5, 8)
-                                print("Most of the highway horde hasn't reached you yet, just these", zom_group, "zombies")
-                                extra_num = random.randint(2, 3)
-                                zom_num = random.randint(3, 5)
-                                print(zom_num, "zombies turn and lumber towards you while", extra_num, "continue to surround", survivor2)
-                                print(survivor, "charges ahead, taking on", (zom_group - zom_num), "zombies and leaving the rest for you\n")
+                                zom_group = random.randint(7, 9)
+                                print("Most of the highway horde hasn't reached you yet, just these", zom_group, "zombies\n")
+                                zom_num = random.randint(4, 5)
+                                print(zom_num, "zombies turn and lumber towards you while", (zom_group - zom_num), "continue to surround", survivor2)
+                                print(survivor, "charges ahead, taking on the", (zom_group - zom_num), "zombies and leaving the rest for you\n")
                                 
                                 result = fight(zom_num, "zombies")
 
@@ -322,6 +321,9 @@ def survivor_fuel_event(area, character, day, rot_day, zombies_killed, character
                                     print("With the initial group of zombies lie dead there's no time to waste as the horde approaches")
                                     print("The two survivors grab the jerrycan and the three of you escape in the nick of time")
                                     print("You double back onto the highway and find the car intact and thankfully without any visitors\n")
+
+                                    input("Press 1 to continue: ")
+                                    print(line_break)
 
                                     print("Before they leave", survivor2, "thanks you for saving him, and reaches in his bag for a reward")
                                     print(survivor2, "gave you:")
